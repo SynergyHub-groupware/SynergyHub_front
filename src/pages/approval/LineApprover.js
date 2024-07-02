@@ -32,11 +32,16 @@ function LineApprover({lsCode, lines, employee, handleTrueLineList, docInfo = {}
     // console.log("viewlines", viewlines);
 
     useEffect(() => {
-        setNewLines(viewlines);
+        const filteredViewlines = viewlines.filter(item => item.talOrder !== 0);
+        setNewLines(filteredViewlines);
     }, [viewlines]);
 
     // lines랑 lineemps 값 비교해서 합치고 newLines에 반환하기 (단순히 인덱스로 합침, 조건빠짐)
-    const combinedArray = lines.map((line, index) => ({...line, ...lineemps[index]}));
+    const combinedArray = lines.map((line, index) => ({
+        talOrder: line.alOrder,
+        talRole: line.alRole,
+        ...lineemps[index]
+    }));
 
     useEffect(() => {
         setNewLines(combinedArray);
@@ -64,17 +69,15 @@ function LineApprover({lsCode, lines, employee, handleTrueLineList, docInfo = {}
     // 실결재라인 배열 전달
     useEffect(()=>{
         const trueLineList = newLines.map((line, index) => {
-            return {talOrder: line.alOrder ? line.alOrder : line.talOrder,
-                    talRole: line.alRole ? line.alRole : line.talRole,
-                    employee: {emp_code: line.empCode}};
+            return {talOrder: line.talOrder, talRole: line.talRole, employee: {emp_code: line.empCode}};
         });
         handleTrueLineList(trueLineList);
 
     }, [newLines, lines]);
 
-    console.log("lines", lines);
-    console.log("lineemps", lineemps);
-    console.log("newLines", newLines);
+    // console.log("lines", lines);
+    // console.log("lineemps", lineemps);
+    // console.log("newLines", newLines);
 
     // selectEmps가 있을 경우
     useEffect(() => {

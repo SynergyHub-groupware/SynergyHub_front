@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { callApprovalDocRegistAPI, callviewAttachAPI, callviewDetailAPI, callviewInfoAPI } from "../../apis/ApprovalAPICalls";
 import {resetAttaches, resetContent, resetOnedoc, resetSuccess} from "../../modules/ApprovalModules";
 import {callMyInfoAPI} from "../../apis/EmployeeAPICalls";
+import FormReference from "./FormReference";
 
 function FormDetail(){
     const navigate = useNavigate();
@@ -125,13 +126,26 @@ function FormDetail(){
 
     console.log("document", document);
 
-    // 실결재라인 배열 전달, document에 추가
+    // 모달창에서 가져온 인원 배열
+    const [trueLineData, setTrueLineData] = useState([]);
     const handleTrueLineList = (data) => {
+        setTrueLineData(data);
+    };
+
+    // 참조,결재자 전달
+    const [referListData, setReferListData] = useState([]);
+    const handleReferList = (data) => {
+        setReferListData(data);
+    };
+
+    // 실결재라인 배열 전달, document에 추가
+    useEffect(() => {
+        const combinedList = [...referListData, ...trueLineData];
         setDocument(prev => ({
             ...prev,
-            trueLineList: data
+            trueLineList: combinedList
         }));
-    }
+    }, [trueLineData, referListData]);
 
     // 결재상세내용 객체 전달, document에 추가
     const handleDetail = (data) => {
@@ -271,7 +285,6 @@ function FormDetail(){
         }
     }, [attaches]);
 
-
     const handleCancelClick = () => {navigate(-1);};
 
     return(
@@ -279,6 +292,7 @@ function FormDetail(){
             {docInfo && docInfo.afName ? <h4 className="el_lv1Head hp_mb30">{docInfo.afName}</h4> : <h4 className="el_lv1Head hp_mb30">{afName}</h4>}
             <section className="bl_sect hp_padding15">
                 <FormLine handleTrueLineList={handleTrueLineList} docInfo={docInfo} onedoc={onedoc}/>
+                <FormReference handleReferList={handleReferList} docInfo={docInfo} onedoc={onedoc}/>
                 <h5 className="hp_fw700 hp_fs18 hp_mb10 hp_mt30">결재정보</h5>
                 <table className="bl_tb3 el_approvalTb3__th">
                     <tbody>

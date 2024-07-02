@@ -26,7 +26,7 @@ function FormLine({handleTrueLineList, docInfo = {}, onedoc = {}}){
         setSelectEmps([]);
     }
 
-    // console.log("selectEmps", selectEmps);
+    console.log("selectEmps", selectEmps);
 
     return(
         <>

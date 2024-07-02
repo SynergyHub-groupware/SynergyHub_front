@@ -66,7 +66,7 @@ function ApprovalNav(){
                         <li><NavLink to="/approval/receive/waiting">대기</NavLink></li>
                         <li><NavLink to="/approval/receive/complete">완료</NavLink></li>
                         <li><NavLink to="/approval/receive/return">반려</NavLink></li>
-                        <li><NavLink to="/approval/receive/share">공유</NavLink></li>
+                        <li><NavLink to="/approval/receive/share">참조/열람</NavLink></li>
                     </ul>
                 </li>
                 {boxes && boxes.length > 0 ? (
