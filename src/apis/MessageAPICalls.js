@@ -1,4 +1,4 @@
-import { delMsg, delSendMsg, getBinMsg, getImpMsg, getRevDetail, getRevMsg, getSendMsg, getWorkMsg } from "../modules/MessageModules";
+import { delMsg, delSendMsg, getBinMsg, getImpMsg, getRevDetail, getRevMsg, getSendMsg, getWorkMsg, upMsgStatus } from "../modules/MessageModules";
 import { request } from "./api";
 
 /* 받은 쪽지 전체 조회 API */
@@ -237,6 +237,29 @@ export const callSendDetailAPI = (msgCode) => {
                 dispatch(getRevDetail(result.data));
             } else {
                 console.log("error : " ,result);
+            }
+        } catch (error) {
+            console.log("error :: ", error);
+        }
+    };
+};
+
+export const callUpdateMsgStautsAPI = (msgCode) => {
+    
+    return async (dispatch, getState) => {
+
+        try {
+            const result = await request('PATCH', `/emp/message/${msgCode}/read`, {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            });
+
+            console.log('call update API : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(upMsgStatus(result.data));
+            } else {
+                console.log('error : ', result);
             }
         } catch (error) {
             console.log("error :: ", error);

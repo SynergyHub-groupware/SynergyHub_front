@@ -115,7 +115,7 @@ function SendTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCu
                                     <Link to={`/message/storage/send/detail/${msg.msgCode}`}>{msg.msgTitle}</Link>
                                 </td>
                                 <td>{msg.emerStatus}</td>
-                                <td>{msg.storCode}</td>
+                                <td>{msg.sendStor}</td>
                             </tr>
                         ))
                         ) : (

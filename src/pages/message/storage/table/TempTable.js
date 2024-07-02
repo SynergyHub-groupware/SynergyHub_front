@@ -115,7 +115,7 @@ function TempTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCu
                                     <Link to={`/message/storage/create/temp/${msg.msgCode}`}>{msg.msgTitle}</Link>
                                 </td>
                                 <td>{msg.emerStatus}</td>
-                                <td>{msg.storCode}</td>
+                                <td>{msg.sendStor}</td>
                             </tr>
                         ))
                         ) : (

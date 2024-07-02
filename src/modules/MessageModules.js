@@ -15,12 +15,13 @@ const GET_WORK_MSG = 'message/GET_WORK_MSG';
 const GET_TEMP_MSG = 'message/GET_TEMP_MSG';
 const DEL_MSG = 'message/DEL_MSG';
 const DEL_SEND_MSG = 'message/DEL_SEND_MSG';
+const UP_MSG_STATUS = 'message/UP_MSG_STATUS';
 
 const GET_REV_DETAIL = 'message/GET_REV_DETAIL';
 const GET_SEND_DETAIL = 'message/GET_SEND_DETAIL';
 
 export const { message : { getRevMsg, getSendMsg, getBinMsg, getImpMsg, getWorkMsg, delMsg, getRevDetail, getSendDetail 
-    , getTempMsg, delSendMsg
+    , getTempMsg, delSendMsg, upMsgStatus
 }} = createActions({
     [GET_REV_MSG] : result => {
         console.log('action : ', result);
@@ -78,6 +79,12 @@ export const { message : { getRevMsg, getSendMsg, getBinMsg, getImpMsg, getWorkM
 
     [DEL_SEND_MSG] : msgCode => {
         console.log('del action : ', msgCode);
+
+        return { msgCode };
+    },
+
+    [UP_MSG_STATUS] : msgCode => {
+        console.log('up action : ', msgCode);
 
         return { msgCode };
     }
@@ -171,6 +178,19 @@ const messageReducer = handleActions({
                 msg.msgCode === payload.msgCode ? { ...msg, storCode: 5 } : msg
             )
         }
+    },
+
+    [UP_MSG_STATUS] : (state, {payload}) => {
+        console.log("up reducer : ", payload);
+
+        const updatedMsg = state.messages.map(msg =>
+            msg.msgCode === payload.msgCode ? { ...msg, msgStatus: 'Y'} : msg
+        );
+
+        return {
+            ...state,
+            messages: updatedMsg
+        };
     }
 
 }, initialState);

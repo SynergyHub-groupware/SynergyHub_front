@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { callRevMsgListAPI } from "../../../../apis/MessageAPICalls";
+import { callRevMsgListAPI, callUpdateMsgStautsAPI } from "../../../../apis/MessageAPICalls";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -76,6 +76,13 @@ function RevTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCur
         setAllCheck(!allCheck);
     }
 
+    /* 읽음 처리 API */
+    const readMsgHandler = (msgCode, msgStatus) => {
+        if (msgStatus !== 'Y') {
+            dispatch(callUpdateMsgStautsAPI(msgCode));
+        }
+    }
+
     return (
         <div>
             <section className="bl_sect hp_mt10">
@@ -103,13 +110,18 @@ function RevTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCur
                             currentMessages.map(msg => (
                                 <tr key={msg.msgCode}>
                                     <td><input type="checkbox" onChange={() => checkboxChange(msg.msgCode)} checked={selectMsgCode.includes(msg.msgCode)}/></td>
-                                    <td>{msg.sendDate}</td>
-                                    <td>{msg.sendName} {msg.sendPosition}</td>
-                                    <td className="hp_alighL">
-                                        <Link to={`/message/storage/receive/detail/${msg.msgCode}`}>{msg.msgTitle}</Link>
+                                    <td style={{ color: msg.msgStatus === 'Y' ? '#888' : '#000'}}>{msg.sendDate}</td>
+                                    <td style={{ color: msg.msgStatus === 'Y' ? '#888' : '#000'}}>{msg.sendName} {msg.sendPosition}</td>
+                                    <td className="hp_alighL" style={{ color: msg.msgStatus === 'Y' ? '#888' : '#000'}}>
+                                        <Link 
+                                            to={`/message/storage/receive/detail/${msg.msgCode}`}
+                                            onClick={() => readMsgHandler(msg.msgCode, msg.msgStatus)}
+                                        >
+                                            {msg.msgTitle}
+                                        </Link>
                                     </td>
                                     <td>{msg.emerStatus}</td>
-                                    <td>{msg.storCode}</td>
+                                    <td>{msg.revStor}</td>
                                 </tr>
                             ))
                         ) : (
@@ -121,7 +133,6 @@ function RevTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCur
                 </table>
             </section>
             <div className="ly_spaceBetween ly_fitemC hp_mt10">
-                {/* <div className="hp_ml10 hp_7Color">총 {messages ? messages.length : 0} / <b className="hp_0Color hp_fw700">1</b> 페이지</div> */}
                 <div className="hp_ml10 hp_7Color">총 {sortedMessages.length} / <b className="hp_0Color hp_fw700">1</b> 페이지</div>
                 <select value={sort} onChange={sortChangeHandler}>
                     <option value="desc">정렬방식</option>
