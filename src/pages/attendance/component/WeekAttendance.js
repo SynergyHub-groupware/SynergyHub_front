@@ -2,15 +2,14 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import WorkHoursCalculator from "../util/WorkHoursCalculator";
 
-const WeekAttendance = ({ isOpen, toggle }) => {
-    const attendances = useSelector((state) => state.attendanceReducer.attendances);
+const WeekAttendance = ({ weekData, isOpen, toggle }) => {
 
     return (
         <div>
             <section className={`time_table bl_sect el_shadowD4 section2 ${isOpen ? 'go' : ''}`}>
                 <ul className="bl_listRing" style={{ paddingTop: '30px', paddingRight: '10px' }}>
-                    {attendances && attendances.length > 0 ? (
-                        attendances.map((dayData, index) => (
+                    {weekData && weekData.length > 0 ? (
+                        weekData.map((dayData, index) => (
                             <li className="bl_tnaWeek" key={index}>
                                 <div className="ly_spaceBetween ly_fitemC">
                                     <div className="hp_fw700 hp_fs18 bl_tnaWeek__ttl letter03">{dayData.atdDate}</div>

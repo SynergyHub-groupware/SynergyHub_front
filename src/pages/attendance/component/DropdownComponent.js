@@ -170,6 +170,10 @@ const DropdownComponent = ({ departmentsData, userRoleData, handleParentDeptChan
                     setTeamOptions(teamOptions);
                 }
             }
+        } else {
+            setParentDeptOptions([]);
+            setSubDeptOptions([]);
+            setTeamOptions([]);
         }
     }, [departmentsData, userRoleData]);
 

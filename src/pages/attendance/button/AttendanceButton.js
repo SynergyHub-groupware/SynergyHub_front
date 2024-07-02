@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import {callAttendanceTodayAPI, callMyAttendanceForWeekAPI} from '../../../apis/AttendancelAPICalls';
+import {
+    callAttendanceAllAPI,
+    callAttendanceTodayAPI,
+    callMyAttendanceForWeekAPI
+} from '../../../apis/AttendancelAPICalls';
 
 const AttendanceButton = () => {
     const [isAttended, setIsAttended] = useState(false); // 출근 상태를 관리하는 상태
@@ -73,6 +77,8 @@ const AttendanceButton = () => {
                 // 출근 시간 등록 후 Redux 상태 업데이트
                 dispatch(callAttendanceTodayAPI());
                 dispatch(callMyAttendanceForWeekAPI());
+                dispatch(callAttendanceAllAPI());
+
             } else {
                 // 이미 출근한 상태에서 퇴근 처리
                 const response = await axios.post('http://localhost:8080/api/attendance/registEndTime', {}, {
@@ -92,6 +98,7 @@ const AttendanceButton = () => {
                 // 퇴근 시간 등록 후 Redux 상태 업데이트
                 dispatch(callAttendanceTodayAPI());
                 dispatch(callMyAttendanceForWeekAPI());
+                dispatch(callAttendanceAllAPI());
             }
         } catch (error) {
             console.error('출근/퇴근 처리 실패:', error);
