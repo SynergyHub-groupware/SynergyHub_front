@@ -41,7 +41,7 @@ function ViewMain({}){
     }
 
     const handleModify = () => {
-        if (window.confirm("해당 결재를 상신취소 및 수정 하시겠습니까?\n해당 문서는 임시저장으로 이동됩니다.")) {
+        if (window.confirm("해당 결재를 상신취소 및 수정 하시겠습니까?\n해당 문서는 으로 이동됩니다.")) {
             dispatch(callmodifyStatusAPI(adCode))
                 .then(() => {navigate(`/approval/form/${document.afCode}`, {state: {parentAdCode: adCode, afName: document.afName}});})
                 .catch((error) => {console.log("문서 수정 실패: ", error);});

@@ -10,6 +10,10 @@ function FormReference({handleReferList, docInfo = {}, onedoc = {}}){
     }));
 
     useEffect(() => {
+        setSelectRefers([]);
+    }, []);
+
+    useEffect(() => {
         docInfo && dispatch(callviewLineListAPI(docInfo.adCode));
     }, [docInfo.adCode, dispatch]);
 
@@ -17,7 +21,7 @@ function FormReference({handleReferList, docInfo = {}, onedoc = {}}){
         onedoc && dispatch(callviewLineListAPI(onedoc.adCode));
     }, [onedoc, dispatch]);
 
-    // console.log("viewlines", viewlines);
+    console.log("viewlines", viewlines);
 
     useEffect(() => {
         const filteredRefers = viewlines
@@ -30,7 +34,7 @@ function FormReference({handleReferList, docInfo = {}, onedoc = {}}){
                 emp_name: item.empName,
                 talRole: item.talRole
             }));
-        setSelectRefers(filteredRefers);
+        if(docInfo || onedoc) setSelectRefers(filteredRefers);
     }, [viewlines]);
 
     // 모달창 오픈

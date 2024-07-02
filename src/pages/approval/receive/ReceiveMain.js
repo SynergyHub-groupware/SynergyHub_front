@@ -8,7 +8,6 @@ import Return from "./Return";
 import Reference from './Reference';
 import {callMyInfoAPI} from "../../../apis/EmployeeAPICalls";
 import { callreceiveDocListAPI } from "../../../apis/ApprovalAPICalls";
-import Share from "./Share";
 
 function ReceiveMain(){
     const {status} = useParams();
@@ -32,7 +31,7 @@ function ReceiveMain(){
             case 'waiting': setTitle('대기'); break;
             case 'complete': setTitle('완료'); break;
             case 'return': setTitle('반려'); break;
-            case 'share': setTitle('공유'); break;
+            case 'reference': setTitle('참조/열람'); break;
             default: setTitle('');
         }
     }, [status]);
@@ -42,7 +41,7 @@ function ReceiveMain(){
             case 'waiting': return <Waiting data={currentResults} />; break;
             case 'complete': return <Complete data={currentResults} />; break;
             case 'return': return <Return data={currentResults} />; break;
-            case 'share': return <Share data={currentResults} />; break;
+            case 'reference': return <Reference data={currentResults} />; break;
         }
     }
 
