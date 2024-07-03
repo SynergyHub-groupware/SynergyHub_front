@@ -154,7 +154,6 @@ function DocumentMain(){
         }
     };
 
-
     return(        
         <div className="ly_cont">
             <h4 className="el_lv1Head hp_mb30">보낸결재함 [{title}]</h4>
