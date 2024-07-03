@@ -59,8 +59,8 @@ function Storage() {
     };
 
     // 생성
-    const handleCreateBox = () => {
-        const newBoxName = inputFields[inputFields.length - 1].abName; // 마지막 inputFields 요소의 abName 가져오기
+    const handleCreateBox = (index) => {
+        const newBoxName = inputFields[index].abName; // 마지막 inputFields 요소의 abName 가져오기
         if (window.confirm("새 보관함을 생성 하시겠습니까?")) {
             dispatch(callregistBoxAPI({empCode: employee.emp_code, abName: newBoxName}))
                 .then(() => { window.location.reload(); })
@@ -92,18 +92,24 @@ function Storage() {
                     </thead>
                     <tbody className="hp_alignC">
                     {inputFields.map((form, index) => (
-                        <tr key={`"storage"-${form.abName}`}>
+                        <tr key={`"storage"-${index}`}>
                             <td>
-                                <input type="text" className="hp_w100" name="abName" value={form.abName} placeholder="보관함 이름을 입력하세요" onChange={e => handleInputChange(index, e)} />
+                                <input type="text" className="hp_w100" name="abName" value={form.abName}
+                                       placeholder="보관함 이름을 입력하세요" onChange={e => handleInputChange(index, e)}/>
                             </td>
                             <td>
                                 {index < boxes.length ? (
                                     <>
-                                        <button type="button" className="el_btnS el_btnblueBord hp_ml5" onClick={() => handleModify(form.abCode)}>수정</button>
-                                        <button type="button" className="el_btnS el_btn8Bord hp_ml5" onClick={() => handleDelete(form.abCode)}>삭제</button>
+                                        <button type="button" className="el_btnS el_btnblueBord hp_ml5"
+                                                onClick={() => handleModify(form.abCode)}>수정
+                                        </button>
+                                        <button type="button" className="el_btnS el_btn8Bord hp_ml5"
+                                                onClick={() => handleDelete(form.abCode)}>삭제
+                                        </button>
                                     </>
                                 ) : (
-                                    <button type="button" className="el_btnS el_btnblueBord hp_ml5" onClick={handleCreateBox}> 생성 </button>
+                                    <button type="button" className="el_btnS el_btnblueBord hp_ml5"
+                                            onClick={() => handleCreateBox(index)}> 생성 </button>
                                 )}
                             </td>
                         </tr>

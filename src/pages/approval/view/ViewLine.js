@@ -2,8 +2,9 @@ import {useNavigate} from "react-router";
 import {useDispatch} from "react-redux";
 import {useEffect, useState} from "react";
 import {callacceptDocumentAPI, callreturnDocumentAPI, fetchImage} from "../../../apis/ApprovalAPICalls";
+import ViewReference from "./ViewReference";
 
-function ViewLine({viewlines, document={}, showBtn}){
+function ViewLine({viewlines, referlines, document={}, showBtn}){
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -43,10 +44,6 @@ function ViewLine({viewlines, document={}, showBtn}){
                     }
                 }));
 
-                // 이미지 URL이 있는 것만 필터링하여 추가
-                // const filteredImageUrls = imageUrls.filter(url => url !== null);
-                // setImageArr(filteredImageUrls);
-
                 setImageArr(imageUrls);
             } catch (error) {
                 console.error('Error fetching images:', error);
@@ -56,7 +53,7 @@ function ViewLine({viewlines, document={}, showBtn}){
         fetchData();
     }, [viewlines]);
 
-    console.log("imageArr", imageArr);
+    // console.log("imageArr", imageArr);
 
     // 첫번째 미결재인 사람한테 버튼 노출
     const [firstUnapprovedIndex, setFirstUnapprovedIndex] = useState(-1);
@@ -107,104 +104,108 @@ function ViewLine({viewlines, document={}, showBtn}){
         }
     };
 
-    return(
-        <div className="ly_flex hp_relative">
-            <table className="bl_tb3 hp_alignC hp_w200px ly_fshirnk">
-                <tbody>
-                <tr>
-                    <th>구분</th>
-                </tr>
-                <tr>
-                    <th>결재상태</th>
-                </tr>
-                <tr>
-                    <th>결재일</th>
-                </tr>
-                <tr>
-                    <th>소속</th>
-                </tr>
-                <tr>
-                    <th>직책</th>
-                </tr>
-                <tr>
-                    <th>이름</th>
-                </tr>
-                <tr>
-                    <th>서명</th>
-                </tr>
-                </tbody>
-            </table>
-            <table className="bl_tb3 hp_alignC ly_fgrow1">
-                <tbody>
-                <tr>
-                    <th>작성자</th>
-                </tr>
-                <tr>
-                    <td><b className="hp_7Color">상신</b></td>
-                </tr>
-                <tr>
-                    <td>{document.adReportDate}</td>
-                </tr>
-                <tr>
-                    <td>{document.dept_title}</td>
-                </tr>
-                <tr>
-                    <td>{document.title_name}</td>
-                </tr>
-                <tr>
-                    <td>{document.emp_name}</td>
-                </tr>
-                <tr>
-                    <td className="el_approvalSign" style={{ backgroundImage: imageData ? `url(${imageData})` : 'none' }}>
-                        <b className="hp_cColor">{(imageData == "이미지 없음") ? "이미지 없음" : ""}</b>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            {viewlines.map((emp, index) => {
-                return (
-                    <table className="bl_tb3 hp_alignC ly_fgrow1" key={index}>
-                        <tbody>
-                        <tr>
-                            <th>{emp.talRole}자</th>
-                        </tr>
-                        <tr>
-                            <td>{emp.talStatus === '승인' ? (<b className="hp_blueColor">{emp.talStatus}</b>) : 
-                            emp.talStatus === '반려' ? (<b className="hp_redColor">{emp.talStatus}</b>) : 
-                            (<b>{emp.talStatus}</b>)}</td>
-                        </tr>
-                        <tr>
-                            <td className="el_approvalSign">{emp.talDate}</td>
-                        </tr>
-                        <tr>
-                            <td>{emp.deptTitle}</td>
-                        </tr>
-                        <tr>
-                            <td>{emp.titleName}</td>
-                        </tr>
-                        <tr>
-                            <td>{emp.empName}</td>
-                        </tr>
-                        <tr>
-                            <td className="el_approvalSign" style={{backgroundImage: emp.talStatus === '승인' || emp.talStatus === '반려' ? `url(${imageArr[index]})` : 'none'}}>
-                            <b className="hp_cColor">{(imageArr[index] === "이미지 없음") ? "이미지 없음" : (emp.talStatus === '전결' ? "전결" : "")}</b>
-                                {showBtn && (
-                                    <>
-                                    {index === firstUnapprovedIndex && (
+    return (
+        <>
+            <div className="ly_spaceBetween hp_mb10">
+                <h5 className="hp_fw700 hp_fs18">결재라인</h5>
+            </div>
+            <div className="ly_flex hp_relative">
+                <table className="bl_tb3 hp_alignC hp_w200px ly_fshirnk">
+                    <tbody>
+                    <tr>
+                        <th>구분</th>
+                    </tr>
+                    <tr>
+                        <th>결재상태</th>
+                    </tr>
+                    <tr>
+                        <th>결재일</th>
+                    </tr>
+                    <tr>
+                        <th>소속</th>
+                    </tr>
+                    <tr>
+                        <th>직책</th>
+                    </tr>
+                    <tr>
+                        <th>이름</th>
+                    </tr>
+                    <tr>
+                        <th>서명</th>
+                    </tr>
+                    </tbody>
+                </table>
+                <table className="bl_tb3 hp_alignC ly_fgrow1">
+                    <tbody>
+                    <tr>
+                        <th>작성자</th>
+                    </tr>
+                    <tr>
+                        <td><b className="hp_7Color">상신</b></td>
+                    </tr>
+                    <tr>
+                        <td>{document.adReportDate}</td>
+                    </tr>
+                    <tr>
+                        <td>{document.dept_title}</td>
+                    </tr>
+                    <tr>
+                        <td>{document.title_name}</td>
+                    </tr>
+                    <tr>
+                        <td>{document.emp_name}</td>
+                    </tr>
+                    <tr>
+                        <td className="el_approvalSign" style={{ backgroundImage: imageData ? `url(${imageData})` : 'none' }}>
+                            <b className="hp_cColor">{(imageData == "이미지 없음") ? "이미지 없음" : ""}</b>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                {viewlines.map((emp, index) => {
+                    return (
+                        <table className="bl_tb3 hp_alignC ly_fgrow1" key={index}>
+                            <tbody>
+                            <tr>
+                                <th>{emp.talRole}자</th>
+                            </tr>
+                            <tr>
+                                <td>{emp.talStatus === '승인' ? (<b className="hp_blueColor">{emp.talStatus}</b>) :
+                                emp.talStatus === '반려' ? (<b className="hp_redColor">{emp.talStatus}</b>) :
+                                (<b>{emp.talStatus}</b>)}</td>
+                            </tr>
+                            <tr>
+                                <td className="el_approvalSign">{emp.talDate}</td>
+                            </tr>
+                            <tr>
+                                <td>{emp.deptTitle}</td>
+                            </tr>
+                            <tr>
+                                <td>{emp.titleName}</td>
+                            </tr>
+                            <tr>
+                                <td>{emp.empName}</td>
+                            </tr>
+                            <tr>
+                                <td className="el_approvalSign" style={{backgroundImage: emp.talStatus === '승인' || emp.talStatus === '반려' ? `url(${imageArr[index]})` : 'none'}}>
+                                <b className="hp_cColor">{(imageArr[index] === "이미지 없음") ? "이미지 없음" : (emp.talStatus === '전결' ? "전결" : "")}</b>
+                                    {showBtn && (
                                         <>
-                                            <button type="button" className="el_btnS el_btnblueBack" onClick={() => acceptHandler(index, emp)}>승인</button>
-                                            <button type="button" className="el_btnS el_btn8Back hp_ml5" onClick={showRejectPopupHandler}>반려</button>
+                                        {index === firstUnapprovedIndex && (
+                                            <>
+                                                <button type="button" className="el_btnS el_btnblueBack" onClick={() => acceptHandler(index, emp)}>승인</button>
+                                                <button type="button" className="el_btnS el_btn8Back hp_ml5" onClick={showRejectPopupHandler}>반려</button>
+                                            </>
+                                        )}
                                         </>
                                     )}
-                                    </>
-                                )}
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                )
-            })}
-            {showRejectPopup && (
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    )
+                })}
+                {showRejectPopup && (
                 <div className="bl_popBack bl_rejectPop">
                     <div className="bl_popup hp_w500px">
                         <div className="bl_popWrap bl_profile">
@@ -223,8 +224,10 @@ function ViewLine({viewlines, document={}, showBtn}){
                         </div>
                     </div>
                 </div>
-            )}
-        </div>
+                )}
+            </div>
+            <ViewReference referlines={referlines}/>
+        </>
     )
 }
 

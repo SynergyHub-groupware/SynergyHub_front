@@ -7,6 +7,7 @@ const initialState = {
     recordCard: {},
     departments: [],
     titles: [],
+    positions: [],
     deptDetail: {},
     success: {},
     teamRecordCard: {},
@@ -19,14 +20,15 @@ const GET_MY_INFO = 'employee/GET_MY_INFO';                 // 내정보 조회
 const GET_RECORDCARD = 'employee/GET_RECORDCARD';           // 나의 인사기록카드
 const GET_DEPARTMENTS = 'employee/GET_DEPARTMENTS';         // 부서 목록
 const GET_TITLES = 'employee/GET_TITLES';
+const GET_POSITIONS = 'employee/GET_POSITIONS';
 const GET_DEPT_DETAIL = 'employee/GET_DEPT_DETAIL';         // 부서 상세정보
 const SUCCESS = 'employee/SUCCESS';                         // 등록, 수정, 삭제
 const GET_TEAM_RECORDCARD = 'employee/GET_TEAM_RECORDCARD'; // 팀원 인사기록카드
 const REGIST_EMPLOYEES = 'employee/REGIST_EMPLOYEES';
 
-
 /* 액션 함수 */
-export const { employee : { getDeptEmployees, getMyInfo, getRecordcard, getDepartments, getTitles, getDeptDetail, success, getTeamRecordcard, registEmployees } } = createActions ({
+export const { employee : { getDeptEmployees, getMyInfo, getRecordcard, getDepartments, getTitles, getPositions, getDeptDetail, success, getTeamRecordcard, registEmployees } } = createActions ({
+
     [GET_DEPT_EMPLOYEES] : result => {
 
         console.log('GET_DEPT_EMPLOYEES Action payload:', result);
@@ -56,6 +58,9 @@ export const { employee : { getDeptEmployees, getMyInfo, getRecordcard, getDepar
     [GET_TITLES] : result => {
         return {titles: result};
     },
+    [GET_POSITIONS] : result => {
+        return {positions: result};
+    },
     [GET_DEPT_DETAIL] : result => {
 
         console.log('GET_DEPT_DETAIL Action payload', result);
@@ -80,7 +85,6 @@ export const { employee : { getDeptEmployees, getMyInfo, getRecordcard, getDepar
 
         return { registEmployees : result};
     },
-
 });
 
 
@@ -131,6 +135,12 @@ const employeeReducer = handleActions({
             titles: payload.titles,
         };
     },
+    [GET_POSITIONS] : (state, {payload}) => {
+        return {
+            ...state,
+            positions: payload.positions,
+        }
+    }
     [GET_DEPT_DETAIL] : ( state, { payload }) => {
 
         console.log('Reducer GET_DEPT_DETAIL payload : ', payload);

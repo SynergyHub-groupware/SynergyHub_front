@@ -11,7 +11,7 @@ function Etc({handleDetail, writtenCont = {}}) {
     // 양식내용 출력 
     const dispatch = useDispatch();
     const {afCode} = useParams();   
-    const content = useSelector(state => state.approvalReducer.content);
+    const formdetail = useSelector(state => state.approvalReducer.formdetail);
 
     useEffect(() => {
         afCode && dispatch(callFormContentAPI(afCode));
@@ -19,11 +19,7 @@ function Etc({handleDetail, writtenCont = {}}) {
 
     const [editorData, setEditorData] = useState('');
     const [exception, setException] = useState({});
-    
-    useEffect(() => {
-        if (content && content.afCon !== undefined) setEditorData(content.afCon || '');
-    }, [content]);
-    
+
     const handleChange = (event, editor) => {
         const data = editor.getData();
         setEditorData(data);    // 입력받은 내용 에디터에 넣음
@@ -40,14 +36,26 @@ function Etc({handleDetail, writtenCont = {}}) {
 
     // writtenCont 값이 있을 경우
     useEffect(() => {
-        if (writtenCont && writtenCont.aeCon) {
-            setEditorData(writtenCont.aeCon);    // 입력받은 내용 에디터에 넣음
+        if (writtenCont && writtenCont.aeCon !== undefined) {
+            setEditorData(writtenCont.aeCon || '');
             setException(prev => ({
                 ...prev,
-                aeCon: writtenCont.aeCon         // 입력받은 내용 exception에 넣음
+                aeCon: writtenCont.aeCon
             }));
+        } else if (formdetail && formdetail.afCon !== undefined) {
+            setEditorData(formdetail.afCon || '');
+            setException(prev => ({
+                ...prev,
+                aeCon: formdetail.afCon
+            }));
+        } else {
+            setEditorData('');
+            setException({});
         }
-    }, [writtenCont]);
+    }, [writtenCont, formdetail]);
+
+    console.log("formdetail", formdetail);
+    console.log("writtenCont", writtenCont);
 
     return (
         <CKEditor editor={ClassicEditor} data={editorData} onChange={handleChange} />
