@@ -245,7 +245,7 @@ export const callregistBoxAPI = (newBox) => {
 
 export const callboxListAPI = (empCode) => {
     return async (dispatch, getState) => {
-        console.log("empCode", empCode);
+        // console.log("empCode", empCode);
         const result = await request('GET', `/approval/boxList?empCode=${empCode}`);
         if(result && result.status === 200) dispatch(getBoxes(result));
     }

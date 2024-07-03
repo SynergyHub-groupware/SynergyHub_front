@@ -81,6 +81,23 @@ export const callRecordCardAPI = () => {
     };
 };
 
+// 부서 전체 단순 조회 : 이다정
+export const callsimpleDeptsAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/employee/simpleDepts',);
+
+            if(result && result.status === 200) {
+                dispatch(getDepartments(result.data));
+            } else {
+                console.log('부서 전체 단순 조회 실패(result): ', result);
+            }
+        } catch(error) {
+            console.error('부서 전체 단순 조회 실패(error): ', error);
+        }
+    };
+}
+
 export const callDepartmentsAPI = () => {
  
     return async (dispatch, getState) => {
