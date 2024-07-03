@@ -76,7 +76,7 @@ function App() {
             <Route path="personalBox/:abName" element={<BoxMain/>}/>
             <Route path="setting">
               <Route path="form" element={<Form/>} />
-              <Route path="formView/:afCode" element={<FormView/>} />
+              <Route path="formView/:afCode?" element={<FormView/>} />
               <Route path="sign" element={<Sign/>} />
               <Route path="storage" element={<Storage/>} />
             </Route>

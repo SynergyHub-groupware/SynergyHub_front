@@ -20,6 +20,10 @@ function FormView(){
     const handleChange = (event, editor) => {
         const data = editor.getData();
         setEditorData(data);        // 입력받은 내용 에디터에 넣음
+        setNewForm(prev => ({
+            ...prev,
+            afCon: data,
+        }));
     };
 
     const onChangeHandler = (e) => {

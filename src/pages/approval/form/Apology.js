@@ -22,6 +22,8 @@ function Apology({handleDetail, formRefs, writtenCont = {}}){
                 ...prev,
                 aeCon: writtenCont.aeCon,
             }));
+        }else{
+            setException({});
         }
     },[writtenCont])
 

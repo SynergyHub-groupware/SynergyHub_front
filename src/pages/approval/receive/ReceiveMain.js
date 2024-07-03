@@ -124,8 +124,25 @@ function ReceiveMain(){
     return(        
         <div className="ly_cont">
             <h4 className="el_lv1Head hp_mb30">받은결재함 [{title}]</h4>
+            {document.talReason &&
+                <section className="bl_sect hp_padding15 hp_mb30">
+                    <table className="bl_tb3">
+                        <colgroup>
+                            <col style={{width:'200px'}}/>
+                            <col style={{width:'*'}}/>
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <th scope="col" className="hp_dBack">반려사유</th>
+                            <td>{document.talReason}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </section>}
             <div className="ly_spaceBetween">
-                <div></div>
+                {status == "share" ? (
+                    <button type="button" className="el_btnS el_btn8Back">삭제</button>
+                ) : (<div></div>)}
                 <form onSubmit={handleSearch}>
                     <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="검색어를 입력해주세요"/>
                     <input type="submit" className="el_btnS el_btnblueBord hp_ml5" value="검색"/>
