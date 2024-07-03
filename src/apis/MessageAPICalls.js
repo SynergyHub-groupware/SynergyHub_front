@@ -148,7 +148,7 @@ export const callTempMsgListAPI = () => {
     };
 }
 
-
+// merge commit
 /* 받은 쪽지 휴지통 이동 API */
 export const callDelMsgAPI = (msgCode) => {
     
