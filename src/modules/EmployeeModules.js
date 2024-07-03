@@ -140,7 +140,7 @@ const employeeReducer = handleActions({
             ...state,
             positions: payload.positions,
         }
-    }
+    },
     [GET_DEPT_DETAIL] : ( state, { payload }) => {
 
         console.log('Reducer GET_DEPT_DETAIL payload : ', payload);
