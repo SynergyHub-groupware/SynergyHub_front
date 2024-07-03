@@ -123,7 +123,7 @@ function CreateTable({msgCode}) {
 
 
             if (msgCode) {
-                // 임시 저장된 쪽지는 삭제
+                // 임시 저장 쪽지 삭제
                 fetch(`http://localhost:8080/emp/message/bin/${msgCode}`, {
                     method: 'DELETE'
                 })
