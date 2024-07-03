@@ -10,16 +10,18 @@ const initialState = {
 const GET_MY_INFO = 'employee/GET_MY_INFO';
 const GET_ATTENDANCE_FOR_WEEK = 'attendance/GET_ATTENDANCE_FOR_WEEK';
 const GET_ATTENDANCE_TODAY = 'attendance/GET_ATTENDANCE_TODAY';
+const GET_ATTENDANCE_ALL = 'attendance/GET_ATTENDANCE_ALL';
 
 // 액션 함수 생성
 const actions = createActions({
     [GET_MY_INFO]: (employee) => ({ employee }),
     [GET_ATTENDANCE_FOR_WEEK]: (attendances) => ({ attendances }),
-    [GET_ATTENDANCE_TODAY]: (attendanceToday) => ({ attendanceToday })
+    [GET_ATTENDANCE_TODAY]: (attendanceToday) => ({ attendanceToday }),
+    [GET_ATTENDANCE_ALL]: (attendanceAll) => ({ attendanceAll })
 });
 
 // 내보내기
-export const { employee: { getMyInfo }, attendance: { getAttendanceForWeek, getAttendanceToday } } = actions;
+export const { employee: { getMyInfo }, attendance: { getAttendanceForWeek, getAttendanceToday, getAttendanceAll } } = actions;
 
 // 리듀서 함수 정의
 const attendanceReducer = handleActions({
@@ -34,6 +36,10 @@ const attendanceReducer = handleActions({
     [GET_ATTENDANCE_TODAY]: (state, { payload }) => ({
         ...state,
         attendanceToday: payload.attendanceToday
+    }),
+    [GET_ATTENDANCE_ALL]: (state, { payload }) => ({
+        ...state,
+        attendanceAll: payload.attendanceAll
     }),
 }, initialState);
 

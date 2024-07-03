@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import {callAttendanceTodayAPI, callMyAttendanceForWeekAPI} from '../../../apis/AttendancelAPICalls';
 
 const AttendanceButton = () => {
     const [isAttended, setIsAttended] = useState(false); // 출근 상태를 관리하는 상태
     const [endTime, setEndTime] = useState(null); // 퇴근 시간을 저장할 상태
+    const dispatch = useDispatch();
 
     useEffect(() => {
         // 페이지 로드 시, 사용자의 출근 상태를 체크하여 버튼 초기화
@@ -66,6 +69,10 @@ const AttendanceButton = () => {
                 // 출근 처리 후 상태 업데이트
                 setIsAttended(true);
                 alert('출근이 완료되었습니다.');
+
+                // 출근 시간 등록 후 Redux 상태 업데이트
+                dispatch(callAttendanceTodayAPI());
+                dispatch(callMyAttendanceForWeekAPI());
             } else {
                 // 이미 출근한 상태에서 퇴근 처리
                 const response = await axios.post('http://localhost:8080/api/attendance/registEndTime', {}, {
@@ -81,6 +88,10 @@ const AttendanceButton = () => {
                 setIsAttended(false);
                 setEndTime(response.data.results.endTime);
                 alert('퇴근이 완료되었습니다.');
+
+                // 퇴근 시간 등록 후 Redux 상태 업데이트
+                dispatch(callAttendanceTodayAPI());
+                dispatch(callMyAttendanceForWeekAPI());
             }
         } catch (error) {
             console.error('출근/퇴근 처리 실패:', error);
@@ -91,20 +102,17 @@ const AttendanceButton = () => {
     return (
         <div>
             {isAttended && !endTime && (
-                <button type="button" className="el_btn0Back el_btnF hp_mt20 hp_fs16"
-                    onClick={handleAttendance}>
+                <button type="button" className="el_btn0Back el_btnF hp_mt20 hp_fs16" onClick={handleAttendance}>
                     퇴근하기
                 </button>
             )}
             {!isAttended && !endTime && (
-                <button type="button" className="el_btn0Back el_btnF hp_mt20 hp_fs16"
-                    onClick={handleAttendance}>
+                <button type="button" className="el_btn0Back el_btnF hp_mt20 hp_fs16" onClick={handleAttendance}>
                     출근하기
                 </button>
             )}
             {endTime && (
-                <button type="button" className="el_btn0Back el_btnF hp_mt20 hp_fs16"
-                >
+                <button type="button" className="el_btn8Back el_btnF hp_mt20 hp_fs16">
                     업무 종료
                 </button>
             )}

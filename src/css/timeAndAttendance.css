@@ -26,3 +26,15 @@
 
 /* 자간 */
 .letter03 {letter-spacing : 0.3px;}
+
+/* 근태기록 테이블 */
+.bl_tnaWeek__list {display: flex; justify-content: space-between; padding: 0; list-style-type: none;}
+.bl_tnaWeek__item {margin-right: 20px; /* 각 항목 간격 조정 */}
+.bl_tnaWeek__item b {display: block; font-weight: 700;}
+.bl_tnaWeek__item span {margin-left: 5px; /* 항목 내 텍스트와 아이콘 간격 조정 */}
+
+/* 전환 버튼 */
+.bl_leaderBtn {background-color: black;border-radius:5px;padding:6px 10px;}
+.container {width: 100%; display: flex; justify-content: flex-start; padding: 20px;}
+#moveButton { padding: 10px 20px; font-size: 16px; cursor: pointer; transition: transform 0.5s ease;}
+#moveButton.move-right {transform: translateX(100%);}

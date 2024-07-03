@@ -37,6 +37,7 @@ import DeptManagerMent from './pages/employee/DeptManagerMent';
 import MyInfo from './pages/myInfo/MyInfo';
 import MyInfoLayout from './pages/myInfo/MyInfoLayout';
 import MyPersonalRecordCard from './pages/myInfo/MyPersonalRecordCard';
+import PostEditView from './pages/post/PostEditView'
 import ViewMain from './pages/approval/view/ViewMain';
 import ReceiveMain from './pages/approval/receive/ReceiveMain';
 import FormView from "./pages/approval/setting/FormView";
@@ -44,11 +45,19 @@ import BoxMain from "./pages/approval/personalBox/BoxMain";
 import ImpMsg from './pages/message/storage/ImpMsg';
 import WorkMsg from './pages/message/storage/WorkMsg';
 import Bin from './pages/message/storage/Bin';
+import PostReadyList from './pages/post/PostReadyList';
+import RevDetail from './pages/message/storage/detail/RevDetail';
+import SendDetail from './pages/message/storage/detail/SendDetail';
+import ImpDetail from './pages/message/storage/detail/ImpDetail';
+import WorkDetail from './pages/message/storage/detail/WorkDetail';
+import BinDetail from './pages/message/storage/detail/BinDetail';
 import MyAttendance from "./pages/attendance/MyAttendance";
 import AttendanceList from "./pages/attendance/attendanceList";
 import MyDayOff from "./pages/attendance/MyDayOff";
 import DayOffList from "./pages/attendance/DayOffList";
 import Preferences from "./pages/attendance/Preferences";
+import CreateMsg from './pages/message/storage/CreateMsg';
+import TempDetail from './pages/message/storage/detail/TempDetail';
 
 function App() {
   return (
@@ -101,12 +110,19 @@ function App() {
           <Route path="message" element={<MessageLayout/>}>
             <Route index element={<Navigate to="storage/receive" replace/>}/>
             <Route path='storage'>
+              <Route path='deliver' element={<CreateMsg/>}/>
               <Route path='receive' element={<ReceiveMsg/>}/>
+              <Route path='receive/detail/:msgCode' element={<RevDetail/>}/>
               <Route path='send' element={<SendMsg/>}/>
+              <Route path='send/detail/:msgCode' element={<SendDetail/>}/>
               <Route path='temp' element={<TempMsg/>}/>
+              <Route path='create/temp/:msgCode' element={<TempDetail/>}/>
               <Route path='important' element={<ImpMsg/>}/>
+              <Route path='imp/detail/:msgCode' element={<ImpDetail/>}/>
               <Route path='work' element={<WorkMsg/>}/>
+              <Route path='work/detail/:msgCode' element={<WorkDetail/>}/>
               <Route path='bin' element={<Bin/>}/>
+              <Route path='bin/detail/:msgCode' element={<BinDetail/>}/>
             </Route>
           </Route>
           <Route path="post" element={<PostLayout/>}>
@@ -114,6 +130,9 @@ function App() {
           <Route path='PostListViewInBoard/:lowBoardCode' element={<PostListViewInBoard/>}/>
           <Route path='PostDetail/:postCode'element={<PostDetailView/>}/>
           <Route path="PostCreateView" element={<PostCreateView/>} />
+          <Route path='BoradCreateView' element={<BoradCreateView/>}/>
+          <Route path='PostEditView/:postCode' element={<PostEditView/>}/>
+          <Route path='PostReadyList/:empcode' element={<PostReadyList/>}/>
           <Route path='BoradCreateView' element={<BoradCreateView/>}/>
           </Route>
         </Route>

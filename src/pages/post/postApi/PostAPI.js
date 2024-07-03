@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getAlllow,getComment,getPostlist, getAlllowboard,getSortlist,getPostdatainboard,getPostdatainboardpin,getDetail,getFile } from '../module/PostReducer';
+import { getReadypost,getPostedit,getPostsearch,getAlllow,getComment,getPostlist, getAlllowboard,getSortlist,getPostdatainboard,getPostdatainboardpin,getDetail,getFile } from '../module/PostReducer';
 import {getAllboard}  from '../module/PostReducer';
 
 const DOMAIN = 'http://localhost:8080'
@@ -24,6 +24,30 @@ export const request = async (method, url, data) => {
       throw error; // 오류를 다시 throw하여 호출자가 처리할 수 있도록 함
     }
   };
+export function callGETReadyPost(empCode){
+  return async(dispatch,getState)=>{
+    try{
+      const result=await request("GET",`/post/ReadyPost/${empCode}`)
+      dispatch(getReadypost(result))
+    }catch(error){
+      throw(error)
+    }
+  }
+}
+
+export function callGETPostEdit(postCode){
+  return async(dispatch,getState)=>{
+        try{
+      const result=await request("GET",`/post/PostEdit/${postCode}`)
+      console.log("callGETPostEdit",result);
+      dispatch(getPostedit(result))
+    }catch(error){
+      throw(error)
+    }
+
+  }
+}
+
   export function callGETSoftList(){
     return async (dispatch,getState)=>{
       console.log("callGETSortList call");
@@ -81,12 +105,26 @@ export const request = async (method, url, data) => {
       }
     };
   }
+  export function callGETpostSearch(postSearch) {
+    return async (dispatch, getState) => {
+      console.log("callGETpostSearch call");
+      try {
+        const result = await request('GET', `/post/postSearch/${postSearch}`);
+        console.log("postSearch",result);
+        dispatch(getPostsearch(result)); // 액션 생성자 호출 시 result.data를 전달
+        console.log("postSearch",result);
+      } catch (error) {
+        console.error("Error fetching post list:", error);
+      }
+    };
+  }
 
-  export function callGETPostList() {
+
+  export function callGETPostList(page, pageSize) {
     return async (dispatch, getState) => {
       console.log("callGETPostList call");
       try {
-        const result = await request('GET', "/post/list");
+        const result = await request('GET', `/post/list?page=${page}&pageSize=${pageSize}`);
         dispatch(getPostlist(result)); // 액션 생성자 호출 시 result.data를 전달
         console.log(result);
       } catch (error) {

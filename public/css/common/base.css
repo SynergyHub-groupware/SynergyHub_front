@@ -57,6 +57,7 @@
 .el_btnM{border-radius:5px;font-size:14px;width:120px;height:48px;display:inline-flex;justify-content:center;align-items:center;}
 .el_btnF{border-radius:5px;width:100%;padding:10px 0;}
 .el_btnblueBack{background:#006CD0;border:1px solid #006CD0;color:#fff;}
+.el_btnredBack{background:#f20000;border:1px solid #d00000;color:#fff;}
 .el_btnblueBord{border:1px solid #006CD0;color:#006CD0;}
 .el_btn8Back{background:#888;border:1px solid #888;color:#fff;}
 .el_btn8Bord{background:#fff;border:1px solid #888;color:#888;}

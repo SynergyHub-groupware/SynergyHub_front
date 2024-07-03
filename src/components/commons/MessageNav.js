@@ -5,7 +5,7 @@ function MessageNav() {
         <div className="bl_nav">
             <h2 className="bl_nav__ttl">쪽지</h2>
             <ul className="bl_nav__menu">
-                <li><NavLink to="" className="bl_nav__ttlSub">쪽지쓰기</NavLink></li>
+                <li><NavLink to="/message/storage/deliver" className="bl_nav__ttlSub">쪽지쓰기</NavLink></li>
                 <li>
                     <h3 className="bl_nav__ttlSub">보관함</h3>
                     <ul className="bl_nav__menuSub">

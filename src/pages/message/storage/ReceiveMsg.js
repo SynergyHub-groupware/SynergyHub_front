@@ -1,12 +1,14 @@
 import { useDispatch } from "react-redux";
 import RevTable from "../../../pages/message/storage/table/RevTable";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { callDelMsgAPI } from "../../../apis/MessageAPICalls";
 
 function ReceiveMsg() {
 
     const dispatch = useDispatch();
-    const [selectMsgCode, setSelectMsgCode] = useState([]);
+    const [selectMsgCode, setSelectMsgCode] = useState([]); // 삭제 State
+    const [search, setSearch] = useState("");   // 검색어 상태
+    const searchRef = useRef(null); // 검색 입력 필드
 
     const delMsgHandler = () => {
 
@@ -19,9 +21,22 @@ function ReceiveMsg() {
 
             selectMsgCode.forEach(msgCode => {
                 dispatch(callDelMsgAPI(msgCode));
-                window.location.reload();   
-                alert("쪽지를 삭제하였습니다.");
             });
+            
+            alert("쪽지를 삭제하였습니다.");
+            window.location.reload();   
+        }
+    };
+
+    const searchHandler = (e) => {
+
+        e.preventDefault();
+
+        if (searchRef.current) {
+            const searchTerm = searchRef.current.value;
+            setSearch(searchTerm); 
+        } else {
+            console.log("searchRef가 정의되지 않음");
         }
     };
 
@@ -35,11 +50,13 @@ function ReceiveMsg() {
                         <button type="button" className="el_btnS el_btn8Bord">이동</button>
                     </div>
                     <div>
-                        <input type="text" placeholder="검색어를 입력해주세요" />
-                        <input type="submit" className="el_btnS el_btnblueBord hp_ml5" value="검색" />
+                        <form onSubmit={searchHandler}>
+                            <input type="text" ref={searchRef} placeholder="검색어를 입력해주세요" />
+                            <input type="submit" className="el_btnS el_btnblueBord hp_ml5" value="검색"/>
+                        </form>
                     </div>
                 </div>
-                <RevTable selectMsgCode={selectMsgCode} setSelectMsgCode={setSelectMsgCode} />
+                <RevTable selectMsgCode={selectMsgCode} setSelectMsgCode={setSelectMsgCode} search={search} />
                 <section className="bl_sect hp_mt10 hp_padding5 hp_alignC">
                     <div className="bl_paging">
                         {/* <a href="#" className="bl_paging__btn bl_paging__first" title="첫 페이지로 이동"></a> */}
