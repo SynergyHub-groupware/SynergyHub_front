@@ -5,12 +5,8 @@ import {string as matchingDeptCode} from "i/lib/util";
 import line from "./Line";
 
 function LineApprover({lsCode, lines, employee, handleTrueLineList, docInfo = {}, onedoc = {}, selectEmps}){
-    const myCode = employee.emp_code;
     const deptCode = employee.dept_code;
     const titleCode = employee.title_code;
-
-    const [trueLineList, setTrueLineList] = useState([]);
-    const [newLines, setNewLines] = useState([]);
     const dispatch = useDispatch();
     const { lineemps, viewlines } = useSelector(state => ({
         lineemps: state.approvalReducer.lineemps,
@@ -20,6 +16,9 @@ function LineApprover({lsCode, lines, employee, handleTrueLineList, docInfo = {}
     useEffect(() => {
         if (deptCode && titleCode && lsCode) dispatch(callLineEmpListAPI({ deptCode, titleCode, lsCode }));
     }, [dispatch, deptCode, titleCode, lsCode]);
+    console.log("deptCode", deptCode);
+    console.log("titleCode", titleCode);
+    console.log("lsCode", lsCode);
 
     useEffect(() => {
         docInfo && dispatch(callviewLineListAPI(docInfo.adCode));
@@ -32,20 +31,13 @@ function LineApprover({lsCode, lines, employee, handleTrueLineList, docInfo = {}
     // console.log("viewlines", viewlines);
 
     useEffect(() => {
-        const filteredViewlines = viewlines.filter(item => item.talOrder !== 0);
-        setNewLines(filteredViewlines);
+        if(viewlines && viewlines.length > 0){
+            const filteredViewlines = viewlines.filter(item => item.talOrder !== 0);
+            setNewLines(filteredViewlines);
+        }
     }, [viewlines]);
 
-    // lines랑 lineemps 값 비교해서 합치고 newLines에 반환하기 (단순히 인덱스로 합침, 조건빠짐)
-    const combinedArray = lines.map((line, index) => ({
-        talOrder: line.alOrder,
-        talRole: line.alRole,
-        ...lineemps[index]
-    }));
-
-    useEffect(() => {
-        setNewLines(combinedArray);
-    }, [lines, lineemps]);
+    const [newLines, setNewLines] = useState([]);
 
     // 결재역할 수정 시 반영 (전결은 한명만 설정할 수 있도록 코드 추가 필요)
     const handleRoleChange = (event, empCode) => {
@@ -66,19 +58,6 @@ function LineApprover({lsCode, lines, employee, handleTrueLineList, docInfo = {}
         }
     };
 
-    // 실결재라인 배열 전달
-    useEffect(()=>{
-        const trueLineList = newLines.map((line, index) => {
-            return {talOrder: line.talOrder, talRole: line.talRole, employee: {emp_code: line.empCode}};
-        });
-        handleTrueLineList(trueLineList);
-
-    }, [newLines, lines]);
-
-    // console.log("lines", lines);
-    // console.log("lineemps", lineemps);
-    // console.log("newLines", newLines);
-
     // selectEmps가 있을 경우
     useEffect(() => {
         if (selectEmps && selectEmps.length > 0) {
@@ -91,8 +70,45 @@ function LineApprover({lsCode, lines, employee, handleTrueLineList, docInfo = {}
                 titleName: emp.title_name,
             }));
             setNewLines(updatedLines);
+        }else{
+            // titleCode 일치여부 확인해서 lines와 lineemps 합쳐서 newArray로 반환
+            const newArray = [];
+            lineemps.forEach(emp => {
+                for (let i = lines.length - 1; i >= 0; i--) {
+                    const line = lines[i];
+                    const alSortParts = line.alSort.split(', ').filter(part => part.startsWith('T'));
+                    if (alSortParts.includes(emp.titleCode)) {
+                        const newObj = {...emp, talRole: line.alRole, talOrder: i};
+                        newArray.push(newObj);
+                        break;
+                    }
+                }
+            });
+            // 중복되는 라인 있으면 제거
+            const uniqueLineemps = Array.from(new Map(newArray.map(emp => [emp.empCode, emp])).values());
+            // 로그인한 사람이 결재라인에 존재하는지 여부
+            const targetLine = uniqueLineemps.findIndex(emp => emp.empCode === employee.emp_code);
+            // 존재하면 그 다음 값부터 담음
+            const resultLineemps = targetLine !== -1 ? uniqueLineemps.slice(targetLine + 1): uniqueLineemps;
+
+
+            // 최종적으로 값 반환
+            setNewLines(resultLineemps);
         }
-    }, [selectEmps]);
+    }, [selectEmps, lines, lineemps]);
+
+    // 실결재라인 배열 전달
+    useEffect(()=>{
+        const trueLineList = newLines.map((line, index) => {
+            return {talOrder: line.talOrder, talRole: line.talRole, employee: {emp_code: line.empCode}};
+        });
+        handleTrueLineList(trueLineList);
+
+    }, [newLines, lines]);
+
+    console.log("lines", lines);
+    console.log("lineemps", lineemps);
+    console.log("newLines", newLines);
 
     return (
         <>

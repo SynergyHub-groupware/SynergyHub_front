@@ -16,29 +16,22 @@ function Reference({data}){
                 </colgroup>
                 <thead>
                 <tr>
-                    <th scope="col"><input type="checkbox" className="" id="" name="" value="checkAll"/></th>
+                    <th scope="col" className="hp_lh34px">No.</th>
                     <th scope="col">결재양식</th>
                     <th scope="col">제목</th>
                     <th scope="col">작성자</th>
-                    <th scope="col">완료일</th>
+                    <th scope="col">결재상태</th>
                 </tr>
                 </thead>
                 <tbody>
-                {/*<tr>*/}
-                {/*    <th scope="row"><input type="checkbox" className="" id="" name="" value="checkOne"/></th>*/}
-                {/*    <td>휴가신청서</td>*/}
-                {/*    <td className="hp_alignL">휴가신청서_홍길동</td>*/}
-                {/*    <td>김철수</td>*/}
-                {/*    <td>2024.12.34</td>*/}
-                {/*</tr>*/}
                 {data && data.length > 0 ? (
                     data.map((document, index) =>
                         <tr key={index} onClick={() => navigate(`/approval/view/${document.adCode}`, {state: {document}})} key={document.adCode} className="hp_tr__click">
-                            <th scope="row"><input type="checkbox" /></th>
+                            <th scope="row" className="hp_lh34px">{document.adCode}</th>
                             <td>{document.afName}</td>
                             <td className="hp_alignL">{document.adTitle}</td>
-                            <td>{document.empName}</td>
-                            <td>{document.talDate}</td>
+                            <td>{document.emp_name}</td>
+                            <td>{document.adStatus}</td>
                         </tr>
                     )
                 ) : (

@@ -10,10 +10,6 @@ function FormReference({handleReferList, docInfo = {}, onedoc = {}}){
     }));
 
     useEffect(() => {
-        setSelectRefers([]);
-    }, []);
-
-    useEffect(() => {
         docInfo && dispatch(callviewLineListAPI(docInfo.adCode));
     }, [docInfo.adCode, dispatch]);
 

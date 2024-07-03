@@ -124,6 +124,21 @@ function ReceiveMain(){
     return(        
         <div className="ly_cont">
             <h4 className="el_lv1Head hp_mb30">받은결재함 [{title}]</h4>
+            {document.talReason &&
+                <section className="bl_sect hp_padding15 hp_mb30">
+                    <table className="bl_tb3">
+                        <colgroup>
+                            <col style={{width:'200px'}}/>
+                            <col style={{width:'*'}}/>
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <th scope="col" className="hp_dBack">반려사유</th>
+                            <td>{document.talReason}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </section>}
             <div className="ly_spaceBetween">
                 {status == "share" ? (
                     <button type="button" className="el_btnS el_btn8Back">삭제</button>

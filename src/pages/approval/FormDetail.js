@@ -80,8 +80,8 @@ function FormDetail(){
         else setCont({});
     }, [content]);
 
-    // console.log("content", content);
-    // console.log("cont", cont);
+    console.log("content", content);
+    console.log("cont", cont);
 
     const renderFormCont = () => {
         switch(afCode){
