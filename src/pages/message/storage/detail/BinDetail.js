@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
-import { callSendDetailAPI } from "../../../../apis/MessageAPICalls";
+import { callSendDetailAPI, callGetAttachListAPI } from "../../../../apis/MessageAPICalls";
 
 function BinDetail() {
 
@@ -9,6 +9,8 @@ function BinDetail() {
     const dispatch = useDispatch();     
     const msgDetail = useSelector(state => state.messageReducer.messageDetail);
     const navigate = useNavigate();
+
+    const attachmentList = useSelector(state => state.messageReducer.attachments);
 
     useEffect(() => {
         
@@ -22,8 +24,19 @@ function BinDetail() {
             }
         };
         
+        const attachList = async () => {
+            try {
+                console.log("API 시작");
+                await dispatch(callGetAttachListAPI(msgCode));
+                console.log("msgCode attach : ", msgCode);
+            } catch (error) {
+                console.log("attach error : ", error);
+            }
+        };
+
         console.log("msgDetail : ", msgDetail);
         sendMsgDetail();
+        attachList();
 
     }, [dispatch, msgCode]);
 
@@ -51,6 +64,34 @@ function BinDetail() {
         return <div>로딩중..</div>;
     }
 
+    // 파일 다운로드
+    const downloadAttach = async (attachOriginal, attachSave) => {
+        
+        try {
+            const url = `http://localhost:8080/emp/message/download?attachOriginal=${encodeURIComponent(attachOriginal)}&attachSave=${encodeURIComponent(attachSave)}`;
+
+            const response = await fetch(url);
+
+            if(!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const blob = await response.blob();
+
+            const blobUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+
+            link.setAttribute('download', attachOriginal);
+            document.body.appendChild(link);
+            link.click();
+
+            window.URL.revokeObjectURL(blobUrl);
+        } catch(error) {
+            console.log("파일 다운로드 error : ", error);
+        }
+    }    
+
     return (
         <div className="ly_cont">
             <h4 className="el_lv1Head hp_mb30">휴지통</h4>
@@ -71,7 +112,17 @@ function BinDetail() {
                         </tr>
                         <tr>
                             <th scope="col">첨부파일</th>
-                            <td className="hp_alignL">{msgDetail.messageDetail && msgDetail.messageDetail.storCode}</td>
+                            <td className="hp_alignL">
+                                {attachmentList.msgCode && attachmentList.msgCode.length > 0 ? (
+                                    <ul>
+                                        {attachmentList.msgCode.map(attach => (
+                                            <li key={attach.attachSave} onClick={() => downloadAttach(attach.attachOriginal, attach.attachSave)}>{attach.attachOriginal}</li>
+                                        ))}
+                                    </ul>
+                                ) : (
+                                    <div>첨부된 파일 없음</div>
+                                )}
+                            </td>
                         </tr>
                         <tr>
                             <td colSpan="2" className="hp_alignL">{msgDetail.messageDetail && msgDetail.messageDetail.msgTitle}</td>

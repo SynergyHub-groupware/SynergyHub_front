@@ -3,7 +3,8 @@ import { createActions, handleActions } from "redux-actions";
 /* 초기값 */
 const initialState = {
     messages: [],
-    messageDetail: null
+    messageDetail: null,
+    attachments : []
 };
 
 /* 액션 타입 */
@@ -19,9 +20,10 @@ const UP_MSG_STATUS = 'message/UP_MSG_STATUS';
 
 const GET_REV_DETAIL = 'message/GET_REV_DETAIL';
 const GET_SEND_DETAIL = 'message/GET_SEND_DETAIL';
+const GET_ATTACH_LIST = 'message/GET_ATTACH_LIST';
 
 export const { message : { getRevMsg, getSendMsg, getBinMsg, getImpMsg, getWorkMsg, delMsg, getRevDetail, getSendDetail 
-    , getTempMsg, delSendMsg, upMsgStatus
+    , getTempMsg, delSendMsg, upMsgStatus, getAttachList
 }} = createActions({
     [GET_REV_MSG] : result => {
         console.log('action : ', result);
@@ -85,6 +87,12 @@ export const { message : { getRevMsg, getSendMsg, getBinMsg, getImpMsg, getWorkM
 
     [UP_MSG_STATUS] : msgCode => {
         console.log('up action : ', msgCode);
+
+        return { msgCode };
+    },
+
+    [GET_ATTACH_LIST] : msgCode => {
+        console.log('attach action : ', msgCode);
 
         return { msgCode };
     }
@@ -191,6 +199,15 @@ const messageReducer = handleActions({
             ...state,
             messages: updatedMsg
         };
+    },
+
+    [GET_ATTACH_LIST] : (state, {payload}) => {
+        console.log("attach reducer : ", payload);
+
+        return {
+            ...state,
+            attachments: payload
+        }
     }
 
 }, initialState);

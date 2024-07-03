@@ -1,4 +1,5 @@
-import { delMsg, delSendMsg, getBinMsg, getImpMsg, getRevDetail, getRevMsg, getSendMsg, getWorkMsg, upMsgStatus } from "../modules/MessageModules";
+import axios from "axios";
+import { delMsg, delSendMsg, getAttachList, getBinMsg, getImpMsg, getRevDetail, getRevMsg, getSendMsg, getWorkMsg, upMsgStatus } from "../modules/MessageModules";
 import { request } from "./api";
 
 /* 받은 쪽지 전체 조회 API */
@@ -260,6 +261,29 @@ export const callUpdateMsgStautsAPI = (msgCode) => {
                 dispatch(upMsgStatus(result.data));
             } else {
                 console.log('error : ', result);
+            }
+        } catch (error) {
+            console.log("error :: ", error);
+        }
+    };
+};
+
+export const callGetAttachListAPI = (msgCode) => {
+
+    return async (dispatch, getState) => {
+
+        try {
+            const result = await request('GET', `/emp/message/findAttach/${msgCode}`, {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            });
+
+            console.log("call attach API : ", result);
+
+            if (result && result.status === 200) {
+                dispatch(getAttachList(result.data));
+            } else {
+                console.log("error : ", result);
             }
         } catch (error) {
             console.log("error :: ", error);

@@ -9,6 +9,7 @@ function CreateTable({msgCode}) {
     const [msgCon, setMsgCon] = useState('');
     const [emerStatus, setEmerStatus] = useState('N');
     const [empSend, setEmpSend] = useState('');
+    const [files, setFiles] = useState([]);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -101,22 +102,41 @@ function CreateTable({msgCode}) {
         .then(res => res.json())
         .then(data => {
             console.log('data create success : ', data);
-            alert("쪽지를 성공적으로 보냈습니다.");
+
+            // 파일 저장하는 API 호출
+            const formData = new FormData();
+            Array.from(files).forEach(file => {
+                formData.append('files', file);
+            });
+
+            fetch('http://localhost:8080/emp/message/attach', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(attachData => {
+                console.log("파일 저장 성공~ ", attachData);
+            })
+            .catch (error => {
+                console.log("파일 저장 실패 : ", error);
+            });
+
 
             if (msgCode) {
                 // 임시 저장된 쪽지는 삭제
                 fetch(`http://localhost:8080/emp/message/bin/${msgCode}`, {
                     method: 'DELETE'
                 })
-                    .then(() => {
-                        console.log('임시 저장 쪽지 삭제 성공 :', msgCode);
-                    })
-                    .catch(error => {
-                        console.log("error : ", error);
-                        console.log("임시 저장된 쪽지 삭제 실패");
-                    });
+                .then(() => {
+                    console.log('임시 저장 쪽지 삭제 성공 :', msgCode);
+                })
+                .catch(error => {
+                    console.log("error : ", error);
+                    console.log("임시 저장된 쪽지 삭제 실패");
+                });
             }
 
+            alert("쪽지를 성공적으로 보냈습니다.");
             navigate('/message/storage/receive');
         })
         .catch(error => {
@@ -124,6 +144,16 @@ function CreateTable({msgCode}) {
             alert("쪽지 전송에 실패하였습니다.");
         });
     };
+
+    const fileChangeHandler = (e) => {
+        setFiles(Array.from(e.target.files));
+    }
+
+    const removeFileHandler = (index) => {
+        const newFiles = [...files];
+        newFiles.splice(index, 1);
+        setFiles(newFiles);
+    }
 
     const cancelHandler = ( ) => { 
         const cancelConfirm = window.confirm("쪽지 쓰기를 취소하시겠습니까?");
@@ -165,6 +195,26 @@ function CreateTable({msgCode}) {
                 .then(res => res.json())
                 .then(data => {
                     console.log('data temp success : ', data);
+                    
+                    // 파일 저장하는 API 호출
+                    const formData = new FormData();
+                    Array.from(files).forEach(file => {
+                        formData.append('files', file);
+                    });
+
+                    fetch('http://localhost:8080/emp/message/attach', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(attachData => {
+                        console.log("파일 저장 성공 ~ ", attachData);
+                    })
+                    .catch (error => {
+                        console.log("파일 저장 실패 : ", error);
+                    });
+
+                    
                     alert("임시저장이 완료되었습니다.");
                     navigate("/message/storage/temp");
                 })
@@ -216,7 +266,26 @@ function CreateTable({msgCode}) {
                     </tr>
                     <tr>
                         <th scope="col">첨부파일</th>
-                        <td></td>
+                        <td>
+                            <div className="ly_flex ly_fitemStart">
+                                <ul className="hp_w100 hp_mr10">
+                                    {files.map((file, index) => (
+                                        <li key={index}>
+                                            <button type="button" className="hp_mr10 hp_fw700" onClick={() => removeFileHandler(index)} title="삭제">X</button>
+                                            {file.name}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <label className="bl_attachBtn__label el_btnS el_btn8Back hp_p3-5">
+                                    <input
+                                        type="file"
+                                        multiple
+                                        className="bl_attachBtn__input"
+                                        onChange={fileChangeHandler}
+                                    /> 파일선택
+                                </label>
+                            </div>
+                        </td>
                     </tr>
                     <tr style={{ height: "70px" }}>
                         <th scope="col">제목</th>
