@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import AddressDir2 from "../../components/commons/address/AddressDir2";
 import {callviewLineListAPI} from "../../apis/ApprovalAPICalls";
 import {useDispatch, useSelector} from "react-redux";
+import {resetViewlines} from "../../modules/ApprovalModules";
 
 function FormReference({handleReferList, docInfo = {}, onedoc = {}}){
     const dispatch = useDispatch();
@@ -10,12 +11,15 @@ function FormReference({handleReferList, docInfo = {}, onedoc = {}}){
     }));
 
     useEffect(() => {
-        docInfo && dispatch(callviewLineListAPI(docInfo.adCode));
-    }, [docInfo.adCode, dispatch]);
+        if(docInfo){
+            dispatch(callviewLineListAPI(docInfo.adCode));
+        }else if(onedoc){
+            dispatch(callviewLineListAPI(onedoc.adCode));
+        }else{
+            dispatch(resetViewlines());
+        }
 
-    useEffect(() => {
-        onedoc && dispatch(callviewLineListAPI(onedoc.adCode));
-    }, [onedoc, dispatch]);
+    }, [docInfo.adCode, onedoc, dispatch]);
 
     console.log("viewlines", viewlines);
 
@@ -31,6 +35,10 @@ function FormReference({handleReferList, docInfo = {}, onedoc = {}}){
                 talRole: item.talRole
             }));
         if(docInfo || onedoc) setSelectRefers(filteredRefers);
+
+        // else{
+        //     setSelectRefers([]);
+        // }
     }, [viewlines]);
 
     // 모달창 오픈

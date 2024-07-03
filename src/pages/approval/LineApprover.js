@@ -16,9 +16,6 @@ function LineApprover({lsCode, lines, employee, handleTrueLineList, docInfo = {}
     useEffect(() => {
         if (deptCode && titleCode && lsCode) dispatch(callLineEmpListAPI({ deptCode, titleCode, lsCode }));
     }, [dispatch, deptCode, titleCode, lsCode]);
-    console.log("deptCode", deptCode);
-    console.log("titleCode", titleCode);
-    console.log("lsCode", lsCode);
 
     useEffect(() => {
         docInfo && dispatch(callviewLineListAPI(docInfo.adCode));
@@ -100,15 +97,15 @@ function LineApprover({lsCode, lines, employee, handleTrueLineList, docInfo = {}
     // 실결재라인 배열 전달
     useEffect(()=>{
         const trueLineList = newLines.map((line, index) => {
-            return {talOrder: line.talOrder, talRole: line.talRole, employee: {emp_code: line.empCode}};
+            return {talOrder: index + 1, talRole: line.talRole, employee: {emp_code: line.empCode}};
         });
         handleTrueLineList(trueLineList);
 
     }, [newLines, lines]);
 
-    console.log("lines", lines);
-    console.log("lineemps", lineemps);
-    console.log("newLines", newLines);
+    // console.log("lines", lines);
+    // console.log("lineemps", lineemps);
+    // console.log("newLines", newLines);
 
     return (
         <>
