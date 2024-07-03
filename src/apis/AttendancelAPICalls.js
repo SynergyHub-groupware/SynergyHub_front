@@ -5,7 +5,8 @@ import {
     getAttendanceToday,
     getAttendanceAll,
     getDayOffAll,
-    getDayOffBalance
+    getDayOffBalance,
+    getDefaultSchedule
 } from "../modules/AttendanceModules";
 
 export const callMyInfoAPI = () => {
@@ -130,6 +131,27 @@ export const callDayOffBalanceAPI = () => {
             }
         } catch (error) {
             console.error('보유 휴가현황 조회 실패 error : ', error);
+        }
+    };
+};
+
+export const callDefaultScheduleAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/api/attendance/allSchedules', {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            });
+
+            console.log('callDefaultScheduleAPI result : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(getDefaultSchedule(result.data.results.schedules));
+            } else {
+                console.error('지정 출퇴근시간 조회 실패 result : ', result);
+            }
+        } catch (error) {
+            console.error('지정 출퇴근시간 조회 실패 error : ', error);
         }
     };
 };
