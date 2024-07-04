@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-function PostDirForm({ closeModal, onConfirm, onClear }) {
+function PostDirForm({ closeModal, onConfirm, onClear, defaultData }) {
 
     const [originEmp, setOriginEmp] = useState([]);     // 원본 저장
     const [employees, setEmployees] = useState([]);        // 검색 결과 저장
@@ -10,8 +10,26 @@ function PostDirForm({ closeModal, onConfirm, onClear }) {
 
     const [selectEmp, setSelectEmp] = useState([]); // 체크박스로 회원 선택
     const [receiver, setReceiver] = useState([]);   // 받는사람 인원 배열
+    const [DefaultData, setDefaultData] = useState([]);   // 받는사람 인원 배열
 
     const [selectAll, setSelectAll] = useState(false);
+    useEffect(() => {
+        if (defaultData && defaultData.length > 0) {
+            setDefaultData(defaultData);
+        }
+    }, [defaultData]);
+
+    useEffect(() => {
+        if (DefaultData && DefaultData.length > 0) {
+            setReceiver(DefaultData);
+        }
+    }, [DefaultData]);
+
+    useEffect(() => {
+        if (receiver && receiver.length > 0) {
+            receiverAdd();
+        }
+    }, [receiver]);
 
     useEffect(() => {
         // axios로 페이지 로딩 시 데이터 가져오기
@@ -69,8 +87,8 @@ function PostDirForm({ closeModal, onConfirm, onClear }) {
 
     // 체크박스 핸들러
     const checkboxChange = (emp) => {
-        setSelectEmp(selected => 
-            selected.includes(emp) ? selected.filter( e => e !== emp) : [...selected, emp]
+        setSelectEmp(selected =>
+            selected.includes(emp) ? selected.filter(e => e !== emp) : [...selected, emp]
         );
     };
 
@@ -99,6 +117,7 @@ function PostDirForm({ closeModal, onConfirm, onClear }) {
     };
 
 
+
     /* 확인 버튼으로 배열 보내기 */
     const confirmHandle = () => {
 
@@ -114,7 +133,7 @@ function PostDirForm({ closeModal, onConfirm, onClear }) {
 
     const toggleAll = () => {
         setSelectAll(!selectAll);
-        if(!selectAll) {
+        if (!selectAll) {
             setSelectEmp([...employees]);
         } else {
             setSelectEmp([]);
@@ -144,7 +163,7 @@ function PostDirForm({ closeModal, onConfirm, onClear }) {
                     <table>
                         <thead>
                             <tr>
-                                <th><input type="checkbox" checked={selectAll} onChange={toggleAll}/></th>
+                                <th><input type="checkbox" checked={selectAll} onChange={toggleAll} /></th>
                                 <th style={{ width: '30px' }}>부서</th>
                                 <th>이름</th>
                                 <th>직급</th>
@@ -181,14 +200,16 @@ function PostDirForm({ closeModal, onConfirm, onClear }) {
                                     <div style={{ display: 'flex', justifyContent: 'flex-end', height: '12%' }}>
                                         <button type="button" className="el_btnS el_btn8Bord hp_mb10" onClick={receiverClear}>삭제</button>
                                     </div>
-                                    <div style={{width: '250px', height:'88%', overflowY:'auto', overflowX:'auto'}}>
-                                        <ul>
-                                            {receiver.map(emp => (
-                                                <li key={emp.emp_code}>
-                                                    - {emp.emp_name} {'<'}{emp.dept_title} {emp.position_name}{'>'}
-                                                </li>
-                                            ))}
-                                        </ul>
+                                    <div style={{ width: '250px', height: '88%', overflowY: 'auto', overflowX: 'auto' }}>
+                                        {receiver && receiver.length > 0 && (
+                                            <ul>
+                                                {receiver.map(emp => (
+                                                    <li key={emp.emp_code}>
+                                                        - {emp.emp_name} {'<'}{emp.dept_title} {emp.position_name}{'>'}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
                                     </div>
                                 </td>
                             </tr>

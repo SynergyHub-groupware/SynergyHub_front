@@ -12,7 +12,6 @@ function BoardCreateView() {
         dispatch(getAllLowBoard());
     }, [dispatch]);
 
-    // 각각의 모달 상태 관리
     const [isReadModalOpen, setIsReadModalOpen] = useState(false);
     const [readModalLowBoardCode, setReadModalLowBoardCode] = useState(null);
 
@@ -22,11 +21,7 @@ function BoardCreateView() {
     const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
     const [adminModalLowBoardCode, setAdminModalLowBoardCode] = useState(null);
 
-    // 공통 모달 데이터 상태
-    const [modalData, setModalData] = useState({});
-
-    // 모달창 오픈
-    const openModal = (lowBoardCode, modalType, defaultData = { write: [] }) => {
+    const openModal = (lowBoardCode, modalType) => {
         switch (modalType) {
             case 'read':
                 setReadModalLowBoardCode(lowBoardCode);
@@ -43,11 +38,6 @@ function BoardCreateView() {
             default:
                 break;
         }
-        // setModalDefaultData(defaultData);
-        // // 읽기 모달 데이터를 쓰기 모달에도 적용
-        // if (modalData[lowBoardCode]) {
-        //     setModalDefaultData(modalData[lowBoardCode]);
-        // }
     };
 
     const closeModal = (modalType) => {
@@ -69,79 +59,74 @@ function BoardCreateView() {
         }
     };
 
-    // 모달창에서 가져온 인원 배열
-    const [selectEmps, setSelectEmps] = useState([]);
     const [ReadselectEmps, setReadSelectEmps] = useState([]);
     const [WriteselectEmps, setWriteSelectEmps] = useState([]);
     const [AdminselectEmps, setAdminSelectEmps] = useState([]);
+    const [newSubName, setNewSubName] = useState('');
+    const [newSubBoardCode, setNewSubBoardCode] = useState('');
+    const [oldBoardeCode, setOldBoardCode] = useState('');
 
-    const [modalDefaultData, setModalDefaultData] = useState({ write: [] });
-
-    // const confirmHandler = (newSelectEmps, type) => {
-    //     const currentLowBoardCode = getCurrentLowBoardCode(type);
-    //     setModalData(prevModalData => ({
-    //         ...prevModalData,
-    //         [currentLowBoardCode]: {
-    //             ...prevModalData[currentLowBoardCode],
-    //             [type]: newSelectEmps
-    //         }
-    //     }));
-    //     closeModal(type);
-    // };
+    const [nowEmp, setNowEmp] = useState([]);
 
     const ReadConfirmHandler = (newSelectEmps) => {
         setReadSelectEmps(prev => {
-            const existingEmpCodes = prev.map(emp => emp.emp_code);
-            const filteredNewSelectEmps = newSelectEmps.filter(emp => !existingEmpCodes.includes(emp.emp_code));
-            return [...prev, ...filteredNewSelectEmps];
+            const existingReadEmps = prev.map(emp => emp.emp_code);
+            const filteredNewSelectEmps = newSelectEmps.filter(emp => !existingReadEmps.includes(emp.emp_code));
+
+            setNowEmp(prevNowEmp => {
+                const updatedNowEmp = prevNowEmp.filter(([empCode, role]) => role !== 'Read').concat(filteredNewSelectEmps.map(emp => [emp.emp_code, 'Read']));
+                console.log('nowEmp after Read selection:', updatedNowEmp); // 데이터 확인용 로그
+                return updatedNowEmp;
+            });
+
+            console.log('Read select emps:', filteredNewSelectEmps); // 데이터 확인용 로그
+            return filteredNewSelectEmps;
         });
-        closeModal();
-    }
+
+        closeModal('read');
+    };
+
     const WriteConfirmHandler = (newSelectEmps) => {
         setWriteSelectEmps(prev => {
-            const existingEmpCodes = prev.map(emp => emp.emp_code);
-            const filteredNewSelectEmps = newSelectEmps.filter(emp => !existingEmpCodes.includes(emp.emp_code));
-            return [...prev, ...filteredNewSelectEmps];
+            const existingWriteEmps = prev.map(emp => emp.emp_code);
+            const filteredNewSelectEmps = newSelectEmps.filter(emp => !existingWriteEmps.includes(emp.emp_code));
+
+            setNowEmp(prevNowEmp => {
+                const updatedNowEmp = prevNowEmp.filter(([empCode, role]) => role !== 'Write').concat(filteredNewSelectEmps.map(emp => [emp.emp_code, 'Write']));
+                console.log('nowEmp after Write selection:', updatedNowEmp); // 데이터 확인용 로그
+                return updatedNowEmp;
+            });
+
+            console.log('Write select emps:', filteredNewSelectEmps); // 데이터 확인용 로그
+            return filteredNewSelectEmps;
         });
-        closeModal();
-    }
+
+        closeModal('write');
+    };
+
     const AdminConfirmHandler = (newSelectEmps) => {
         setAdminSelectEmps(prev => {
-            const existingEmpCodes = prev.map(emp => emp.emp_code);
-            const filteredNewSelectEmps = newSelectEmps.filter(emp => !existingEmpCodes.includes(emp.emp_code));
-            return [...prev, ...filteredNewSelectEmps];
+            const existingWriteEmps = prev.filter(emp => emp.role === 'Write').map(emp => emp.emp_code);
+            const existingReadEmps = prev.filter(emp => emp.role === 'Read').map(emp => emp.emp_code);
+            const filteredNewSelectEmps = newSelectEmps.filter(emp => !(existingWriteEmps.includes(emp.emp_code) || existingReadEmps.includes(emp.emp_code)));
+
+            setNowEmp(prevNowEmp => {
+                const updatedNowEmp = prevNowEmp.filter(([empCode, role]) => role !== 'Admin')
+                    .concat(filteredNewSelectEmps.map(emp => [emp.emp_code, 'Admin']));
+                console.log('nowEmp after Admin selection:', updatedNowEmp); // 데이터 확인용 로그
+                return updatedNowEmp;
+            });
+
+            console.log('Admin select emps:', filteredNewSelectEmps); // 데이터 확인용 로그
+            return filteredNewSelectEmps;
         });
-        closeModal();
-    }
 
-useEffect(()=>{
-    setWriteSelectEmps(ReadselectEmps);
-},[setReadSelectEmps])
-
-    const clearReceiver = (type) => {
-        const currentLowBoardCode = getCurrentLowBoardCode(type);
-        setModalData(prevModalData => ({
-            ...prevModalData,
-            [currentLowBoardCode]: {
-                ...prevModalData[currentLowBoardCode],
-                [type]: []
-            }
-        }));
-        closeModal(type);
+        closeModal('admin');
     };
 
-    const getCurrentLowBoardCode = (type) => {
-        switch (type) {
-            case 'read':
-                return readModalLowBoardCode;
-            case 'write':
-                return writeModalLowBoardCode;
-            case 'admin':
-                return adminModalLowBoardCode;
-            default:
-                return null;
-        }
-    };
+    useEffect(() => {
+        console.log("nowEmp", nowEmp);
+    }, [nowEmp]);
 
     useEffect(() => {
         if (AllLowState.length > 0) {
@@ -162,13 +147,14 @@ useEffect(()=>{
 
     const addNewRow = (boardName) => {
         const newLowBoard = {
-            lowBoardCode: Date.now(),  // 임시 고유 ID
+            lowBoardCode: Date.now(),
             lowBoardName: '',
             boardCode: boards[boardName].boardCode,
             read: [],
             write: [],
             admin: []
         };
+        setOldBoardCode(boards[boardName].boardCode);
         setBoards(prevBoards => ({
             ...prevBoards,
             [boardName]: {
@@ -178,8 +164,118 @@ useEffect(()=>{
         }));
     };
 
+    const handleSubmit = async (event, boardName, lowBoard) => {
+        event.preventDefault();
+    
+        const singleBoardRequest = {
+            lowName: newSubName || lowBoard.lowBoardName, // 변경된 이름이 있으면 사용, 없으면 기존 이름 사용
+            boardCode: oldBoardeCode.boardCode,
+        };
+    
+        try {
+            let boardCreateResponse;
+    
+            if (lowBoard.lowBoardCode === 0) {
+                // lowBoardCode가 0인 경우 새로 생성
+                boardCreateResponse = await fetch('http://localhost:8080/post/boardCreate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(singleBoardRequest),
+                });
+            } else {
+                // lowBoardCode가 0이 아닌 경우 업데이트
+                boardCreateResponse = await fetch(`http://localhost:8080/post/boardUpdate/${lowBoard.lowBoardCode}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(singleBoardRequest),
+                });
+            }
+    
+            if (!boardCreateResponse.ok) {
+                throw new Error(`HTTP 오류! 상태: ${boardCreateResponse.status}`);
+            }
+    
+            const boardCreateData = await boardCreateResponse.json();
+            const newLowBoardCode = boardCreateData.lowBoardCode;
+            setNewSubBoardCode(newLowBoardCode);
+    
+            // Call postRoleCreate here after setting newSubBoardCode
+            await postRoleCreate();
+    
+        } catch (error) {
+            console.error('양식 제출 중 오류 발생:', error);
+            console.error("oldBoardeCode", oldBoardeCode.boardCode);
+            console.error("singleBoardRequest", singleBoardRequest);
+        }
+    };
+        
+    // useEffect 밖으로 postRoleCreate 함수 빼기
+    const postRoleCreate = async () => {
+        try {
+            // Write 권한을 가진 직원의 empCode 목록
+            const writeEmps = nowEmp.filter(([empCode, role]) => role === 'Write').map(([empCode, role]) => empCode);
+            // Admin 권한을 가진 직원의 empCode 목록
+            const adminEmps = nowEmp.filter(([empCode, role]) => role === 'Admin').map(([empCode, role]) => empCode);
+    
+            // 중복 제거를 위해 Set 사용
+            const uniqueWriteEmps = [...new Set(writeEmps)];
+            const uniqueAdminEmps = [...new Set(adminEmps)];
+    
+            // 중복된 empCode를 처리하여 Y가 더 많은 경우만 선택
+            const updatedRoles = nowEmp.reduce((acc, [empCode, role]) => {
+                // 이미 배열에 있는 empCode인지 확인
+                const existingRole = acc.find(item => item.empCode === empCode);
+                if (!existingRole) {
+                    // 배열에 없는 경우 추가
+                    acc.push({
+                        empCode: empCode,
+                        prWriteRole: uniqueWriteEmps.includes(empCode) ? 'Y' : 'N',
+                        prAdmin: uniqueAdminEmps.includes(empCode) ? 'Y' : 'N',
+                        lowCode: newSubBoardCode
+                    });
+                } else {
+                    // 배열에 이미 있는 경우, Y가 더 많은 경우로 업데이트
+                    if (role === 'Write' && existingRole.prWriteRole === 'N') {
+                        existingRole.prWriteRole = 'Y';
+                    }
+                    if (role === 'Admin' && existingRole.prAdmin === 'N') {
+                        existingRole.prAdmin = 'Y';
+                    }
+                }
+                return acc;
+            }, []);
+    
+            console.log(updatedRoles);
+    
+            const postRoleResponse = await fetch('http://localhost:8080/post/PostRoleCreate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedRoles),
+            });
+    
+            if (!postRoleResponse.ok) {
+                throw new Error(`HTTP 오류! 상태: ${postRoleResponse.status}`);
+            }
+    
+            const postRoleData = await postRoleResponse.json();
+            console.log('게시글 역할 생성 응답:', postRoleData);
+        } catch (error) {
+            console.error('권한 생성 중 오류 발생:', error);
+        }
+    };
+            
     const handleInputChange = (e, boardName, index) => {
         const { value } = e.target;
+        const boardCode = boards[boardName].boardCode; // 대분류의 코드 가져오기
+        setNewSubName(value);
+        setNewSubBoardCode(boardCode.boardCode);
+
         setBoards(prevBoards => {
             const updatedBoards = { ...prevBoards };
             updatedBoards[boardName].lowBoards[index].lowBoardName = value;
@@ -196,6 +292,32 @@ useEffect(()=>{
             }}
         />
     );
+    const handleDelete = async (boardName, lowBoardCode) => {
+        try {
+            const deleteResponse = await fetch(`http://localhost:8080/post/boardDelete/${lowBoardCode}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!deleteResponse.ok) {
+                throw new Error(`HTTP 오류! 상태: ${deleteResponse.status}`);
+            }
+
+            // 성공적으로 삭제된 경우, 클라이언트 측에서 해당 항목을 제거
+            setBoards(prevBoards => ({
+                ...prevBoards,
+                [boardName]: {
+                    ...prevBoards[boardName],
+                    lowBoards: prevBoards[boardName].lowBoards.filter(board => board.lowBoardCode !== lowBoardCode)
+                }
+            }));
+
+        } catch (error) {
+            console.error('게시판 삭제 중 오류 발생:', error);
+        }
+    };
 
     return (
         <>
@@ -215,7 +337,7 @@ useEffect(()=>{
                                 <tr className="parent-board">
                                     <td className='tableHead'>
                                         {boardName}
-                                        <button className='button' onClick={() => addNewRow(boardName)}>
+                                        <button type="button" className='button' onClick={() => addNewRow(boardName)}>
                                             소분류 추가
                                         </button>
                                     </td>
@@ -227,32 +349,35 @@ useEffect(()=>{
                                                         value={lowBoard.lowBoardName}
                                                         onChange={(e) => handleInputChange(e, boardName, index)}
                                                     />
-                                                    {lowBoard.lowBoardName === '' && (
-                                                        <button>저장</button>
-                                                    )}
+                                                    <button type="button" onClick={(event) => handleSubmit(event, boardName, lowBoard)}>저장</button>
+                                                    <button type="button" onClick={() => handleDelete(boardName, lowBoard.lowBoardCode)}>삭제</button>
+
                                                 </td>
                                                 <div className="button-group">
-                                                    <h1>읽기: <button onClick={() => openModal(lowBoard.lowBoardCode, 'read')}>추가</button></h1>
+                                                    <h1>읽기: <button type="button" onClick={() => openModal(lowBoard.lowBoardCode, 'read')}>추가</button></h1>
                                                     <PostAddressDir
                                                         isOpen={isReadModalOpen && readModalLowBoardCode === lowBoard.lowBoardCode}
                                                         closeModal={() => closeModal('read')}
                                                         onConfirm={ReadConfirmHandler}
-                                                        onClear={() => clearReceiver('read')}
+                                                        onClear={() => setReadSelectEmps([])}
+                                                        defaultData={ReadselectEmps}
                                                     />
-                                                    <h1>쓰기: <button onClick={() => openModal(lowBoard.lowBoardCode, 'write')}>추가</button></h1>
+                                                    <h1>쓰기: <button type="button" onClick={() => openModal(lowBoard.lowBoardCode, 'write')}>추가</button></h1>
                                                     <PostAddressDir
+                                                        key={JSON.stringify(WriteselectEmps)}
                                                         isOpen={isWriteModalOpen && writeModalLowBoardCode === lowBoard.lowBoardCode}
                                                         closeModal={() => closeModal('write')}
                                                         onConfirm={WriteConfirmHandler}
-                                                        onClear={() => clearReceiver('write')}
-                                                        defaultData={WriteselectEmps} // 기본 데이터 설정
+                                                        onClear={() => setWriteSelectEmps([])}
+                                                        defaultData={WriteselectEmps}
                                                     />
-                                                    <h1>관리자: <button onClick={() => openModal(lowBoard.lowBoardCode, 'admin')}>추가</button></h1>
+                                                    <h1>관리자: <button type="button" onClick={() => openModal(lowBoard.lowBoardCode, 'admin')}>추가</button></h1>
                                                     <PostAddressDir
                                                         isOpen={isAdminModalOpen && adminModalLowBoardCode === lowBoard.lowBoardCode}
                                                         closeModal={() => closeModal('admin')}
                                                         onConfirm={AdminConfirmHandler}
-                                                        onClear={() => clearReceiver('admin')}
+                                                        onClear={() => setAdminSelectEmps([])}
+                                                        defaultData={AdminselectEmps}
                                                     />
                                                 </div>
                                                 <ColoredLine color="black" />
