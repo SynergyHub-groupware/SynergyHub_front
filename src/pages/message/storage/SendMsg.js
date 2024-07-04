@@ -51,7 +51,6 @@ function SendMsg() {
                     <div className="ly_spaceBetween">
                         <div className="">
                             <button type="button" className="el_btnS el_btn8Back" onClick={delMsgHandler}>삭제</button>
-                            <button type="button" className="el_btnS el_btn8Bord">이동</button>
                         </div>
                         <div>
                             <form onSubmit={searchHandler}>

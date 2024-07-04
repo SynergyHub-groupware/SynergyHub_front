@@ -1,7 +1,7 @@
 import WorkTable from "./table/WorkTable";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useRef } from "react";
-import { callDelMsgAPI } from "../../../apis/MessageAPICalls";
+import { callDelMsgAPI, callMoveToImpAPI, callMoveToRevAPI } from "../../../apis/MessageAPICalls";
 import Pagination from "./paging/Pagination";
 
 function WorkMsg() {
@@ -43,14 +43,62 @@ function WorkMsg() {
         }
     };
 
+    // 보관함 이동 핸들러
+    const moveMsgHandler = (e) => {
+        const selectOption = e.target.value;
+        
+        if (selectOption === "받은 쪽지") {
+            moveMsgToRevHandler();
+
+        } else if (selectOption === "중요 보관함") {
+            moveMsgToImpHandler();
+        }
+    };
+
+    // 받은 쪽지 이동 핸들러
+    const moveMsgToRevHandler = () => {
+
+        if (selectMsgCode.length === 0) {
+            
+            alert("이동시킬 쪽지를 선택해주세요.");
+            window.location.reload();
+            return;
+        }
+
+        selectMsgCode.forEach(msgCode => {
+            dispatch(callMoveToRevAPI(msgCode));
+        });
+        window.location.reload();
+    }
+
+    // 중요 보관함 이동 핸들러
+    const moveMsgToImpHandler = () => {
+
+        if (selectMsgCode.length === 0) {
+
+            alert("이동시킬 쪽지를 선택해주세요.");
+            window.location.reload();
+            return;
+        }
+
+        selectMsgCode.forEach(msgCode => {
+            dispatch(callMoveToImpAPI(msgCode));
+        });
+        window.location.reload();
+    }
+
     return (
         <div className="ly_body" style={{ width: "100%" }}>
             <div className="ly_cont">
                 <h4 className="el_lv1Head hp_mb30">업무 보관함</h4>
                 <div className="ly_spaceBetween">
-                    <div>
-                        <button type="button" className="el_btnS el_btn8Back" onClick={delMsgHandler}>삭제</button>
-                        <button type="button" className="el_btnS el_btn8Bord">이동</button>
+                    <div className="ly_spaceBetween">
+                        <button type="button" className="el_btnS el_btn8Back hp_mr5" onClick={delMsgHandler}>삭제</button>
+                        <select className="el_btnS el_btn8Bord" onChange={moveMsgHandler}>
+                            <option>이동</option>
+                            <option>받은 쪽지</option>
+                            <option>중요 보관함</option>
+                        </select>
                     </div>
                     <div>
                         <form onSubmit={searchHandler}>

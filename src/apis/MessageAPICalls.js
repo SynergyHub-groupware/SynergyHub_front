@@ -1,5 +1,4 @@
-import axios from "axios";
-import { delMsg, delSendMsg, getAttachList, getBinMsg, getImpMsg, getRevDetail, getRevMsg, getSendMsg, getWorkMsg, upMsgStatus } from "../modules/MessageModules";
+import { delMsg, delSendMsg, getAttachList, getBinMsg, getImpMsg, getRevDetail, getRevMsg, getSendMsg, getWorkMsg, movMsgImp, movMsgRev, movMsgWork, upMsgStatus } from "../modules/MessageModules";
 import { request } from "./api";
 
 /* 받은 쪽지 전체 조회 API */
@@ -148,7 +147,6 @@ export const callTempMsgListAPI = () => {
     };
 }
 
-// merge commit
 /* 받은 쪽지 휴지통 이동 API */
 export const callDelMsgAPI = (msgCode) => {
     
@@ -245,6 +243,7 @@ export const callSendDetailAPI = (msgCode) => {
     };
 };
 
+/* 읽음 처리 API */
 export const callUpdateMsgStautsAPI = (msgCode) => {
     
     return async (dispatch, getState) => {
@@ -268,6 +267,7 @@ export const callUpdateMsgStautsAPI = (msgCode) => {
     };
 };
 
+/* 파일 조회 API */
 export const callGetAttachListAPI = (msgCode) => {
 
     return async (dispatch, getState) => {
@@ -287,6 +287,78 @@ export const callGetAttachListAPI = (msgCode) => {
             }
         } catch (error) {
             console.log("error :: ", error);
+        }
+    };
+};
+
+/* 중요 보관함 이동 API */
+export const callMoveToImpAPI = (msgCode) => {
+    
+    return async (dispatch, getState) => {
+
+        try {
+            const result = await request('PUT', `/emp/message/toImp/${msgCode}`, {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            }, {
+                storCode: 2
+            });
+
+            if (result && result.status === 200) {
+                dispatch(movMsgImp(msgCode));
+            } else {
+                console.log("error : ", result);
+            }
+        } catch (error) {
+            console.log("movToImp error : ", error);
+        }
+    };
+};
+
+/* 업무 보관함 이동 API */
+export const callMoveToWorkAPI = (msgCode) => {
+    
+    return async (dispatch, getState) => {
+
+        try {
+            const result = await request('PUT', `/emp/message/toImp/${msgCode}`, {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            }, {
+                storCode: 3
+            });
+
+            if (result && result.status === 200) {
+                dispatch(movMsgWork(msgCode));
+            } else {
+                console.log("error : ", result);
+            }
+        } catch (error) {
+            console.log("movToImp error : ", error);
+        }
+    };
+};
+
+/* 받은 쪽지 이동 API */
+export const callMoveToRevAPI = (msgCode) => {
+    
+    return async (dispatch, getState) => {
+
+        try {
+            const result = await request('PUT', `/emp/message/toImp/${msgCode}`, {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            }, {
+                storCode: 1
+            });
+
+            if (result && result.status === 200) {
+                dispatch(movMsgRev(msgCode));
+            } else {
+                console.log("error : ", result);
+            }
+        } catch (error) {
+            console.log("movToImp error : ", error);
         }
     };
 };

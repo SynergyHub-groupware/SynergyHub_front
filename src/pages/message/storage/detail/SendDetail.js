@@ -139,7 +139,6 @@ function SendDetail() {
                     <div></div>
                     <div className="">
                         <button type="button" className="el_btnS el_btn8Back" onClick={deleteHandler}>삭제</button>
-                        <button type="button" className="el_btnS el_btn8Bord hp_ml5">이동</button>
                         <button type="button" className="el_btnS el_btnblueBord hp_ml5" onClick={transHandler}>전달</button>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import RevTable from "../../../pages/message/storage/table/RevTable";
 import { useRef, useState } from "react";
-import { callDelMsgAPI } from "../../../apis/MessageAPICalls";
+import { callDelMsgAPI, callMoveToImpAPI, callMoveToWorkAPI } from "../../../apis/MessageAPICalls";
 import Pagination from "./paging/Pagination";
 
 function ReceiveMsg() {
@@ -45,14 +45,62 @@ function ReceiveMsg() {
         }
     };
 
+    // 보관함 이동 핸들러
+    const moveMsgHandler = (e) => {
+        const selectOption = e.target.value;
+        
+        if (selectOption === "중요 보관함") {
+            moveMsgToImpHandler();
+
+        } else if (selectOption === "업무 보관함") {
+            moveMsgToWorkHandler();
+        }
+    };
+
+    // 중요 보관함 이동 핸들러
+    const moveMsgToImpHandler = () => {
+
+        if (selectMsgCode.length === 0) {
+            
+            alert("이동시킬 쪽지를 선택해주세요.");
+            window.location.reload();
+            return;
+        }
+
+        selectMsgCode.forEach(msgCode => {
+            dispatch(callMoveToImpAPI(msgCode));
+        });
+        window.location.reload();
+    }
+
+    // 업무 보관함 이동 핸들러
+    const moveMsgToWorkHandler = () => {
+
+        if (selectMsgCode.length === 0) {
+
+            alert("이동시킬 쪽지를 선택해주세요.");
+            window.location.reload();
+            return;
+        }
+
+        selectMsgCode.forEach(msgCode => {
+            dispatch(callMoveToWorkAPI(msgCode));
+        });
+        window.location.reload();
+    }
+
     return (
         <div className="ly_body" style={{ width: "100%" }}>
             <div className="ly_cont">
                 <h4 className="el_lv1Head hp_mb30">받은 쪽지</h4>
                 <div className="ly_spaceBetween">
-                    <div>
-                        <button type="button" className="el_btnS el_btn8Back" onClick={delMsgHandler}>삭제</button>
-                        <button type="button" className="el_btnS el_btn8Bord">이동</button>
+                    <div className="ly_spaceBetween">
+                        <button type="button" className="el_btnS el_btn8Back hp_mr5" onClick={delMsgHandler}>삭제</button>
+                        <select className="el_btnS el_btn8Bord" onChange={moveMsgHandler}>
+                            <option>이동</option>
+                            <option>중요 보관함</option>
+                            <option>업무 보관함</option>
+                        </select>
                     </div>
                     <div>
                         <form onSubmit={searchHandler}>
@@ -69,13 +117,6 @@ function ReceiveMsg() {
                     setCurrentPage={setCurrentPage}
                 />
                 <section className="bl_sect hp_mt10 hp_padding5 hp_alignC">
-                    {/* <div className="bl_paging">
-                        <a href="#" className="bl_paging__btn bl_paging__first" title="첫 페이지로 이동"></a>
-                        <a href="#" className="bl_paging__btn bl_paging__prev" title="이전 페이지로 이동"></a>
-                        <a href="#" className="bl_paging__btn bl_paging__num">1</a>
-                        <a href="#" className="bl_paging__btn bl_paging__next" title="다음 페이지로 이동"></a>
-                        <a href="#" className="bl_paging__btn bl_paging__last" title="마지막 페이지로 이동"></a>
-                    </div> */}
                     <Pagination messages={messages} currentPage={currentPage} setCurrentPage={setCurrentPage}/>
                 </section>
             </div>

@@ -111,7 +111,12 @@ function WorkTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCu
                                     <td className="hp_alighL">
                                         <Link to={`/message/storage/work/detail/${msg.msgCode}`}>{msg.msgTitle}</Link>
                                     </td>
-                                    <td>{msg.emerStatus}</td>
+                                    <td>
+                                        {msg.emerStatus === 'Y' ? (
+                                            <div>🚨</div>
+                                        ) : (
+                                            <div></div>
+                                        )}</td>
                                     <td>{msg.storCode}</td>
                                 </tr>
                             ))

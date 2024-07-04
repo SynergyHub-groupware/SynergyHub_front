@@ -17,13 +17,16 @@ const GET_TEMP_MSG = 'message/GET_TEMP_MSG';
 const DEL_MSG = 'message/DEL_MSG';
 const DEL_SEND_MSG = 'message/DEL_SEND_MSG';
 const UP_MSG_STATUS = 'message/UP_MSG_STATUS';
+const MOV_MSG_IMP = 'message/MOV_MSG_IMP';
+const MOV_MSG_WORK = 'message/MOV_MSG_WORK';
+const MOV_MSG_REV = 'message/MOV_MSG_REV';
 
 const GET_REV_DETAIL = 'message/GET_REV_DETAIL';
 const GET_SEND_DETAIL = 'message/GET_SEND_DETAIL';
 const GET_ATTACH_LIST = 'message/GET_ATTACH_LIST';
 
 export const { message : { getRevMsg, getSendMsg, getBinMsg, getImpMsg, getWorkMsg, delMsg, getRevDetail, getSendDetail 
-    , getTempMsg, delSendMsg, upMsgStatus, getAttachList
+    , getTempMsg, delSendMsg, upMsgStatus, getAttachList, movMsgImp, movMsgWork, movMsgRev
 }} = createActions({
     [GET_REV_MSG] : result => {
         console.log('action : ', result);
@@ -93,6 +96,24 @@ export const { message : { getRevMsg, getSendMsg, getBinMsg, getImpMsg, getWorkM
 
     [GET_ATTACH_LIST] : msgCode => {
         console.log('attach action : ', msgCode);
+
+        return { msgCode };
+    },
+
+    [MOV_MSG_IMP] : msgCode => {
+        console.log('move to important : ', msgCode);
+
+        return { msgCode };
+    },
+
+    [MOV_MSG_WORK] : msgCode => {
+        console.log('move to work : ', msgCode);
+
+        return { msgCode };
+    },
+
+    [MOV_MSG_REV] : msgCode => {
+        console.log('move to rev : ', msgCode);
 
         return { msgCode };
     }
@@ -207,6 +228,39 @@ const messageReducer = handleActions({
         return {
             ...state,
             attachments: payload
+        }
+    },
+
+    [MOV_MSG_IMP] : (state, {payload}) => {
+        console.log("move to imp reducer : ", payload);
+
+        return {
+            ...state,
+            messages: state.messages.map(msg =>
+                msg.msgCode === payload.msgCode ? { ...msg, storCode: 2 } : msg
+            )
+        }
+    },
+
+    [MOV_MSG_WORK] : (state, { payload }) => {
+        console.log("move to work reducer : ", payload);
+
+        return {
+            ...state,
+            messages: state.messages.map(msg =>
+                msg.msgCode === payload.msgCode ? { ...msg, storCode: 3 } : msg
+            )
+        }
+    },
+
+    [MOV_MSG_REV] : (state, { payload }) => {
+        console.log("move to rev reducer : ", payload);
+
+        return {
+            ...state,
+            messages: state.messages.map(msg => 
+                msg.msgCode === payload.msgCode ? { ...msg, storCode: 1 } : msg
+            )
         }
     }
 

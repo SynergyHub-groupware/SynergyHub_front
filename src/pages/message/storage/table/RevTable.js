@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { callRevMsgListAPI, callUpdateMsgStautsAPI } from "../../../../apis/MessageAPICalls";
+import { callGetAttachListAPI, callRevMsgListAPI, callUpdateMsgStautsAPI } from "../../../../apis/MessageAPICalls";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -120,8 +120,13 @@ function RevTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCur
                                             {msg.msgTitle}
                                         </Link>
                                     </td>
-                                    <td>{msg.emerStatus}</td>
-                                    <td>{msg.revStor}</td>
+                                    <td>
+                                        {msg.emerStatus === 'Y' ? (
+                                            <div>🚨</div>
+                                        ) : (
+                                            <div></div>
+                                        )}</td>
+                                    <td></td>
                                 </tr>
                             ))
                         ) : (
