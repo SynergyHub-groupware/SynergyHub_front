@@ -105,7 +105,7 @@ function SendTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCu
                     <thead>
                         <tr>
                             <th scope="col"><input type="checkbox" value="checkAll" checked={allCheck} onChange={allCheckChange} /></th>
-                            <th scope="col">작성일</th>
+                            <th scope="col">발신일</th>
                             <th scope="col">받은사람</th>
                             <th scope="col">제목</th>
                             <th scope="col">긴급</th>

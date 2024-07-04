@@ -101,7 +101,7 @@ function WorkTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCu
                     <thead>
                         <tr>
                             <th scope="col"><input type="checkbox" value="checkAll" checked={allCheck} onChange={allCheckChange} /></th>
-                            <th scope="col">작성일</th>
+                            <th scope="col">수신일</th>
                             <th scope="col">보낸사람</th>
                             <th scope="col">제목</th>
                             <th scope="col">긴급</th>

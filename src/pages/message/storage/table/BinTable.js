@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { callBinMsgListAPI } from "../../../../apis/MessageAPICalls";
+import { callBinMsgListAPI, callMoveToImpAPI, callMoveToRevAPI, callMoveToWorkAPI } from "../../../../apis/MessageAPICalls";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "../paging/Pagination";
@@ -118,12 +118,78 @@ function BinTable({ currentPage, setCurrentPage }) {
         });
     };
 
+    /* 쪽지 복원 핸들러 */
+    const moveMsgHandler = (e) => {
+        const selectOption = e.target.value;
+
+        if (selectOption === "받은 쪽지") {
+            moveMsgToRevHandler();
+
+        } else if (selectOption === "중요 보관함") {
+            moveMsgToImpHandler();
+
+        } else if (selectOption === "업무 보관함") {
+            moveMsgToWorkHandler();
+            
+        }
+    };
+
+    /* 받은 쪽지 */
+    const moveMsgToRevHandler = () => {
+
+        if (selectMsg.size === 0) {
+            alert("복원할 쪽지를 선택해주세요.");
+            window.location.reload();
+            return;
+        }
+
+        selectMsg.forEach((msgCode) => {
+            dispatch(callMoveToRevAPI(msgCode));
+        });
+        window.location.reload();
+    };
+
+    /* 중요 보관함 */
+    const moveMsgToImpHandler = () => {
+
+        if (selectMsg.size === 0) {
+            alert("복원할 쪽지를 선택해주세요.");
+            window.location.reload();
+            return;
+        }
+
+        selectMsg.forEach((msgCode) => {
+            dispatch(callMoveToImpAPI(msgCode));
+        });
+        window.location.reload();
+    };
+
+    /* 업무 보관함 */
+    const moveMsgToWorkHandler = () => {
+
+        if (selectMsg.size === 0) {
+            alert("복원할 쪽지를 선택해주세요.");
+            window.location.reload();
+            return;
+        }
+
+        selectMsg.forEach((msgCode) => {
+            dispatch(callMoveToWorkAPI(msgCode));
+        });
+        window.location.reload();
+    };
+
     return(
         <div>
             <div className="ly_spaceBetween">
                 <div>
-                    <button type="button" className="el_btnS el_btn8Back" onClick={deleteMsgHandler}>영구삭제</button>
-                    <button type="button" className="el_btnS el_btn8Bord">복원</button>
+                    <button type="button" className="el_btnS el_btn8Back hp_mr5" onClick={deleteMsgHandler}>영구삭제</button>
+                        <select className="el_btnS el_btn8Bord hp_mb5" onChange={moveMsgHandler}>
+                            <option>복원</option>
+                            <option>받은 쪽지</option>
+                            <option>중요 보관함</option>
+                            <option>업무 보관함</option>
+                        </select>
                 </div>
                 <div>
                     <input type="text" placeholder="검색어를 입력해주세요" />
@@ -144,7 +210,7 @@ function BinTable({ currentPage, setCurrentPage }) {
                     <thead>
                         <tr>
                             <th scope="col"><input type="checkbox" checked={selectAll} onChange={selectAllHandler} /></th>
-                            <th scope="col">작성일</th>
+                            <th scope="col">일자</th>
                             <th scope="col">보낸사람</th>
                             <th scope="col">받은사람</th>
                             <th scope="col">제목</th>

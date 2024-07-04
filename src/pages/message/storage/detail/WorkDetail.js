@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
-import { callSendDetailAPI, callDelMsgAPI, callGetAttachListAPI } from "../../../../apis/MessageAPICalls";
+import { callRevDetailAPI, callDelMsgAPI, callGetAttachListAPI, callMoveToRevAPI, callMoveToImpAPI } from "../../../../apis/MessageAPICalls";
 
 function WorkDetail() {
 
@@ -16,7 +16,7 @@ function WorkDetail() {
         const sendMsgDetail = async () => {
             try {
                 console.log("API 시작");
-                await dispatch(callSendDetailAPI(msgCode));
+                await dispatch(callRevDetailAPI(msgCode));
                 console.log("msgCode : ", msgCode);
             } catch (error) {
                 console.log("error : ", error);
@@ -42,6 +42,18 @@ function WorkDetail() {
         console.log("msgDetail : ", msgDetail);
         return <div>로딩중..</div>;
     }
+
+    /* 날짜 포맷 함수 */
+    const formatDateTime = (datetimeString) => {
+        const date = new Date(datetimeString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+
+        return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`;
+    };
 
     /* 답장 핸들러 */
     const replyHandler = () => {
@@ -105,6 +117,45 @@ function WorkDetail() {
         }
     }
 
+    // 보관함 이동 핸들러
+    const moveMsgHandler = (e) => {
+        const selectOption = e.target.value;
+        
+        if (selectOption === "받은 쪽지") {
+            moveMsgToRevHandler();
+
+        } else if (selectOption === "중요 보관함") {
+            moveMsgToImpHandler();
+        }
+    };
+
+    // 받은 쪽지 이동 핸들러
+    const moveMsgToRevHandler = async () => {
+        try {
+            await dispatch(callMoveToRevAPI(msgCode));
+            alert("받은 쪽지로 이동 되었습니다.");
+            navigate('/message/storage/receive');
+
+        } catch (error) {
+            console.log("받은 쪽지 이동 중 오류 : ", error);
+            window.location.reload();
+        }
+    }
+
+    // 중요 보관함 이동 핸들러
+    const moveMsgToImpHandler = async () => {
+        try {
+            await dispatch(callMoveToImpAPI(msgCode));
+            alert("중요 보관함으로 이동 되었습니다.");
+            navigate('/message/storage/important');
+
+        } catch (error) {
+            console.log("중요 보관함 이동 중 오류 : ", error);
+            window.location.reload();
+        }
+        
+    }
+
     return (
         <div className="ly_cont">
             <h4 className="el_lv1Head hp_mb30">업무 보관함</h4>
@@ -116,12 +167,12 @@ function WorkDetail() {
                     </colgroup>
                     <tbody>
                         <tr>
-                            <th scope="col">받은사람</th>
-                            <td className="hp_alignL">{msgDetail.messageDetail && msgDetail.messageDetail.revName} {msgDetail.messageDetail && msgDetail.messageDetail.revPosition}</td>
+                            <th scope="col">보낸사람</th>
+                            <td className="hp_alignL">{msgDetail.messageDetail && msgDetail.messageDetail.sendName} {msgDetail.messageDetail && msgDetail.messageDetail.sendPosition}</td>
                         </tr>
                         <tr>
-                            <th scope="col">보낸날짜</th>
-                            <td className="hp_alignL">{msgDetail.messageDetail && msgDetail.messageDetail.sendDate}</td>
+                            <th scope="col">수신일</th>
+                            <td className="hp_alignL">{msgDetail.messageDetail && formatDateTime(msgDetail.messageDetail.sendDate)}</td>
                         </tr>
                         <tr>
                             <th scope="col">첨부파일</th>
@@ -146,10 +197,14 @@ function WorkDetail() {
                     </tbody>
                 </table>
                 <div className="ly_spaceBetween hp_mt10">
-                    <button type="button" className="el_btnS el_btn0Back">읽지않음 처리</button>
-                    <div className="">
-                        <button type="button" className="el_btnS el_btn8Back" onClick={deleteHandler}>삭제</button>
-                        <button type="button" className="el_btnS el_btn8Bord hp_ml5">이동</button>
+                    <div></div>
+                    <div className="ly_spaceBetween">
+                        <button type="button" className="el_btnS el_btn8Back hp_mr5" onClick={deleteHandler}>삭제</button>
+                        <select className="el_btnS el_btn8Bord" onChange={moveMsgHandler}>
+                            <option>이동</option>
+                            <option>받은 쪽지</option>
+                            <option>중요 보관함</option>
+                        </select>
                         <button type="button" className="el_btnS el_btnblueBord hp_ml5" onClick={transHandler}>전달</button>
                         <button type="button" className="el_btnS el_btnblueBack hp_ml5" onClick={replyHandler}>답장</button>
                     </div>

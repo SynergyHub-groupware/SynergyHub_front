@@ -43,6 +43,18 @@ function SendDetail() {
         return <div>로딩중..</div>;
     }
 
+    /* 날짜 포맷 함수 */
+    const formatDateTime = (datetimeString) => {
+        const date = new Date(datetimeString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+
+        return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`;
+    };
+
     /* 전달 핸들러 */
     const transHandler = () => {
         navigate('/message/storage/deliver', {
@@ -110,8 +122,8 @@ function SendDetail() {
                             <td className="hp_alignL">{msgDetail.messageDetail && msgDetail.messageDetail.revName} {msgDetail.messageDetail && msgDetail.messageDetail.revPosition}</td>
                         </tr>
                         <tr>
-                            <th scope="col">보낸날짜</th>
-                            <td className="hp_alignL">{msgDetail.messageDetail && msgDetail.messageDetail.sendDate}</td>
+                            <th scope="col">발신일</th>
+                            <td className="hp_alignL">{msgDetail.messageDetail && formatDateTime(msgDetail.messageDetail.sendDate)}</td>
                         </tr>
                         <tr>
                             <th scope="col">첨부파일</th>
