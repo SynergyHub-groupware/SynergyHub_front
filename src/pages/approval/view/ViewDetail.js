@@ -82,7 +82,7 @@ function ViewDetail({afCode, adDetail}){
                             return (
                                 <tr key={key}>
                                     <th scope="col">{displayName}</th>
-                                    <td>{value}</td>
+                                    <td style={{whiteSpace: "pre-wrap"}}>{value}</td>
                                 </tr>
                             );
                         }
