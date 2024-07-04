@@ -1,5 +1,8 @@
+import BinSetting from "./setting/BinSetting";
+import ImpSetting from "./setting/ImpSetting";
 import RevSetting from "./setting/RevSetting";
 import SendSetting from "./setting/SendSetting";
+import WorkSetting from "./setting/WorkSetting";
 
 function SettingStor() {
 
@@ -25,32 +28,11 @@ function SettingStor() {
                     <tbody className="hp_alignC">
                         <RevSetting/>
                         <SendSetting/>
-                        <tr>
-                            <th scope="row" rowspan="3">개인 보관함<br />
-                            </th>
-                            <td>중요 보관함</td>
-                            <td>5/10</td>
-                            <td>
-                                <button type="button" className="el_btnS el_btn8Back hp_ml5">비우기</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>업무 보관함</td>
-                            <td>1/5</td>
-                            <td>
-                                <button type="button" className="el_btnS el_btn8Back hp_ml5">비우기</button>
-                            </td>
-                        </tr>
+                        <ImpSetting/>
+                        <WorkSetting/>
                         <tr>
                         </tr>
-                        <tr>
-                            <th scope="row" rowspan="3">휴지통</th>
-                            <td>휴지통</td>
-                            <td>5/1000</td>
-                            <td>
-                                <button type="button" className="el_btnS el_btn8Back hp_ml5">비우기</button>
-                            </td>
-                        </tr>
+                        <BinSetting/>
                     </tbody>
                 </table>
             </section>

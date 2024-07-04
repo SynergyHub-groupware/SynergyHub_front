@@ -1,19 +1,19 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { callSendMsgListAPI } from "../../../../apis/MessageAPICalls";
+import { callWorkMsgListAPI } from "../../../../apis/MessageAPICalls";
 
-function SendSetting() {
+function WorkSetting() {
     const dispatch = useDispatch();
-    const sendMessages = useSelector(state => state.messageReducer.sendMessage.message);
+    const workMessages = useSelector(state => state.messageReducer.workMessage.message);
 
     useEffect(() => {
-        dispatch(callSendMsgListAPI());
+        dispatch(callWorkMsgListAPI());
     }, [dispatch]);
 
     return (
         <tr>
-            <td>보낸 쪽지</td>
-            <td>0/{sendMessages && sendMessages.length}</td>
+            <td>업무 보관함</td>
+            <td>0/{workMessages && workMessages.length}</td>
             <td>
                 <button type="button" className="el_btnS el_btn8Back hp_ml5">비우기</button>
             </td>
@@ -21,4 +21,4 @@ function SendSetting() {
     );
 }
 
-export default SendSetting;
+export default WorkSetting;

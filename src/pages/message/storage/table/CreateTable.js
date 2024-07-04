@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { callGetAttachmentListAPI } from "../../../../apis/MessageAPICalls";
 
 function CreateTable({msgCode}) {
 
@@ -63,6 +64,28 @@ function CreateTable({msgCode}) {
                     setEmerStatus(data.emerStatus);
                 })
                 .catch(error => console.log("error : ", error));
+
+            /* 임시저장한 파일 불러오기 */
+            callGetAttachmentListAPI(msgCode)
+                .then(data => {
+                    if(Array.isArray(data)) {
+                        const fileList = data.map(item => {
+                            return new File([], item.attachOriginal, {
+                                type: item.type,
+                                lastModified: item.lastModified ? item.lastModified : Date.now(),
+                                name: item.attachOriginal,
+                                url: `${item.attachUrl}/${item.attachSave}`
+                            });
+                        });
+                        console.log("data ::::",data);
+                        setFiles(fileList);
+                    } else {
+                        console.log("첨부파일을 가져오지 못했습니다.");
+                    }
+                })
+                .catch (error => {
+                    console.log("오류 발생 : ", error);
+                });
         }
     }, [location.state, msgCode]);
 
@@ -108,6 +131,8 @@ function CreateTable({msgCode}) {
             Array.from(files).forEach(file => {
                 formData.append('files', file);
             });
+
+            console.log("files : ", files);
 
             fetch('http://localhost:8080/emp/message/attach', {
                 method: 'POST',
@@ -269,7 +294,7 @@ function CreateTable({msgCode}) {
                         <td>
                             <div className="ly_flex ly_fitemStart">
                                 <ul className="hp_w100 hp_mr10">
-                                    {files.map((file, index) => (
+                                    {Array.isArray(files) && files.map((file, index) => (
                                         <li key={index}>
                                             <button type="button" className="hp_mr10 hp_fw700" onClick={() => removeFileHandler(index)} title="삭제">X</button>
                                             {file.name}

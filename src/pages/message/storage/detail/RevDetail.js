@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
-import { callDelMsgAPI, callGetAttachListAPI, callMoveToImpAPI, callMoveToWorkAPI, callRevDetailAPI } from "../../../../apis/MessageAPICalls";
+import { callDelMsgAPI, callGetAttachListAPI, callMoveToImpAPI, callMoveToWorkAPI, callRevDetailAPI, callUpdateMsgStatusNrAPI } from "../../../../apis/MessageAPICalls";
 
 function RevDetail() {
 
@@ -159,6 +159,17 @@ function RevDetail() {
         
     }
 
+    // 읽지 않음 처리 핸들러
+    const unReadHandler = async () => {
+        try {
+            await dispatch(callUpdateMsgStatusNrAPI(msgCode));
+            alert("읽지 않음 처리 완료");
+            navigate('/message/storage/receive');
+        } catch (error) {
+            console.log("읽지 않음 처리 중 오류 : ", error);
+        }
+    };
+
     return (
         <div className="ly_cont">
             <h4 className="el_lv1Head hp_mb30">받은 쪽지</h4>
@@ -200,7 +211,7 @@ function RevDetail() {
                     </tbody>
                 </table>
                 <div className="ly_spaceBetween hp_mt10">
-                    <button type="button" className="el_btnS el_btn0Back">읽지않음 처리</button>
+                    <button type="button" className="el_btnS el_btn0Back" onClick={unReadHandler}>읽지않음 처리</button>
                     <div className="ly_spaceBetween">
                         <button type="button" className="el_btnS el_btn8Back hp_mr5" onClick={deleteHandler}>삭제</button>
                         <select className="el_btnS el_btn8Bord" onChange={moveMsgHandler}>

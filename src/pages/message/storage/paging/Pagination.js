@@ -3,10 +3,6 @@ function Pagination({ messages =[], currentPage, setCurrentPage }) {
     const itemsPerPage = 10;
     const totalPages = Math.ceil(messages.length / itemsPerPage);
 
-    // const handlePageChange = (pageNumber) => {
-    //     setCurrentPage(pageNumber);
-    // };
-
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);

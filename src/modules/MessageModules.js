@@ -22,6 +22,7 @@ const GET_TEMP_MSG = 'message/GET_TEMP_MSG';
 const DEL_MSG = 'message/DEL_MSG';
 const DEL_SEND_MSG = 'message/DEL_SEND_MSG';
 const UP_MSG_STATUS = 'message/UP_MSG_STATUS';
+const UP_MSG_STATUS_NR = 'message/UP_MSG_STATUS_NR';
 const MOV_MSG_IMP = 'message/MOV_MSG_IMP';
 const MOV_MSG_WORK = 'message/MOV_MSG_WORK';
 const MOV_MSG_REV = 'message/MOV_MSG_REV';
@@ -30,8 +31,10 @@ const GET_REV_DETAIL = 'message/GET_REV_DETAIL';
 const GET_SEND_DETAIL = 'message/GET_SEND_DETAIL';
 const GET_ATTACH_LIST = 'message/GET_ATTACH_LIST';
 
+const UP_REV_MSG_STATUS = 'message/UP_REV_MSG_STATUS';
+
 export const { message : { getRevMsg, getSendMsg, getBinMsg, getImpMsg, getWorkMsg, delMsg, getRevDetail, getSendDetail 
-    , getTempMsg, delSendMsg, upMsgStatus, getAttachList, movMsgImp, movMsgWork, movMsgRev
+    , getTempMsg, delSendMsg, upMsgStatus, getAttachList, movMsgImp, movMsgWork, movMsgRev, upRevMsgStatus, upMsgStatusNr
 }} = createActions({
     [GET_REV_MSG] : result => {
         console.log('action : ', result);
@@ -121,6 +124,18 @@ export const { message : { getRevMsg, getSendMsg, getBinMsg, getImpMsg, getWorkM
         console.log('move to rev : ', msgCode);
 
         return { msgCode };
+    },
+
+    [UP_REV_MSG_STATUS] : msgCodes => {
+        console.log("up rev msg status action : ", msgCodes);
+
+        return { msgCodes };
+    },
+
+    [UP_MSG_STATUS_NR] : msgCode => {
+        console.log('up nr action : ', msgCode);
+
+        return { msgCode };
     }
 
 }, initialState);
@@ -180,6 +195,7 @@ const messageReducer = handleActions({
             ...state,
             messages: payload
         }
+        
     },
 
     [DEL_MSG] : (state, {payload}) => {
@@ -267,6 +283,34 @@ const messageReducer = handleActions({
                 msg.msgCode === payload.msgCode ? { ...msg, storCode: 1 } : msg
             )
         }
+    },
+
+    [UP_REV_MSG_STATUS] : (state, { payload }) => {
+        console.log("up rev msg status reducer : ", payload);
+
+        const updateRevMsgs = state.revMessage.map(msg =>
+            payload.msgcodes.includes(msg.msgCode) ? { ...msg, msgStatus: 'Y' } : msg
+        );
+
+        return {
+            ...state,
+            revMessage: updateRevMsgs
+        }
+    },
+
+    [UP_MSG_STATUS_NR] : (state, {payload}) => {
+        console.log("up nr reducer : ", payload);
+
+        const updateMsgNr = state.messages.map(msg => 
+            msg.msgCode === payload.msgCode ? { ...msg, msgStatus: 'N' } : msg
+        );
+
+        console.log("updateMsgNr : ", updateMsgNr);
+
+        return {
+            ...state,
+            messages: updateMsgNr
+        };
     }
 
 }, initialState);
