@@ -32,9 +32,11 @@ const GET_SEND_DETAIL = 'message/GET_SEND_DETAIL';
 const GET_ATTACH_LIST = 'message/GET_ATTACH_LIST';
 
 const UP_REV_MSG_STATUS = 'message/UP_REV_MSG_STATUS';
+const UP_ALL_REV_STATUS = 'message/UP_ALL_REV_STATUS';
 
 export const { message : { getRevMsg, getSendMsg, getBinMsg, getImpMsg, getWorkMsg, delMsg, getRevDetail, getSendDetail 
-    , getTempMsg, delSendMsg, upMsgStatus, getAttachList, movMsgImp, movMsgWork, movMsgRev, upRevMsgStatus, upMsgStatusNr
+    , getTempMsg, delSendMsg, upMsgStatus, getAttachList, movMsgImp, movMsgWork, movMsgRev, upRevMsgStatus, upMsgStatusNr,
+    upAllRevStatus
 }} = createActions({
     [GET_REV_MSG] : result => {
         console.log('action : ', result);
@@ -136,6 +138,12 @@ export const { message : { getRevMsg, getSendMsg, getBinMsg, getImpMsg, getWorkM
         console.log('up nr action : ', msgCode);
 
         return { msgCode };
+    },
+
+    [UP_ALL_REV_STATUS] : msgCodes => {
+        console.log("up rev all msg status action : ", msgCodes);
+
+        return { msgCodes };
     }
 
 }, initialState);
@@ -311,6 +319,19 @@ const messageReducer = handleActions({
             ...state,
             messages: updateMsgNr
         };
+    },
+
+    [UP_ALL_REV_STATUS] : (state, { payload }) => {
+        console.log("up all rev msg to bin reducer : ", payload);
+
+        const updateAllRevStor = state.revMessage.map(msg =>
+            payload.msgCodes.includes(msg.msgCode) ? { ...msg, revStor: '5'} : msg
+        );
+
+        return {
+            ...state,
+            revMessage: updateAllRevStor
+        }
     }
 
 }, initialState);

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { callRevMsgListAPI, callUpdateAllRevMsgAPI } from "../../../../apis/MessageAPICalls";
+import { callDelAllMsgAPI, callRevMsgListAPI, callUpdateAllRevMsgAPI } from "../../../../apis/MessageAPICalls";
 
 function RevSetting() {
     const dispatch = useDispatch();
@@ -22,10 +22,22 @@ function RevSetting() {
             window.location.reload();       
 
         } catch (error) {
-            console.log("error ::: ", error);
+            console.log("error : ", error);
         }
          
     };
+
+    // 전체 메세지 비우기
+    const revMsgClearHandler = () => {
+        try {
+            const msgCodes = (revMessages && revMessages.map(msg => msg.msgCode));
+            console.log("msgCodes : ", msgCodes);
+            dispatch(callDelAllMsgAPI(msgCodes));
+            window.location.reload();
+        } catch (error) {
+            console.log('error : ', error);
+        }
+    }
 
     return (
         <tr>
@@ -34,7 +46,7 @@ function RevSetting() {
             <td>{unread}/{revMessages && revMessages.length}</td>
             <td>
                 <button type="button" className="el_btnS el_btnblueBack" onClick={revMsgAllReadHandler}>모두 읽음</button>
-                <button type="button" className="el_btnS el_btn8Back hp_ml5">비우기</button>
+                <button type="button" className="el_btnS el_btn8Back hp_ml5" onClick={revMsgClearHandler}>비우기</button>
             </td>
         </tr>
     );

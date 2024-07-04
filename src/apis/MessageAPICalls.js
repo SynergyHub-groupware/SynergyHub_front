@@ -1,4 +1,4 @@
-import { delMsg, delSendMsg, getAttachList, getBinMsg, getImpMsg, getRevDetail, getRevMsg, getSendMsg, getTempMsg, getWorkMsg, movMsgImp, movMsgRev, movMsgWork, upMsgStatus, upMsgStatusNr, upRevMsgStatus } from "../modules/MessageModules";
+import { delMsg, delSendMsg, getAttachList, getBinMsg, getImpMsg, getRevDetail, getRevMsg, getSendMsg, getTempMsg, getWorkMsg, movMsgImp, movMsgRev, movMsgWork, upAllRevStatus, upMsgStatus, upMsgStatusNr, upRevMsgStatus } from "../modules/MessageModules";
 import { request } from "./api";
 
 /* 받은 쪽지 전체 조회 API */
@@ -145,6 +145,28 @@ export const callDelMsgAPI = (msgCode) => {
     };
 };
 
+/* 받은 쪽지 전체 휴지통 이동 API */
+export const callDelAllMsgAPI = (msgCodes) => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('PUT', `/emp/message/receive/updateRevStor`, {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            }, msgCodes);
+
+            if (result && result.status === 200) {
+                msgCodes.forEach(msgCode => {
+                    dispatch(upAllRevStatus(msgCode));  // 각 msgCode에 대해 삭제 액션을 디스패치
+                });
+            } else {
+                console.log("error : ", result);
+            }
+        } catch (error) {
+            console.log("del error : ", error);
+        }
+    };
+};
+
 /* 보낸 쪽지 휴지통 이동 API */
 export const callDelSendMsgAPI = (msgCode) => {
     return async (dispatch, getState) => {
@@ -263,10 +285,10 @@ export const callGetAttachmentListAPI = async (msgCode) => {
 
         const data = await response.json();
 
-        return data; // 이 부분이 중요: API에서 반환하는 데이터를 그대로 반환
+        return data; // API에서 반환하는 데이터를 그대로 반환
     } catch (error) {
         console.error('Error fetching data:', error);
-        throw error; // 오류 처리를 위해 예외를 다시 throw
+        throw error; // 오류 처리를 위해 예외 처리
     }    
 };
 
