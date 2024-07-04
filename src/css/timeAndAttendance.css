@@ -4,7 +4,7 @@
 
 .bl_tnaWeek{line-height:2.5;}
 .bl_tnaWeek__ttl{flex-basis:120px;flex-shrink:0;}
-.bl_tnaWeek__list{max-width:500px;}
+.bl_tnaWeek__list{max-width:700px;}
 .bl_tnaWeek__list *{font-size:16px;}
 
 /*.bl_tnaPageBtn{width:30px;height:30px;background:url("/img/icon/icon_arrow.png")no-repeat center/20px;}*/
