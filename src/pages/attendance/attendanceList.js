@@ -138,11 +138,14 @@ function AttendanceList() {
         setCurrentPage(1); // 필터링 시 첫 페이지로 초기화
     };
 
-    // useEffect를 사용하여 검색 결과 업데이트
+    // 최초 로드 시 자신의 데이터만 표시
     useEffect(() => {
-        // 최초 로드 시 모든 데이터 표시
-        setSearchResults(attendancesAll || []);
-    }, [attendancesAll]);
+        const filteredAttendances = attendancesAll.filter(attendances =>
+            attendances.empCode === employee.emp_code
+        );
+        setSearchResults(filteredAttendances);
+        setCurrentPage(1); // 데이터가 변경될 때 첫 페이지로 초기화
+    }, [attendancesAll, employee]);
 
     // 현재 페이지의 결과 계산
     const indexOfLastResult = currentPage * resultsPerPage;
@@ -161,7 +164,7 @@ function AttendanceList() {
         const workbook = XLSX.utils.book_new();
         const sheet = XLSX.utils.json_to_sheet(
             searchResults.map((attendance) => ({
-                '날짜': attendance.atdDate,
+                '근무날짜': attendance.atdDate,
                 '사원번호': attendance.empCode,
                 '상위부서명': attendance.parTitle,
                 '하위부서명': attendance.subTitle,
@@ -211,7 +214,7 @@ function AttendanceList() {
             <div className="hp_mr50">
                 <div style={{ position: "sticky" }}>
                     <AttendanceSummary attendancesToday={attendancesToday} />
-                    <DefaultSchedule employee={employee} />
+                    <DefaultSchedule employee={employee} attendancesToday={attendancesToday}/>
                     <WorkStatus />
                 </div>
             </div>
@@ -280,7 +283,7 @@ function AttendanceList() {
                             <tr>
                                 <th scope="col"><input type="checkbox" className="" id="" name=""
                                                        value="checkAll" /></th>
-                                <th scope="col">날짜</th>
+                                <th scope="col">근무날짜</th>
                                 <th scope="col">사원번호</th>
                                 <th scope="col">상위부서명</th>
                                 <th scope="col">하위부서명</th>

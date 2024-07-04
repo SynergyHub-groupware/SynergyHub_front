@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import WorkHoursCalculator from "../util/WorkHoursCalculator";
 import OverWorkHoursCalculator from "../util/OverWorkHoursCalculator";
 
-const WeekAttendance = ({ weekData, isOpen, toggle }) => {
+const PreferencesAttendance = ({ weekData, isOpen, toggle }) => {
 
     return (
         <div>
@@ -55,4 +55,4 @@ const WeekAttendance = ({ weekData, isOpen, toggle }) => {
     );
 };
 
-export default WeekAttendance;
+export default PreferencesAttendance;
