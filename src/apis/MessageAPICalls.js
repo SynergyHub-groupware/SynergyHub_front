@@ -1,4 +1,4 @@
-import { delMsg, delSendMsg, getAttachList, getBinMsg, getImpMsg, getRevDetail, getRevMsg, getSendMsg, getTempMsg, getWorkMsg, movMsgImp, movMsgRev, movMsgWork, upAllRevStatus, upMsgStatus, upMsgStatusNr, upRevMsgStatus } from "../modules/MessageModules";
+import { delMsg, delSendMsg, getAttachList, getBinMsg, getImpMsg, getRevDetail, getRevMsg, getSendMsg, getTempMsg, getWorkMsg, movMsgImp, movMsgRev, movMsgWork, upAllImpStatus, upAllRevStatus, upAllSendStatus, upAllWorkStatus, upMsgStatus, upMsgStatusNr, upRevMsgStatus } from "../modules/MessageModules";
 import { request } from "./api";
 
 /* 받은 쪽지 전체 조회 API */
@@ -157,6 +157,72 @@ export const callDelAllMsgAPI = (msgCodes) => {
             if (result && result.status === 200) {
                 msgCodes.forEach(msgCode => {
                     dispatch(upAllRevStatus(msgCode));  // 각 msgCode에 대해 삭제 액션을 디스패치
+                });
+            } else {
+                console.log("error : ", result);
+            }
+        } catch (error) {
+            console.log("del error : ", error);
+        }
+    };
+};
+
+/* 중요 보관함 전체 휴지통 이동 API */
+export const callDelAllImpMsgAPI = (msgCodes) => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('PUT', `/emp/message/receive/updateRevStor`, {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            }, msgCodes);
+
+            if (result && result.status === 200) {
+                msgCodes.forEach(msgCode => {
+                    dispatch(upAllImpStatus(msgCode));  // 각 msgCode에 대해 삭제 액션을 디스패치
+                });
+            } else {
+                console.log("error : ", result);
+            }
+        } catch (error) {
+            console.log("del error : ", error);
+        }
+    };
+};
+
+/* 업무 보관함 전체 휴지통 이동 API */
+export const callDelAllWorkMsgAPI = (msgCodes) => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('PUT', `/emp/message/receive/updateRevStor`, {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            }, msgCodes);
+
+            if (result && result.status === 200) {
+                msgCodes.forEach(msgCode => {
+                    dispatch(upAllWorkStatus(msgCode));  // 각 msgCode에 대해 삭제 액션을 디스패치
+                });
+            } else {
+                console.log("error : ", result);
+            }
+        } catch (error) {
+            console.log("del error : ", error);
+        }
+    };
+};
+
+/* 보낸 쪽지 전체 휴지통 이동 API */
+export const callDelAllSendMsgAPI = (msgCodes) => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('PUT', `/emp/message/send/updateSendStor`, {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            }, msgCodes);
+
+            if (result && result.status === 200) {
+                msgCodes.forEach(msgCode => {
+                    dispatch(upAllSendStatus(msgCode));  // 각 msgCode에 대해 삭제 액션을 디스패치
                 });
             } else {
                 console.log("error : ", result);

@@ -33,10 +33,13 @@ const GET_ATTACH_LIST = 'message/GET_ATTACH_LIST';
 
 const UP_REV_MSG_STATUS = 'message/UP_REV_MSG_STATUS';
 const UP_ALL_REV_STATUS = 'message/UP_ALL_REV_STATUS';
+const UP_ALL_IMP_STATUS = 'message/UP_ALL_IMP_STATUS';
+const UP_ALL_WORK_STATUS = 'message/UP_ALL_WORK_STATUS';
+const UP_ALL_SEND_STATUS = 'message/UP_ALL_SEND_STATUS';
 
 export const { message : { getRevMsg, getSendMsg, getBinMsg, getImpMsg, getWorkMsg, delMsg, getRevDetail, getSendDetail 
     , getTempMsg, delSendMsg, upMsgStatus, getAttachList, movMsgImp, movMsgWork, movMsgRev, upRevMsgStatus, upMsgStatusNr,
-    upAllRevStatus
+    upAllRevStatus, upAllImpStatus, upAllWorkStatus, upAllSendStatus
 }} = createActions({
     [GET_REV_MSG] : result => {
         console.log('action : ', result);
@@ -142,6 +145,24 @@ export const { message : { getRevMsg, getSendMsg, getBinMsg, getImpMsg, getWorkM
 
     [UP_ALL_REV_STATUS] : msgCodes => {
         console.log("up rev all msg status action : ", msgCodes);
+
+        return { msgCodes };
+    },
+
+    [UP_ALL_IMP_STATUS] : msgCodes => {
+        console.log("up imp all msg status action : ", msgCodes);
+
+        return { msgCodes };
+    },
+
+    [UP_ALL_WORK_STATUS] : msgCodes => {
+        console.log("up work all msg status action : ", msgCodes);
+
+        return { msgCodes };
+    },
+
+    [UP_ALL_SEND_STATUS] : msgCodes => {
+        console.log("up send all msg status action : ", msgCodes);
 
         return { msgCodes };
     }
@@ -331,6 +352,45 @@ const messageReducer = handleActions({
         return {
             ...state,
             revMessage: updateAllRevStor
+        }
+    },
+
+    [UP_ALL_IMP_STATUS] : (state, { payload }) => {
+        console.log("up all imp msg to bin reducer : ", payload);
+
+        const updateAllImpStor = state.impMessage.map(msg =>
+            payload.msgCodes.includes(msg.msgCode) ? { ...msg, revStor: '5'} : msg
+        );
+
+        return {
+            ...state,
+            impMessage: updateAllImpStor
+        }
+    },
+
+    [UP_ALL_WORK_STATUS] : (state, { payload }) => {
+        console.log("up all work msg to bin reducer : ", payload);
+
+        const updateAllWorkStor = state.workMessage.map(msg =>
+            payload.msgCodes.includes(msg.msgCode) ? { ...msg, revStor: '5'} : msg
+        );
+
+        return {
+            ...state,
+            workMessage: updateAllWorkStor
+        }
+    },
+
+    [UP_ALL_SEND_STATUS] : (state, { payload }) => {
+        console.log("up all send msg to bin reducer : ", payload);
+
+        const updateAllSendStor = state.sendMessage.map(msg =>
+            payload.msgCodes.includes(msg.msgCode) ? { ...msg, revStor: '5'} : msg
+        );
+
+        return {
+            ...state,
+            sendMessage: updateAllSendStor
         }
     }
 
