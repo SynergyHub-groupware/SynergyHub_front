@@ -11,7 +11,7 @@ function SendMsg() {
     const [search, setSearch] = useState("");   // 검색어 상태
     const searchRef = useRef(null); // 검색 입력 필드
     const [currentPage, setCurrentPage] = useState(1);  // 현재 페이지 상태
-    const messages = useSelector((state) => state.messageReducer.messages.message);
+    const messages = useSelector((state) => state.messageReducer.sendMessage.message);
 
 
     const delMsgHandler = () => {

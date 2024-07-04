@@ -8,7 +8,7 @@ import Pagination from "../paging/Pagination";
 function BinTable({ currentPage, setCurrentPage }) {
 
     const dispatch = useDispatch();
-    const messages = useSelector(state => state.messageReducer.messages.message);
+    const messages = useSelector(state => state.messageReducer.binMessage.message);
     const [sort, setSort] = useState("desc");   // 쪽지 정렬 상태
     const [selectMsg, setSelectMsg] = useState(new Set());
     const [selectAll, setSelectAll] = useState(false);  // 전체 선택

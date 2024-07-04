@@ -3,6 +3,11 @@ import { createActions, handleActions } from "redux-actions";
 /* 초기값 */
 const initialState = {
     messages: [],
+    revMessage: [],
+    sendMessage: [],
+    impMessage: [],
+    workMessage: [],
+    binMessage: [],
     messageDetail: null,
     attachments : []
 };
@@ -128,7 +133,7 @@ const messageReducer = handleActions({
 
         return {
             ...state,
-            messages: payload
+            revMessage: payload
         };
     },
 
@@ -137,7 +142,7 @@ const messageReducer = handleActions({
 
         return {
             ...state,
-            messages: payload
+            sendMessage: payload
         };
     },
 
@@ -146,7 +151,7 @@ const messageReducer = handleActions({
 
         return {
             ...state,
-            messages: payload
+            binMessage: payload
         }
     },
 
@@ -155,7 +160,7 @@ const messageReducer = handleActions({
 
         return {
             ...state,
-            messages: payload
+            impMessage: payload
         }
     },
 
@@ -164,7 +169,7 @@ const messageReducer = handleActions({
 
         return {
             ...state,
-            messages: payload
+            workMessage: payload
         }
     },
 

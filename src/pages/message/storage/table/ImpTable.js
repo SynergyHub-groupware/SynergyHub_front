@@ -7,7 +7,7 @@ function ImpTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCur
 
     const dispatch = useDispatch();
     const [allCheck, setAllCheck] = useState(false);
-    const messages = useSelector(state => state.messageReducer.messages.message);
+    const messages = useSelector(state => state.messageReducer.impMessage.message);
     const [sort, setSort] = useState("desc");   // 쪽지 정렬 상태
     const itemsPerPage = 10; // 페이지당 항목 수 10개로 설정
 

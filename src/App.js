@@ -58,6 +58,7 @@ import DayOffList from "./pages/attendance/DayOffList";
 import Preferences from "./pages/attendance/Preferences";
 import CreateMsg from './pages/message/storage/CreateMsg';
 import TempDetail from './pages/message/storage/detail/TempDetail';
+import SettingStor from './pages/message/storage/SettingStor';
 
 function App() {
   return (
@@ -123,6 +124,7 @@ function App() {
               <Route path='work/detail/:msgCode' element={<WorkDetail/>}/>
               <Route path='bin' element={<Bin/>}/>
               <Route path='bin/detail/:msgCode' element={<BinDetail/>}/>
+              <Route path='setting' element={<SettingStor/>}/>
             </Route>
           </Route>
           <Route path="post" element={<PostLayout/>}>
