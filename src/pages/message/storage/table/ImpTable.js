@@ -16,6 +16,13 @@ function ImpTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCur
         dispatch(callImpMsgListAPI());
     }, [dispatch])
 
+    /* 날짜 포맷 함수 */
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        
+        return date.toISOString().split('T')[0];
+    }
+
     /* 쪽지 배열 정렬 */
     const sortMsg = (messages, sort) => {
     
@@ -104,7 +111,7 @@ function ImpTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCur
                             currentMessages.map(msg => (
                                 <tr key={msg.msgCode}>
                                     <td><input type="checkbox" onChange={() => checkboxChange(msg.msgCode)} checked={selectMsgCode.includes(msg.msgCode)}/></td>
-                                    <td>{msg.sendDate}</td>
+                                    <td>{formatDate(msg.sendDate)}</td>
                                     <td>{msg.sendName} {msg.sendPosition}</td>
                                     <td className="hp_alighL">
                                         <Link to={`/message/storage/imp/detail/${msg.msgCode}`}>{msg.msgTitle}</Link>

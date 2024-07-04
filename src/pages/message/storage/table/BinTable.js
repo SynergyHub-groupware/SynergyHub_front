@@ -14,6 +14,13 @@ function BinTable({ currentPage, setCurrentPage }) {
     const [selectAll, setSelectAll] = useState(false);  // 전체 선택
     const itemsPerPage = 10;
 
+    /* 날짜 포맷 함수 */
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        
+        return date.toISOString().split('T')[0];
+    }
+
     /* 쪽지 배열 정렬 */
     const sortMsg = (messages, sort) => {
 
@@ -152,7 +159,7 @@ function BinTable({ currentPage, setCurrentPage }) {
                                 <td>
                                     <input type="checkbox" checked={selectMsg.has(msg.msgCode)} onChange={() => selectMsgHandler(msg.msgCode)}/>
                                 </td>
-                                <td>{msg.sendDate}</td>
+                                <td>{formatDate(msg.sendDate)}</td>
                                 {/* <td>{msg.sendName ?  `${msg.sendName} ${msg.sendPosition}` : `${msg.revName} ${msg.revPosition}`}</td> */}
                                 <td>{msg.sendName} {msg.sendPosition}</td>
                                 <td>{msg.revName} {msg.revPosition}</td>

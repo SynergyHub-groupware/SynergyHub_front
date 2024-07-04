@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { callGetAttachListAPI, callRevMsgListAPI, callUpdateMsgStautsAPI } from "../../../../apis/MessageAPICalls";
+import { callRevMsgListAPI, callUpdateMsgStautsAPI } from "../../../../apis/MessageAPICalls";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -15,6 +15,13 @@ function RevTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCur
         console.log('API 호출');
         dispatch(callRevMsgListAPI());
     }, [dispatch]);
+
+    /* 날짜 포맷 함수 */
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        
+        return date.toISOString().split('T')[0];
+    }
 
     /* 쪽지 배열 정렬 */
     const sortMsg = (messages, sort) => {
@@ -110,7 +117,7 @@ function RevTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCur
                             currentMessages.map(msg => (
                                 <tr key={msg.msgCode}>
                                     <td><input type="checkbox" onChange={() => checkboxChange(msg.msgCode)} checked={selectMsgCode.includes(msg.msgCode)}/></td>
-                                    <td style={{ color: msg.msgStatus === 'Y' ? '#888' : '#000'}}>{msg.sendDate}</td>
+                                    <td style={{ color: msg.msgStatus === 'Y' ? '#888' : '#000'}}>{formatDate(msg.sendDate)}</td>
                                     <td style={{ color: msg.msgStatus === 'Y' ? '#888' : '#000'}}>{msg.sendName} {msg.sendPosition}</td>
                                     <td className="hp_alighL" style={{ color: msg.msgStatus === 'Y' ? '#888' : '#000'}}>
                                         <Link 

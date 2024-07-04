@@ -12,6 +12,13 @@ function WorkTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCu
     const [sort, setSort] = useState("desc");   // 쪽지 정렬 상태
     const itemsPerPage = 10; // 페이지당 항목 수 10개로 설정
 
+    /* 날짜 포맷 함수 */
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        
+        return date.toISOString().split('T')[0];
+    }
+
     /* 쪽지 배열 정렬 */
     const sortMsg = (messages, sort) => {
     
@@ -106,7 +113,7 @@ function WorkTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCu
                             currentMessages.map(msg => (
                                 <tr key={msg.msgCode}>
                                     <td><input type="checkbox" onChange={() => checkboxChange(msg.msgCode)} checked={selectMsgCode.includes(msg.msgCode)} /></td>
-                                    <td>{msg.sendDate}</td>
+                                    <td>{formatDate(msg.sendDate)}</td>
                                     <td>{msg.sendName} {msg.sendPosition}</td>
                                     <td className="hp_alighL">
                                         <Link to={`/message/storage/work/detail/${msg.msgCode}`}>{msg.msgTitle}</Link>
