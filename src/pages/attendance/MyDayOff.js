@@ -90,13 +90,16 @@ function MyDayOff() {
                                     <tbody>
                                     <tr className="">
                                         <td>
-                                            <div className="hp_fw700 hp_fs28 ly_flexC hp_mr15">{dayOffBalance != null ? dayOffBalance.granted : 0}</div>
+                                            <div
+                                                className="hp_fw700 hp_fs28 ly_flexC hp_mr15">{dayOffBalance != null ? dayOffBalance.granted : 0}</div>
                                         </td>
                                         <td>
-                                            <div className="hp_fw700 hp_fs28 ly_flexC hp_mr20">{dayOffBalance != null ? dayOffBalance.dbUsed : 0}</div>
+                                            <div
+                                                className="hp_fw700 hp_fs28 ly_flexC hp_mr20">{dayOffBalance != null ? dayOffBalance.dbUsed : 0}</div>
                                         </td>
                                         <td>
-                                            <div className="hp_fw700 hp_fs28 ly_flexC hp_mr20">{dayOffBalance != null ? dayOffBalance.remaining : 0}</div>
+                                            <div
+                                                className="hp_fw700 hp_fs28 ly_flexC hp_mr20">{dayOffBalance != null ? dayOffBalance.remaining : 0}</div>
                                         </td>
                                         <td>
                                             <div className="hp_fw700 hp_fs28 ly_flexC hp_mr10">1</div>
