@@ -34,6 +34,7 @@ function ReceiveMain(){
             case 'reference': setTitle('참조/열람'); break;
             default: setTitle('');
         }
+        setCurrentPage(1);
     }, [status]);
     
     const renderDocList = () => {
@@ -73,6 +74,7 @@ function ReceiveMain(){
             });
             setSearchResults(filteredDocuments);
         }
+        setCurrentPage(1);
     };
 
     console.log("searchResults", searchResults);

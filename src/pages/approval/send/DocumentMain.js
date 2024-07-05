@@ -34,6 +34,7 @@ function DocumentMain(){
             case 'return': setTitle('반려'); break;
             default: setTitle('');
         }
+        setCurrentPage(1);
     }, [status]);
 
     // console.log("status", status);
@@ -75,6 +76,7 @@ function DocumentMain(){
             });
             setSearchResults(filteredDocuments);
         }
+        setCurrentPage(1);
     };
 
     // console.log("searchResults", searchResults);
