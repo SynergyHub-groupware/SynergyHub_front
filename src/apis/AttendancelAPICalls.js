@@ -6,7 +6,7 @@ import {
     getAttendanceAll,
     getDayOffAll,
     getDayOffBalance,
-    getDefaultSchedule
+    getDefaultSchedule, getAllAttendanceToday
 } from "../modules/AttendanceModules";
 
 export const callMyInfoAPI = () => {
@@ -152,6 +152,27 @@ export const callDefaultScheduleAPI = () => {
             }
         } catch (error) {
             console.error('지정 출퇴근시간 조회 실패 error : ', error);
+        }
+    };
+};
+
+export const callAllAttendanceTodayAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/api/attendance/today-all', {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            });
+
+            console.log('callAttendanceTodayAPI result : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(getAllAttendanceToday(result.data.results.AllAttendanceToday));
+            } else {
+                console.error('오늘의 모든 근태정보 조회 실패 result : ', result);
+            }
+        } catch (error) {
+            console.error('오늘의 모든 근태정보 조회 실패 error : ', error);
         }
     };
 };

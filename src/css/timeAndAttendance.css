@@ -1,6 +1,8 @@
 
 .bl_tna__label{background:#000;color:#fff;border-radius:999px;text-align:center;padding:0 20px;flex-shrink:0;word-break:keep-all;}
 .bl_tna__label2{background:none;color:#000;font-weight:700;border: black 1px solid;}
+.bl_tna__label3{background:none;border: #006CD0 1.5px solid;border-radius:999px;text-align:center;padding:0 20px;flex-shrink:0;word-break:keep-all;}
+.bl_tna__label4{background:#006CD0;border: #006CD0 1.5px solid;border-radius:999px;text-align:center;padding:0 20px;flex-shrink:0;word-break:keep-all;}
 
 .bl_tnaWeek{line-height:2.5;}
 .bl_tnaWeek__ttl{flex-basis:120px;flex-shrink:0;}
@@ -9,16 +11,18 @@
 
 /*.bl_tnaPageBtn{width:30px;height:30px;background:url("/img/icon/icon_arrow.png")no-repeat center/20px;}*/
 .el_btnD{border-radius:25px;width:80px;height:40px;}
+.el_btnT{border-radius:25px;width:80px;height:35px;}
 .bl_tnaPageBtn__prev{transform:rotate(180deg);}
 .bl_tnaPageBtn__next{}
 
 /* 애니메이션 */
 .time_table {height: 10px; transition: height 0.7s;}
-.time_table.go {height: 285px; transform: translateY(0px);}
+.time_table.go {height: 300px; transform: translateY(0px);}
 
 /* 섹션 */
 .section1 {top:100px; width: 370px;}
 .section2 {position: relative; width: 900px; top: -10px; z-index: 1; padding-left: 30px; padding-right: 30px;}
+.section2_pre {position: relative; width: 900px; top: -10px; z-index: 1; padding-left: 30px; padding-right: 30px;}
 .section2_title {position: relative; width: 900px; height: 75px; z-index: 2; padding: 20px 20px;}
 .section3 {position: sticky; top:100px; width: 180px;}
 .section3_title {text-align: center; font-size: 16px; padding-bottom: 10px;}
