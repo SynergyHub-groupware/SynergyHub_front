@@ -32,7 +32,7 @@ const GET_POSTEDIT='post/GET_POSTEDIT'
 const GET_POSTREADY='post/GET_POSTREADY'
 
 // 액션 생성자 함수 생성
-export const { post: { getReadypost,getPostedit,getPostsearch,getAlllow,getComment,getFile,getPostlist, getAllboard, getAlllowboard,getSortlist,getPostdatainboard,getPostdatainboardpin,getDetail } } = createActions({
+export const { post: {getReadypost,getPostedit,getPostsearch,getAlllow,getComment,getFile,getPostlist, getAllboard, getAlllowboard,getSortlist,getPostdatainboard,getPostdatainboardpin,getDetail } } = createActions({
   [GET_POSTLIST]: postlist => ({ postlist }),
   [GET_ALLBOARD]: boardlist => ({ boardlist }),
   [GET_ALLLOWBOARD]: lowboardlist => ({ lowboardlist }),
@@ -54,6 +54,7 @@ export const { post: { getReadypost,getPostedit,getPostsearch,getAlllow,getComme
 // console.log("getAllLowBoard", getAlllowboard);
 // console.log("getSortlist",getSortlist);
 // console.log("getAlllow",getAlllow);
+console.log("getReadypost",getReadypost)
 
 // 초기 상태 및 리듀서 정의
 const postReducer = handleActions(
@@ -124,6 +125,7 @@ const postReducer = handleActions(
 // console.log("initialState.PostdataInBoard",initialState.PostdataInBoard);
 // console.log("initialState.PostdataInBoardPin",initialState.PostdataInBoardPin);
 // console.log("initialState.AllLowState",initialState.AllLowState);
+console.log("initialState.PostReadyState",initialState.PostReadyState);
 
 
 export default postReducer;

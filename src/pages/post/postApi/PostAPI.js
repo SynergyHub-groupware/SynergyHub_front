@@ -28,6 +28,8 @@ export function callGETReadyPost(empCode){
   return async(dispatch,getState)=>{
     try{
       const result=await request("GET",`/post/ReadyPost/${empCode}`)
+      console.log(result)
+
       dispatch(getReadypost(result))
     }catch(error){
       throw(error)

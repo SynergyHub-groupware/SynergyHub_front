@@ -1,52 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { callGETReadyPost } from './postApi/PostAPI';
-import { callDepartmentEmployeesAPI } from '../../apis/EmployeeAPICalls';
+import { callGETReadyPost } from './postApi/PostAPI'; // PostAPI 경로는 프로젝트에 맞게 수정 필요
+import { callDepartmentEmployeesAPI } from '../../apis/EmployeeAPICalls'; // EmployeeAPICalls 경로는 프로젝트에 맞게 수정 필요
+import { callMyInfoAPI } from '../../apis/EmployeeAPICalls'; // EmployeeAPICalls 경로는 프로젝트에 맞게 수정 필요
+import { useParams } from 'react-router-dom';
 
 function PostReadyList() {
   const dispatch = useDispatch();
-  const postState = useSelector(state => state.post);
+  const postState = useSelector(state => state.post.PostReadyState);
   const { Postdata, PostSearch } = postState;
-
-  const [postsearch, setpostSearch] = useState('');
+  const { empcode } = useParams();
+  const [postsearch, setPostSearch] = useState('');
   const [displayData, setDisplayData] = useState([]);
-  const [empCode,setEmpCode]=useState('')
-
-  useEffect(() => {
-    dispatch(callDepartmentEmployeesAPI());
-}, [dispatch]);
-const employees = useSelector(state => state.employeeReducer.employees?.employees || []);
-
-useEffect(() => {
-    setEmpCode(employees.map(employee => (
-      {
-        emp_code: employee.emp_code,
-      }
-    )));
-  }, [employees]);
+  const [empCode, setEmpCode] = useState('');
   
+  // useEffect(() => {
+  //   dispatch(callDepartmentEmployeesAPI());
+  //   dispatch(callMyInfoAPI());
+  // }, [dispatch]);
+
+  // const employees = useSelector(state => state.employeeReducer.employees?.employees || []);
+
   useEffect(() => {
-    dispatch(callGETReadyPost(empCode.emp_code)); // 첫 번째 페이지, 페이지당 10개의 데이터 요청
+      dispatch(callGETReadyPost(empcode));
+      console.log(empcode)
+    
   }, [dispatch]);
 
   useEffect(() => {
-    setDisplayData(Postdata);
-  }, [Postdata]);
-
-  useEffect(() => {
-    if (postsearch) {
-      setDisplayData(PostSearch);
-    } else {
-      setDisplayData(Postdata);
-    }
-  }, [PostSearch, postsearch, Postdata]);
+    setDisplayData(postsearch ? PostSearch : Postdata);
+  }, [postsearch, Postdata, PostSearch]);
 
   const renderRows = () => {
     if (!Array.isArray(displayData) || displayData.length === 0) {
       return <tr><td colSpan="6">로딩 중...</td></tr>;
     }
-
-
 
     return displayData.map(item => {
       const lowBoardCode = item.lowBoardCode ? item.lowBoardCode.lowBoardCode : 'N/A';
@@ -65,29 +53,26 @@ useEffect(() => {
     });
   };
 
-
   return (
-    <>      
-      <div className="main">
-        <h1 style={{ fontSize: '50px' }}>임시 저장</h1>
-        <br /><br /><br />
-        <table className="bl_tb1">
-          <thead>
-            <tr className="tableHead">
-              <th>No</th>
-              <th>분류</th>
-              <th>제목</th>
-              <th>작성자</th>
-              <th>작성일</th>
-              <th>열람</th>
-            </tr>
-          </thead>
-          <tbody>
-            {renderRows()}
-          </tbody>
-        </table>
-      </div>
-    </>
+    <div className="main">
+      <h1 style={{ fontSize: '50px' }}>임시 저장</h1>
+      <br /><br /><br />
+      <table className="bl_tb1">
+        <thead>
+          <tr className="tableHead">
+            <th>No</th>
+            <th>분류</th>
+            <th>제목</th>
+            <th>작성자</th>
+            <th>작성일</th>
+            <th>열람</th>
+          </tr>
+        </thead>
+        <tbody>
+          {renderRows()}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

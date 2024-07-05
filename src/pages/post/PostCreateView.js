@@ -3,7 +3,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { callGETBoardList, callGETLowBoardList,callGETSoftList } from './postApi/PostAPI';
-import { callDepartmentEmployeesAPI } from '../../apis/EmployeeAPICalls';
+import { callMyInfoAPI } from '../../apis/EmployeeAPICalls';
 
 function PostCreateView() {
     const [formData, setFormData] = useState({
@@ -12,7 +12,8 @@ function PostCreateView() {
         attachFile: '',
         postCommSet: 3,  // 기본값: 둘다 비활성화
         lowBoardCode: '',
-        psCode:''
+        psCode:'',
+        empCode:''
     });
     const dispatch = useDispatch();
     const BoardState = useSelector(state => state.post.BoardState);
@@ -21,19 +22,19 @@ function PostCreateView() {
 
 
     const [empCode,setEmpCode]=useState('')
-
+    console.log("empcode",empCode)
     useEffect(() => {
-      dispatch(callDepartmentEmployeesAPI());
-  }, [dispatch]);
-  const employees = useSelector(state => state.employeeReducer.employees?.employees || []);
+      dispatch(callMyInfoAPI());
+  }, []);
+  const employees = useSelector(state => state.employeeReducer.employee);
   
-  useEffect(() => {
-      setEmpCode(employees.map(employee => (
-        {
-          emp_code: employee.emp_code,
-        }
-      )));
-    }, [employees]);
+//   useEffect(() => {
+//       setEmpCode(employees.map(employee => (
+//         {
+//           emp_code: employee.emp_code,
+//         }
+//       )));
+//     }, [employees]);
   
 
     const getCurrentDate = () => {
@@ -127,6 +128,7 @@ function PostCreateView() {
         formDataToSend.append('postCommSet', postCommSet);
         formDataToSend.append('lowBoardCode', lowBoardCode);
         formDataToSend.append("psCode",psCode);
+        formDataToSend.append('empCode',employees.emp_code);
         
         if (attachFile) {
             for (let i = 0; i < attachFile.length; i++) {
@@ -206,7 +208,7 @@ function PostCreateView() {
                         </tr>
                         <tr>
                             <td>작성자</td>
-                            <td>{empCode.emp_name}</td>
+                            <td>{employees.emp_name}</td>
                             <td>작성일</td>
                             <td>{getCurrentDate()}</td>
                         </tr>
