@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import TodayDateComponent from "../util/TodayDateComponent";
+import PagingBar from "../../../components/commons/PagingBar";
 
 const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleData, employee }) => {
     const [filteredData, setFilteredTodayData] = useState([]);
@@ -10,6 +11,22 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
     const [dayOff, setDayOff] = useState(0); // 휴가 인원 수
     const [fieldWork, setFieldWork] = useState(0); // 외근 인원 수
     const [business, setBusiness] = useState(0); // 출장 인원 수
+
+    // 페이징
+    const [currentPage, setCurrentPage] = useState(1);
+    const resultsPerPage = 10;
+
+    // 현재 페이지의 결과 계산
+    const indexOfLastResult = currentPage * resultsPerPage;
+    const indexOfFirstResult = indexOfLastResult - resultsPerPage;
+    const currentResults = filteredData.slice(indexOfFirstResult, indexOfLastResult);
+    const totalPages = Math.ceil(filteredData.length / resultsPerPage);
+
+    // 페이지 변경 핸들러
+    const handlePageChange = (pageNumber) => {
+        if (pageNumber < 1 || pageNumber > totalPages) return;
+        setCurrentPage(pageNumber);
+    };
 
     useEffect(() => {
         // 사용자의 직책과 부서코드에 따라 필요한 부서 및 팀 옵션 설정
@@ -27,22 +44,31 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                     (allSubDepts.some(subDept => subDept.name === data.subTitle))
                 );
 
-                // 정렬: 팀장이 먼저 나오고, 그 외는 팀명 가나다 순으로 정렬
                 const sortedData = filteredData.sort((a, b) => {
+                    // 부서장 여부 확인
+                    const isDepartmentHeadA = a.empTitle === '부서장';
+                    const isDepartmentHeadB = b.empTitle === '부서장';
+
+                    // 부서장이면 팀명 ㄱㄴㄷ 순으로 정렬
+                    if (isDepartmentHeadA && !isDepartmentHeadB) return -1;
+                    if (!isDepartmentHeadA && isDepartmentHeadB) return 1;
+
                     // 팀장 여부 확인
                     const isTeamLeaderA = a.empTitle === '팀장';
                     const isTeamLeaderB = b.empTitle === '팀장';
 
-                    // 팀장인 경우에는 팀장이 먼저 나오게 정렬, 그렇지 않으면 팀명으로 정렬
+                    // 팀장이면 팀명 ㄱㄴㄷ 순으로 정렬
                     if (isTeamLeaderA && !isTeamLeaderB) return -1;
                     if (!isTeamLeaderA && isTeamLeaderB) return 1;
+
+                    // 모두 부서장 또는 팀장이 아닌 경우에는 팀명 ㄱㄴㄷ 순으로 정렬
+                    if (a.deptTitle == null) return 1;
+                    if (b.deptTitle == null) return -1;
+
                     return a.deptTitle.localeCompare(b.deptTitle); // 팀명 가나다 순으로 정렬
                 });
 
                 setFilteredTodayData(sortedData);
-
-                // 전체 인원 수 계산 (휴직 제외)
-                setAll(checkIn + late + NoCheckIn + dayOff + fieldWork + business);
 
                 // 출근 인원 수 계산
                 const checkInCount = filteredData.filter(data => data.attendanceStatus.atsName === '출근').length;
@@ -69,8 +95,9 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                 const businessCount = filteredData.filter(data => data.attendanceStatus.atsName === '출장').length;
                 setBusiness(businessCount);
 
+                // 전체 인원 수 계산 (휴직 제외)
+                setAll(checkIn + late + NoCheckIn + dayOff + fieldWork + business);
             }
-
         }
     }, [todayData, departmentsData, userRoleData]);
 
@@ -84,9 +111,9 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                     {employee.emp_name} {employee.position_name}님,
                 </div>
                 <div className="hp_fs22 hp_mb40">
-                    지금 우리 팀원들의 근태 현황을 확인해보세요. 🕵️‍♀️
+                    우리 팀원들의 근태 현황을 확인해보세요. 🕵️‍♀️
                 </div>
-                <div className="" style={{ display: "flex" }}>
+                <div className="" style={{display: "flex"}}>
                     <div className="hp_mt40" style={{width: '300px'}}>
                         <table className="ly_fitemC">
                             <colgroup>
@@ -173,10 +200,10 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                     </div>
                 </div>
             </section>
-            <section className="bl_sect hp_mt10 el_shadowD4" style={{marginLeft: 'auto', marginRight: 'auto'}}>
+            <section className="bl_sect hp_mt10  hp_mb20 el_shadowD4" style={{marginLeft: 'auto', marginRight: 'auto'}}>
                 <table className="bl_tb1" style={{width: '900px'}}>
                     <colgroup>
-                        <col style={{width: "70px"}}/>
+                        <col style={{width: "100px"}}/>
                         <col style={{width: "50px"}}/>
                         <col style={{width: "70px"}}/>
                         <col style={{width: "85px"}}/>
@@ -198,8 +225,8 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                     </tr>
                     </thead>
                     <tbody>
-                    {filteredData.length > 0 ? (
-                        filteredData.map((employee, index) => (
+                    {currentResults.length > 0 ? (
+                        currentResults.map((employee, index) => (
                             <tr key={index} style={{height: '55px'}}>
                                 <td>{employee.deptTitle}</td>
                                 <td>{employee.empTitle}</td>
@@ -219,6 +246,12 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                     </tbody>
                 </table>
             </section>
+            <div className="ly_spaceBetween ly_fitemC hp_mt10">
+                <div className="hp_ml10 hp_7Color">총 &nbsp;<b
+                    className="hp_0Color hp_fw700">{currentPage}</b> / {totalPages} 페이지
+                </div>
+            </div>
+            <PagingBar pageInfo={{currentPage, maxPage: totalPages}} setCurrentPage={handlePageChange}/>
         </>
     );
 };
