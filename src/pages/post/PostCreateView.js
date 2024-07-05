@@ -3,6 +3,7 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { callGETBoardList, callGETLowBoardList,callGETSoftList } from './postApi/PostAPI';
+import { callDepartmentEmployeesAPI } from '../../apis/EmployeeAPICalls';
 
 function PostCreateView() {
     const [formData, setFormData] = useState({
@@ -17,6 +18,34 @@ function PostCreateView() {
     const BoardState = useSelector(state => state.post.BoardState);
     const LowBoardState = useSelector(state => state.post.LowBoardState);
     const SoftListState=useSelector(state => state.post.SortListState);
+
+
+    const [empCode,setEmpCode]=useState('')
+
+    useEffect(() => {
+      dispatch(callDepartmentEmployeesAPI());
+  }, [dispatch]);
+  const employees = useSelector(state => state.employeeReducer.employees?.employees || []);
+  
+  useEffect(() => {
+      setEmpCode(employees.map(employee => (
+        {
+          emp_code: employee.emp_code,
+        }
+      )));
+    }, [employees]);
+  
+
+    const getCurrentDate = () => {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1; // 월은 0부터 시작하므로 +1 해줘야 함
+        const day = currentDate.getDate();
+
+        return `${year}.${month}.${day}`;
+    };
+
+
 
     useEffect(() => {
         dispatch(callGETBoardList());
@@ -177,9 +206,9 @@ function PostCreateView() {
                         </tr>
                         <tr>
                             <td>작성자</td>
-                            <td>김씨</td>
+                            <td>{empCode.emp_name}</td>
                             <td>작성일</td>
-                            <td>2024.10.01</td>
+                            <td>{getCurrentDate()}</td>
                         </tr>
                         <tr>
                             <td>알림</td>
