@@ -14,6 +14,7 @@ import {
     callMyInfoAPI
 } from "../../apis/AttendancelAPICalls";
 import DropdownComponent from "./component/DropdownComponent";
+import DayOffStatus from "./component/DayOffStatus";
 
 function DayOffList() {
     const dispatch = useDispatch();
@@ -194,7 +195,7 @@ function DayOffList() {
                 <div style={{ position: "sticky" }}>
                     <AttendanceSummary attendancesToday={attendancesToday} />
                     <DefaultSchedule employee={employee} />
-                    <WorkStatus />
+                    <DayOffStatus />
                 </div>
             </div>
             <div className="">

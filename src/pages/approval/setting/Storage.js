@@ -38,6 +38,7 @@ function Storage() {
 
     // 삭제
     const handleDelete = (abCode) => {
+        console.log("abCode", abCode);
         if (window.confirm("해당 보관함을 삭제 하시겠습니까?\n저장되었던 결재문서는 모두 삭제되며, 원본은 삭제되지 않습니다.\n(원본은 보낸결재함의 완료 메뉴에서 확인하실 수 있습니다.)")) {
             dispatch(calldeleteBoxAPI(abCode))
                 .then(() => { window.location.reload(); })

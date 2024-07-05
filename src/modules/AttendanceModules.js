@@ -8,7 +8,8 @@ const initialState = {
     attendanceAll: [],
     dayOffs: [],
     dayOffBalance: {},
-    schedules: []
+    schedules: [],
+    AllAttendanceToday: []
 };
 
 // 액션 타입 정의
@@ -20,11 +21,12 @@ const GET_ATTENDANCE_ALL = 'attendance/GET_ATTENDANCE_ALL';
 const GET_DAY_OFF_ALL = 'dayOffs/GET_DAY_OFF_ALL';
 const GET_DAY_OFF_BALANCE = 'dayOffs/GET_DAY_OFF_BALANCE';
 const GET_DEFAULT_SCHEDULE = 'attendance/GET_DEFAULT_SCHEDULE';
+const GET_ALL_ATTENDANCE_TODAY = 'attendance/GET_ALL_ATTENDANCE_TODAY';
 
 // 액션 함수
 export const {
     employee: { getMyInfo },
-    attendance: { getAttendanceForWeek, getAttendanceToday, getAttendanceAll, getDefaultSchedule },
+    attendance: { getAttendanceForWeek, getAttendanceToday, getAttendanceAll, getDefaultSchedule, getAllAttendanceToday },
     dayOffs: { getDayOffAll, getDayOffBalance }
     } =
     createActions({
@@ -35,8 +37,9 @@ export const {
     [GET_ATTENDANCE_ALL]: (attendanceAll) => ({ attendanceAll }),
     [GET_DAY_OFF_ALL]: (dayOffs) => ({ dayOffs }),
     [GET_DAY_OFF_BALANCE]: (dayOffBalance) => ({ dayOffBalance }),
-    [GET_DEFAULT_SCHEDULE]: (schedules) => ({ schedules })
-});
+    [GET_DEFAULT_SCHEDULE]: (schedules) => ({ schedules }),
+    [GET_ALL_ATTENDANCE_TODAY]: (AllAttendanceToday) => ({ AllAttendanceToday }),
+    });
 
 // 리듀서
 const attendanceReducer = handleActions({
@@ -71,6 +74,10 @@ const attendanceReducer = handleActions({
     [GET_DEFAULT_SCHEDULE]: (state, { payload }) => ({
         ...state,
         schedules: payload.schedules
+    }),
+    [GET_ALL_ATTENDANCE_TODAY]: (state, { payload }) => ({
+        ...state,
+        AllAttendanceToday: payload.AllAttendanceToday
     }),
 }, initialState);
 

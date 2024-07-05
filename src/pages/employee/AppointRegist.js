@@ -1,6 +1,97 @@
 // import '../../css/personal.css';
 
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { callRegistAppAPI } from '../../apis/EmployeeAPICalls';
+
 function AppointRegist(){
+
+    const dispatch = useDispatch();
+
+    const registAppoints = useSelector(state => state.employeeReducer.registAppoints);
+
+    const [appRegistData, setAppRegistData] = useState({
+
+        aappDate: '',
+        empName: '',
+        adetType: '',
+        adetBefore: '',
+        adetAfter: ''
+
+    });
+
+    const [appFormData, setAppFormData] = useState({
+
+        aappNo: generateAppointNumber(),
+        aappTitle: ''
+
+    });
+
+    useEffect(() => {
+        dispatch(callRegistAppAPI());
+    }, [dispatch]);
+
+    const [appRegists, setAppRegists] = useState([]);
+
+    // 발령 번호 생성
+    function generateAppointNumber() {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+
+        const currentAappNos = registAppoints
+            .map(app => app.aappNo)
+            .filter(no => no.startsWith(`APP-${year}-${month}`))
+            .sort();
+
+        let newAappNo = 1;
+
+        if (currentAappNos.length > 0) {
+            const lastAappNo = currentAappNos[currentAappNos.length - 1];
+            const lastAappNumber = parseInt(lastAappNo.split('-')[3], 10);
+            newAappNo = lastAappNumber + 1;
+        }
+
+        const formattedAappNo = String(newAappNo).padStart(3, '0');
+
+        return `APP-${year}-${month}-${formattedAappNo}`;
+    }
+
+
+    const handleAddApp = () => {
+        const newApp = { ...appRegistData };
+        setAppRegists([ ...appRegists, newApp ]);
+        setAppRegistData({
+
+            aappDate: '',
+            empName: '',
+            adetType: '',
+            adetBefore: '',
+            adetAfter: ''
+
+        });
+    };
+
+    const handleChange = (e) => {
+
+        const { name, value } = e.target;
+        setAppRegistData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleFormChange = (e) => {
+
+        const { name, value } = e.target;
+
+        setAppFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+
     return(        
         <div className="ly_cont">
             <div className="ly_spaceBetween ly_fitemEnd hp_mb30">
@@ -16,19 +107,27 @@ function AppointRegist(){
                     <tbody>
                         <tr>
                             <th scope="row">발령번호</th>
-                            <td>app-2024-05-0001</td>
+                            <td><input type="text" className="hp_w100" name="aappNO" value={appFormData.aappNo} onChange={handleFormChange} /></td>
                         </tr>
                         <tr>
                             <th scope="row">제목</th>
-                            <td><input type="text" className="hp_w100" value="2024년 1분기 인사발령" /></td>
+                            <td><input type="text" className="hp_w100" name="aappTitle" value={appFormData.aappTitle} onChange={handleFormChange} /></td>
                         </tr>
                     </tbody>
                 </table>
                 <div className="ly_spaceBetween hp_mt20">
                     <h5 className="hp_fw700 hp_fs18">개별등록</h5>
                     <div>
-                        <button type="button" className="el_btnS el_btn8Back">비우기</button>
-                        <button type="button" className="el_btnS el_btn0Back">저장</button>
+                        <button type="button" className="el_btnS el_btn8Back" onClick={() => 
+                            setAppRegistData({
+                                aappDate: '',
+                                empCode: '',
+                                adetType: '',
+                                adetBefore: '',
+                                adetAfter: ''
+                            })
+                        }>비우기</button>
+                        <button type="button" className="el_btnS el_btn0Back" onClick={handleAddApp}>추가</button>
                     </div>
                 </div>
                 <table className="bl_tb3 hp_mt10">
@@ -43,12 +142,12 @@ function AppointRegist(){
                     <tbody>
                         <tr>
                             <th scope="row">발령일</th>
-                            <td><input type="date" className="hp_w100" value="내용1" /></td>
+                            <td><input type="date" className="hp_w100" name="aappDate" value={appRegistData.aappDate} onChange={handleChange} /></td>
                             <th scope="row">이름</th>
-                            <td><input type="text" className="hp_w100" value="내용3" /></td>
+                            <td><input type="text" className="hp_w100" name="empName" value={appRegistData.empName} onChange={handleChange} /></td>
                             <th scope="row">발령종류</th>
                             <td>
-                                <select type="text" className="hp_w100" value="내용2">
+                                <select type="text" className="hp_w100" name="adetType" value={appRegistData.adetType} onChange={handleChange} >
                                     <option>선택</option>
                                     <option>승진</option>
                                     <option>이동</option>
@@ -61,17 +160,17 @@ function AppointRegist(){
                         </tr>
                         <tr>
                             <th scope="row">부서</th>
-                            <td><input type="text" className="hp_w100" value="내용3" /></td>
+                            <td><input type="text" className="hp_w100" name="dept_title" onChange={handleChange} /></td>
                             <th scope="row">직책</th>
-                            <td><input type="text" className="hp_w100" value="내용1" /></td>
+                            <td><input type="text" className="hp_w100" name="title_name" onChange={handleChange} /></td>
                             <th scope="row">직급</th>
-                            <td><input type="text" className="hp_w100" value="내용1" /></td>
+                            <td><input type="text" className="hp_w100" name="position_name" onChange={handleChange} /></td>
                         </tr>
                         <tr>
                             <th scope="row">발령 전</th>
-                            <td><input type="text" className="hp_w100" value="내용2" /></td>
+                            <td><input type="text" className="hp_w100" name="adetBefore" value={appRegistData.adetBefore} onChange={handleChange} /></td>
                             <th scope="row">발령 후</th>
-                            <td><input type="text" className="hp_w100" value="내용2" /></td>
+                            <td><input type="text" className="hp_w100" name="adetAfter" value={appRegistData.adetAfter} onChange={handleChange} /></td>
                         </tr>
                     </tbody>
                 </table>
@@ -107,43 +206,11 @@ function AppointRegist(){
                     <tbody>
                         <tr>
                             <th scope="row"><input type="checkbox" className="" id="" name="" value="checkOne" /></th>
-                            <td>2024-12-34</td>
-                            <td className="" style={{ textAlign: 'center' }}>홍길동</td>
-                            <td>이동</td>
-                            <td>영업팀</td>
-                            <td>고객관리팀</td>
-                        </tr>
-                        <tr>
-                        <th scope="row"><input type="checkbox" className="" id="" name="" value="checkOne" /></th>
-                            <td>2024-12-34</td>
-                            <td className="" style={{ textAlign: 'center' }}>홍길동</td>
-                            <td>이동</td>
-                            <td>영업팀</td>
-                            <td>고객관리팀</td>
-                        </tr>
-                        <tr>
-                        <th scope="row"><input type="checkbox" className="" id="" name="" value="checkOne" /></th>
-                            <td>2024-12-34</td>
-                            <td className="" style={{ textAlign: 'center' }}>홍길동</td>
-                            <td>이동</td>
-                            <td>영업팀</td>
-                            <td>고객관리팀</td>
-                        </tr>
-                        <tr>
-                        <th scope="row"><input type="checkbox" className="" id="" name="" value="checkOne" /></th>
-                            <td>2024-12-34</td>
-                            <td className="" style={{ textAlign: 'center' }}>홍길동</td>
-                            <td>이동</td>
-                            <td>영업팀</td>
-                            <td>고객관리팀</td>
-                        </tr>
-                        <tr>
-                        <th scope="row"><input type="checkbox" className="" id="" name="" value="checkOne" /></th>
-                            <td>2024-12-34</td>
-                            <td className="" style={{ textAlign: 'center' }}>홍길동</td>
-                            <td>이동</td>
-                            <td>영업팀</td>
-                            <td>고객관리팀</td>
+                            <td></td>
+                            <td className="" style={{ textAlign: 'center' }}></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>
