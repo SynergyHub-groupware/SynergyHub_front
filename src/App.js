@@ -93,7 +93,7 @@ function App() {
             <Route path="organization" element={<Organization />} />
             <Route path="personalList" element={<PersonalList />} />
             <Route path="personalRegist" element={<PersonalRegist />} />
-            <Route path="personalView" element={<PersonalView />} />
+            <Route path="personalView/:erdNum" element={<PersonalView />} />
             <Route path='employeeList' element={<EmployeeList />} />
             <Route path='appointList' element={<AppointList />} />
             <Route path='appointRegist' element={<AppointRegist />} />

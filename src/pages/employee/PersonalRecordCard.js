@@ -158,10 +158,6 @@ function PersonalRecordCard({empCode}){
                 </table>
                 <div class="ly_spaceBetween ly_fitemC hp_mt30 hp_mb10">
                     <h5 class="hp_fw700 hp_fs18">자격증</h5>
-                    {/* <div class="">
-                        <button type="button" class="el_btnS el_btnblueBack">저장</button>
-                        <button type="button" class="el_btnS el_btn8Bord">추가</button>
-                    </div> */}
                 </div>
                 <table class="bl_tb3">
                     <colgroup>
@@ -183,11 +179,11 @@ function PersonalRecordCard({empCode}){
                     <tbody>
                         {teamRecordCard.certificates && teamRecordCard.certificates.map((cer, index) => (
                             <tr key={index}>
-                                <td style={{ textAlign: 'center' }} type="text" class="hp_w100">{cer.cer_name}</td>
-                                <td style={{ textAlign: 'center' }} type="text" class="hp_w100">{cer.cer_score}</td>
-                                <td style={{ textAlign: 'center' }} type="text" class="hp_w100">{cer.cer_date}</td>
-                                <td style={{ textAlign: 'center' }} type="text" class="hp_w100">{cer.cer_num}</td>
-                                <td style={{ textAlign: 'center' }} type="text" class="hp_w100">{cer.iss_organ}</td>
+                                <td style={{ textAlign: 'center' }} >{cer.cer_name}</td>
+                                <td style={{ textAlign: 'center' }} >{cer.cer_score}</td>
+                                <td style={{ textAlign: 'center' }} >{cer.cer_date}</td>
+                                <td style={{ textAlign: 'center' }} >{cer.cer_num}</td>
+                                <td style={{ textAlign: 'center' }} >{cer.iss_organ}</td>
                             </tr>
                         ))}
                     </tbody>
