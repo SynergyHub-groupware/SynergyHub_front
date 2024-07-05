@@ -229,6 +229,25 @@ export const callmodifyFormAPI = ({afCode, newForm}) => {
     }
 }
 
+export const callnonActiveFormAPI = (afCode) => {
+    return async (dispatch, getState) => {
+        await request('PATCH', `/approval/nonActiveForm?afCode=${afCode}`);
+    }
+}
+
+export const callactiveFormAPI = (afCode) => {
+    return async (dispatch, getState) => {
+        await request('PATCH', `/approval/activeForm?afCode=${afCode}`);
+    }
+}
+
+export const callcheckIsFormAPI = (afCode) => {
+    return async (dispatch, getState) => {
+        const result = await request('GET', `/approval/checkIsForm?afCode=${afCode}`);
+        return result.data;
+    }
+}
+
 export const callregistBoxAPI = (newBox) => {
     return async (dispatch, getState) => {
         try {

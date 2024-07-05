@@ -12,10 +12,12 @@ function FormList(){
         dispatch(callFormListAPI());
     }, []);
 
+    const filteredForms = forms.filter(item => item.afActive !== "N");
+
     return(
         <div className="ly_cont">
             <h4 className="el_lv1Head hp_mb30">작성하기</h4>
-            {forms && <Form data={forms}/>}
+            {forms && <Form data={filteredForms}/>}
         </div>
     )
 }
