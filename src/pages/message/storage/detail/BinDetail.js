@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { callSendDetailAPI } from "../../../../apis/MessageAPICalls";
 
 function BinDetail() {
@@ -8,6 +8,7 @@ function BinDetail() {
     const { msgCode } = useParams();    // URL에서 msgCode 추출
     const dispatch = useDispatch();     
     const msgDetail = useSelector(state => state.messageReducer.messageDetail);
+    const navigate = useNavigate();
 
     useEffect(() => {
         
@@ -25,6 +26,25 @@ function BinDetail() {
         sendMsgDetail();
 
     }, [dispatch, msgCode]);
+
+    const DeleteHandler = async () => {
+        
+        try {
+            const result = await fetch(`http://localhost:8080/emp/message/bin/${msgCode}`, {
+                method: 'DELETE'
+            });
+            
+            if (!result.ok) {
+                throw new Error("완전 삭제 실패");
+            } 
+            
+            alert("쪽지를 삭제하였습니다.");
+            navigate('/message/storage/bin');
+        } catch (error) {
+            console.log('error : ', error);
+            alert("쪽지 삭제에 실패하였습니다.");
+        }
+    };
 
     if (!msgDetail) {
         console.log("msgDetail : ", msgDetail);
@@ -64,7 +84,7 @@ function BinDetail() {
                 <div className="ly_spaceBetween hp_mt10">
                     <button type="button" className="el_btnS el_btn0Back">읽지않음 처리</button>
                     <div className="">
-                        <button type="button" className="el_btnS el_btn8Back">영구삭제</button>
+                        <button type="button" className="el_btnS el_btn8Back" onClick={DeleteHandler}>영구삭제</button>
                         <button type="button" className="el_btnS el_btn8Bord hp_ml5">복원</button>
                     </div>
                 </div>

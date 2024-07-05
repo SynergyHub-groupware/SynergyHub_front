@@ -9,7 +9,7 @@ import {useNavigate, useParams} from "react-router-dom";
 function FormView(){
     const {afCode} = useParams();
     const dispatch = useDispatch();
-    const content = useSelector(state => state.approvalReducer.content);
+    const formdetail = useSelector(state => state.approvalReducer.formdetail);
 
     // 뒤로가기
     const navigate = useNavigate();
@@ -20,6 +20,10 @@ function FormView(){
     const handleChange = (event, editor) => {
         const data = editor.getData();
         setEditorData(data);        // 입력받은 내용 에디터에 넣음
+        setNewForm(prev => ({
+            ...prev,
+            afCon: data,
+        }));
     };
 
     const onChangeHandler = (e) => {
@@ -45,23 +49,23 @@ function FormView(){
     useEffect(() => {
         afCode && dispatch(callFormContentAPI(afCode));
     }, [afCode, dispatch]);
-    console.log("content", content);
+    console.log("formdetail", formdetail);
 
     useEffect(() => {
-        if (content && content.afCon !== undefined) setEditorData(content.afCon || '');
-    }, [content]);
+        if (formdetail && formdetail.afCon !== undefined) setEditorData(formdetail.afCon || '');
+    }, [formdetail]);
 
     useEffect(() => {
-        content && setNewForm(prev => ({
+        formdetail && setNewForm(prev => ({
             ...prev,
-            afName: content.afName,
-            afExplain: content.afExplain,
-            afCon: content.afCon,
+            afName: formdetail.afName,
+            afExplain: formdetail.afExplain,
+            afCon: formdetail.afCon,
             lineSort: {
-                lsCode: content.lsCode
+                lsCode: formdetail.lsCode
             }
         }));
-    }, [content]);
+    }, [formdetail]);
 
 
     const handleModifyForm = () => {
@@ -76,7 +80,7 @@ function FormView(){
         <div className="ly_cont">
             <h4 className="el_lv1Head hp_mb30">결재양식</h4>
             <section className="bl_sect hp_padding15">
-                {content ? (<FormLine setNewForm={setNewForm} parentLsCode={content.lsCode}/>):(<FormLine setNewForm={setNewForm}/>)}
+                {formdetail ? (<FormLine setNewForm={setNewForm} parentLsCode={formdetail.lsCode}/>):(<FormLine setNewForm={setNewForm}/>)}
                 <h5 className="hp_fw700 hp_fs18 hp_mb10 hp_mt30">기본정보</h5>
                 <table className="bl_tb3">
                     <colgroup>
@@ -86,11 +90,11 @@ function FormView(){
                     <tbody>
                     <tr>
                         <th scope="col">양식명</th>
-                        <td><input type="text" className="hp_w100" name="afName" value={newForm?.afName || (content?.afName || '')} onChange={onChangeHandler} placeholder="예외근무신청서"/></td>
+                        <td><input type="text" className="hp_w100" name="afName" value={newForm?.afName || (formdetail?.afName || '')} onChange={onChangeHandler} placeholder="예외근무신청서"/></td>
                     </tr>
                     <tr>
                         <th scope="col">양식설명</th>
-                        <td><input type="text" className="hp_w100" name="afExplain" value={newForm?.afExplain || (content?.afExplain || '')} onChange={onChangeHandler} placeholder="외근, 출장, 교육, 훈련, 재택"/></td>
+                        <td><input type="text" className="hp_w100" name="afExplain" value={newForm?.afExplain || (formdetail?.afExplain || '')} onChange={onChangeHandler} placeholder="외근, 출장, 교육, 훈련, 재택"/></td>
                     </tr>
                     </tbody>
                 </table>
@@ -98,7 +102,7 @@ function FormView(){
                 <CKEditor editor={ClassicEditor} data={editorData} onChange={handleChange} />
             </section>
             <div className="hp_mt10 hp_alignR">
-                {content ? (
+                {formdetail && Object.keys(formdetail).length > 0 ? (
                     <button type="button" className="el_btnS el_btnblueBack" onClick={handleModifyForm}>수정</button>
                 ): (
                     <button type="button" className="el_btnS el_btnblueBack" onClick={handleRegistForm}>등록</button>

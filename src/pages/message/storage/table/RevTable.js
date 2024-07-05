@@ -8,7 +8,7 @@ function RevTable({ selectMsgCode, setSelectMsgCode, search }) {
     const dispatch = useDispatch();
     const [allCheck, setAllCheck] = useState(false);
     const messages = useSelector(state => state.messageReducer.messages.message);
-    const [sort, setSort] = useState("");   // 쪽지 정렬 상태
+    const [sort, setSort] = useState("desc");   // 쪽지 정렬 상태
 
     useEffect(() => {
         console.log('API 호출');
@@ -24,10 +24,8 @@ function RevTable({ selectMsgCode, setSelectMsgCode, search }) {
 
         if(sort === "asc") {
             return messages.slice().sort((a, b) => new Date(a.sendDate) - new Date(b.sendDate));
-        } else if(sort === "desc") {
-            return messages.slice().sort((a, b) => new Date(b.sendDate) - new Date(a.sendDate));
         } else {
-            return messages;
+            return messages.slice().sort((a, b) => new Date(b.sendDate) - new Date(a.sendDate));
         }
     };
 
@@ -121,9 +119,8 @@ function RevTable({ selectMsgCode, setSelectMsgCode, search }) {
             <div className="ly_spaceBetween ly_fitemC hp_mt10">
                 <div className="hp_ml10 hp_7Color">총 {messages ? messages.length : 0} / <b className="hp_0Color hp_fw700">1</b> 페이지</div>
                 <select value={sort} onChange={sortChangeHandler}>
-                    <option value="">정렬방식</option>
+                    <option value="desc">정렬방식</option>
                     <option value="asc">날짜 오름차순</option>
-                    <option value="desc">날짜 내림차순</option>
                 </select>
             </div>
         </div>

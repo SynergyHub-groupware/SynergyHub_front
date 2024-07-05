@@ -1,38 +1,56 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { callGETPostList } from './postApi/PostAPI';
-import axios from 'axios';
+import { callGETPostList, callGETpostSearch } from './postApi/PostAPI';
 
 function PostListView() {
   const dispatch = useDispatch();
-  const postState = useSelector(state => state.post); // Redux store에서 post 상태 가져오기
-  const { Postdata } = postState; // Postdata 필드 추출
+  const postState = useSelector(state => state.post);
+  const { Postdata, PostSearch } = postState;
 
-console.log("postView");
+  const [postsearch, setpostSearch] = useState('');
+  const [displayData, setDisplayData] = useState([]);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const pageSize = 10; // 페이지당 데이터 개수
+
+  const nextPage = () => {
+    setCurrentPage(currentPage + 1);
+};
+
+const prevPage = () => {
+    setCurrentPage(currentPage - 1);
+};
+
+
   useEffect(() => {
-    dispatch(callGETPostList());
-  }, [dispatch]);
-  console.log("Current posts data:",Postdata)
+    dispatch(callGETPostList(currentPage,pageSize)); // 첫 번째 페이지, 페이지당 10개의 데이터 요청
+  }, [dispatch, currentPage, pageSize]);
+
+  useEffect(() => {
+    setDisplayData(Postdata);
+  }, [Postdata]);
+
+  useEffect(() => {
+    if (postsearch) {
+      setDisplayData(PostSearch);
+    } else {
+      setDisplayData(Postdata);
+    }
+  }, [PostSearch, postsearch, Postdata]);
 
   const renderRows = () => {
-    if (!Array.isArray(Postdata) || Postdata.length === 0) {
+    if (!Array.isArray(displayData) || displayData.length === 0) {
       return <tr><td colSpan="6">로딩 중...</td></tr>;
     }
-    console.log("로딩 성공");
 
-    return Postdata.map(item => {
-      // item과 lowBoardCode의 구조를 로그로 출력
-      console.log("Item:", item);
-      console.log("LowBoardCode:", item.lowBoardCode);
-
-      // lowBoardCode 객체 내의 필드 접근
+    return displayData.map(item => {
       const lowBoardCode = item.lowBoardCode ? item.lowBoardCode.lowBoardCode : 'N/A';
       const lowBoardName = item.lowBoardCode ? item.lowBoardCode.lowBoardName : 'N/A';
 
       return (
         <tr key={item.postCode}>
           <td>{item.postCode}</td>
-          <td>{lowBoardName}</td> {/* lowBoardCode 및 lowBoardName 출력 */}
+          <td>{lowBoardName}</td>
           <td>{item.postName}</td>
           <td>{item.empCode}</td>
           <td>{item.postDate}</td>
@@ -42,17 +60,36 @@ console.log("postView");
     });
   };
 
+  const onChangeHandler = (e) => {
+    setpostSearch(e.target.value);
+  };
+
+  const onSearchHandler = () => {
+    const search = postsearch;
+    const encodingsearch = encodeURIComponent(search);
+    dispatch(callGETpostSearch(encodingsearch));
+  };
+
   return (
     <>      
-    <div className="main">
-
-      <h1 style={{fontSize:'50px'}}>전체 게시판</h1>
-      <br /><br /><br />
-      <div className="searchZone">
-        <input />
-        <button type='button' className='button button'>검색</button>
-      </div>
-        <table className='bl_tb1'>
+      <div className="main">
+        <h1 style={{ fontSize: '50px' }}>전체 게시판</h1>
+        <br /><br /><br />
+        <div className="searchZone">
+          <input
+            type="text"
+            value={postsearch}
+            onChange={onChangeHandler}
+          />
+          <button
+            type="button"
+            className="button"
+            onClick={onSearchHandler}
+          >
+            검색
+          </button>
+        </div>
+        <table className="bl_tb1">
           <thead>
             <tr className="tableHead">
               <th>No</th>
@@ -67,10 +104,10 @@ console.log("postView");
             {renderRows()}
           </tbody>
         </table>
-        <div className="bl_paging" style={{display:'flex'}}>
-          <button className='bl_paging__btn bl_paging__prev'>  </button>
-          <h4>1</h4>
-          <button className='bl_paging__btn '>  </button>
+        <div className="bl_paging" style={{ display: 'flex' }}>
+          <button onClick={prevPage} disabled={currentPage === 0} className="bl_paging__btn bl_paging__prev">  </button>
+          <span>{currentPage}</span>
+          <button onClick={nextPage} className="bl_paging__btn">  </button>
         </div>
       </div>
     </>

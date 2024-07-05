@@ -1,4 +1,4 @@
-import { delMsg, getBinMsg, getImpMsg, getRevDetail, getRevMsg, getSendMsg, getWorkMsg } from "../modules/MessageModules";
+import { delMsg, delSendMsg, getBinMsg, getImpMsg, getRevDetail, getRevMsg, getSendMsg, getWorkMsg } from "../modules/MessageModules";
 import { request } from "./api";
 
 /* 받은 쪽지 전체 조회 API */
@@ -123,7 +123,32 @@ export const callWorkMsgListAPI = () => {
     };
 };
 
-/* 쪽지 휴지통 이동 API */
+/* 임시 보관함 전체 조회 API */
+export const callTempMsgListAPI = () => {
+
+    return async (dispatch, getState) => {
+        
+        try {
+            const result = await request('GET', '/emp/message/temp', {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            });
+
+            console.log('call API result : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(getWorkMsg(result.data));
+            } else {
+                console.log("error : " ,result);
+            }
+        } catch (error) {
+            console.log("error : ", error);
+        }
+    };
+}
+
+
+/* 받은 쪽지 휴지통 이동 API */
 export const callDelMsgAPI = (msgCode) => {
     
     return async (dispatch, getState) => {
@@ -138,6 +163,30 @@ export const callDelMsgAPI = (msgCode) => {
 
             if (result && result.status === 200) {
                 dispatch(delMsg(msgCode));
+            } else {
+                console.log("error : ", result);
+            }
+        } catch (error) {
+            console.log("del error : ", error);
+        }
+    };
+};
+
+/* 보낸 쪽지 휴지통 이동 API */
+export const callDelSendMsgAPI = (msgCode) => {
+
+    return async (dispatch, getState) => {
+
+        try {
+            const result = await request('PUT', `/emp/message/send/${msgCode}/bin`, {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            }, {
+                storCode: 5
+            });
+
+            if (result && result.status === 200) {
+                dispatch(delSendMsg(msgCode));
             } else {
                 console.log("error : ", result);
             }

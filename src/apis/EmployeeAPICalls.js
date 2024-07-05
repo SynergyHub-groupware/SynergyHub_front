@@ -1,5 +1,6 @@
 import { request } from './api';
-import { getDepartments, getDeptEmployees, getMyInfo, getRecordcard, getDeptDetail, success, getTeamRecordcard, registEmployees, getTitles, getRegistEmpList, getRegistEmpListDetail, getOrgChart, registAppoint } from '../modules/EmployeeModules';
+import { getDepartments, getDeptEmployees, getMyInfo, getRecordcard, getDeptDetail, success, getTeamRecordcard, registEmployees, getTitles, getPositions, getRegistEmpList, getRegistEmpListDetail, getOrgChart, registAppoint } from '../modules/EmployeeModules';
+
 
 export const callDepartmentEmployeesAPI = () => {
 
@@ -80,6 +81,23 @@ export const callRecordCardAPI = () => {
         }
     };
 };
+
+// 부서 전체 단순 조회 : 이다정
+export const callsimpleDeptsAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/employee/simpleDepts',);
+
+            if(result && result.status === 200) {
+                dispatch(getDepartments(result.data));
+            } else {
+                console.log('부서 전체 단순 조회 실패(result): ', result);
+            }
+        } catch(error) {
+            console.error('부서 전체 단순 조회 실패(error): ', error);
+        }
+    };
+}
 
 export const callDepartmentsAPI = () => {
 
@@ -364,6 +382,7 @@ export const callRegistEmployeesAPI = (employeesData) => {
     };
 };
 
+
 export const callRegistEmpListAPI = () => {
 
     return async (dispatch, getState) => {
@@ -477,3 +496,24 @@ export const callRegistAppAPI = (registAppointsData) => {
         }
     };
 };
+
+
+export const callPositionsAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/employee/empPositions',);
+
+            if(result && result.status === 200) {
+
+                dispatch(getPositions(result.data));
+
+            } else {
+
+                console.log('직급목록 조회 실패(result): ', result);
+            }
+        } catch(error) {
+            console.error('직급목록 조회 실패(error): ', error);
+        }
+    }
+}
+

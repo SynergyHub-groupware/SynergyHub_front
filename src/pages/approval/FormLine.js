@@ -2,7 +2,7 @@ import { useState } from "react";
 import Line from "./Line";
 import AddressDir from './../../components/commons/address/AddressDir';
 
-function FormLine({handleTrueLineList, docInfo = {}}){
+function FormLine({handleTrueLineList, docInfo = {}, onedoc = {}}){
     // 모달창 오픈
     const [isModalOpen, setIsModalOpen] = useState(false);
     const openModal = () => setIsModalOpen(true);
@@ -58,7 +58,7 @@ function FormLine({handleTrueLineList, docInfo = {}}){
                         </tr>
                     </tbody>
                 </table>
-                <Line handleTrueLineList={handleTrueLineList} docInfo={docInfo} selectEmps={selectEmps}/>
+                <Line handleTrueLineList={handleTrueLineList} docInfo={docInfo} onedoc={onedoc} selectEmps={selectEmps}/>
             </div>
         </>
     )

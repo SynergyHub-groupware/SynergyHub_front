@@ -34,6 +34,7 @@ function DocumentMain(){
             case 'return': setTitle('반려'); break;
             default: setTitle('');
         }
+        setCurrentPage(1);
     }, [status]);
 
     // console.log("status", status);
@@ -52,7 +53,7 @@ function DocumentMain(){
         employee && dispatch(callsendDocListAPI({empCode: employee.emp_code, status}));
     }, [employee, status]);
 
-    // console.log("documents", documents);
+    console.log("documents", documents);
 
     // 검색
     const [searchTerm, setSearchTerm] = useState('');
@@ -75,6 +76,7 @@ function DocumentMain(){
             });
             setSearchResults(filteredDocuments);
         }
+        setCurrentPage(1);
     };
 
     // console.log("searchResults", searchResults);
@@ -90,6 +92,10 @@ function DocumentMain(){
                 return results.slice().sort((a, b) => a.afName.localeCompare(b.afName));
             case '제목':
                 return results.slice().sort((a, b) => a.adTitle.localeCompare(b.adTitle));
+            case '완료일':
+                return results.slice().sort((a, b) => a.talDate.localeCompare(b.talDate));
+            case '반려일':
+                return results.slice().sort((a, b) => a.talDate.localeCompare(b.talDate));
             default:
                 return results;
         }
@@ -126,8 +132,8 @@ function DocumentMain(){
     // 개인보관함으로 이동
     const [selectedAdCodes, setSelectedAdCodes] = useState([]);
 
-    console.log("boxes", boxes);
-    console.log("selectedAdCodes", selectedAdCodes);
+    // console.log("boxes", boxes);
+    // console.log("selectedAdCodes", selectedAdCodes);
 
     const [selectedAbCode, setSelectedAbCode] = useState("");
     const handleBoxChange = (event) => {
@@ -153,7 +159,6 @@ function DocumentMain(){
             }
         }
     };
-
 
     return(        
         <div className="ly_cont">
@@ -181,9 +186,17 @@ function DocumentMain(){
                 </div>
                 <select className="" onChange={handleSortChange} value={sortOption}>
                     <option value="">정렬방식</option>
-                    <option value="상신일">상신일</option>
+                    {status == "waiting" || status == "progress" ? (
+                        <option value="상신일">상신일</option>
+                    ):""}
                     <option value="결재양식">결재양식</option>
                     <option value="제목">제목</option>
+                    {status == "complete" ? (
+                        <option value="완료일">완료일</option>
+                    ):""}
+                    {status == "return" ? (
+                        <option value="반려일">반려일</option>
+                    ):""}
                 </select>
             </div>
             <PagingBar pageInfo={{currentPage, maxPage: totalPages}} setCurrentPage={handlePageChange} />

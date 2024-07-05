@@ -3,16 +3,61 @@ import {useEffect} from "react";
 import {callviewDetailAPI} from "../../../apis/ApprovalAPICalls";
 import {CKEditor} from "@ckeditor/ckeditor5-react";
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {callPositionsAPI, callsimpleDeptsAPI, callTitlesAPI} from "../../../apis/EmployeeAPICalls";
 
 function ViewDetail({afCode, adDetail}){
     const dispatch = useDispatch();
-    const content = useSelector(state => state.approvalReducer.content);
+    const { content, departments, titles, positions } = useSelector(state => ({
+        content: state.approvalReducer.content,
+        departments: state.employeeReducer.departments,
+        titles: state.employeeReducer.titles,
+        positions: state.employeeReducer.positions,
+    }));
 
     useEffect(() => {
         adDetail && dispatch(callviewDetailAPI(adDetail));
     }, [adDetail, dispatch]);
 
     const keys = content ? Object.keys(content) : [];
+
+    useEffect(() => {
+        dispatch(callsimpleDeptsAPI());
+    }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(callTitlesAPI());
+    }, [dispatch]);
+
+    useEffect(() => {
+        dispatch(callPositionsAPI());
+    }, [dispatch]);
+
+    const getDeptTitle = (code) => {
+        const dept = departments.find(dept => dept.dept_code === code);
+        return dept ? dept.dept_title : code;
+    };
+
+    const getTitleName = (code) => {
+        const title = titles.find(title => title.title_code === code);
+        return title ? title.title_name : code;
+    };
+
+    const getPositionName = (code) => {
+        const position = positions.find(position => position.position_code === code);
+        return position ? position.position_name : code;
+    };
+
+    const transformCodeToName = (code) => {
+        let name = getDeptTitle(code);
+        if (name === code) name = getTitleName(code);
+        if (name === code) name = getPositionName(code);
+        return name;
+    };
+
+    // console.log("content", content);
+    // console.log("departments", departments);
+    // console.log("titles", titles);
+    // console.log("positions", positions);
 
     return(
         <div>
@@ -37,7 +82,7 @@ function ViewDetail({afCode, adDetail}){
                             return (
                                 <tr key={key}>
                                     <th scope="col">{displayName}</th>
-                                    <td>{value}</td>
+                                    <td style={{whiteSpace: "pre-wrap"}}>{value}</td>
                                 </tr>
                             );
                         }
@@ -77,7 +122,37 @@ function ViewDetail({afCode, adDetail}){
                     </tbody>
                 </table>
             )}
-            {!([2, 3, 4, 5, 7, 8, 9].includes(afCode)) && content && content.aeCon && (
+            {([1].includes(afCode)) && content && (
+                <table className="bl_tb3 hp_alignC">
+                    <colgroup>
+                        <col style={{width: '25%'}}/>
+                        <col style={{width: '25%'}}/>
+                        <col style={{width: '25%'}}/>
+                        <col style={{width: '25%'}}/>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                    <th scope="col">이름</th>
+                        <th scope="col">발령종류</th>
+                        <th scope="col">발령 전</th>
+                        <th scope="col">발령 후</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {content.map((cont, index) => {
+                        return (
+                            <tr key={index}>
+                                <td>{cont.emp_name}</td>
+                                <td>{cont.adetType}</td>
+                                <td>{transformCodeToName(cont.adetBefore)}</td>
+                                <td>{transformCodeToName(cont.adetAfter)}</td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                </table>
+            )}
+            {!([1, 2, 3, 4, 5, 7, 8, 9].includes(afCode)) && content && content.aeCon && (
                 <CKEditor
                     editor={ClassicEditor}
                     data={content.aeCon}

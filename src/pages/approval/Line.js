@@ -5,7 +5,7 @@ import { callFormLineAPI, fetchImage } from "../../apis/ApprovalAPICalls";
 import LineApprover from "./LineApprover";
 import {callMyInfoAPI} from "../../apis/EmployeeAPICalls";
 
-function Line({handleTrueLineList, docInfo = {}, selectEmps}){
+function Line({handleTrueLineList, docInfo = {}, onedoc = {}, selectEmps}){
     let myRole = '';
 
     const navigate = useNavigate();
@@ -76,7 +76,7 @@ function Line({handleTrueLineList, docInfo = {}, selectEmps}){
                     </tr>
                 </tbody>
             </table>
-            <LineApprover lsCode={lsCode} lines={lines} employee={employee} handleTrueLineList={handleTrueLineList} docInfo={docInfo} selectEmps={selectEmps}/>
+            <LineApprover lsCode={lsCode} lines={lines} employee={employee} handleTrueLineList={handleTrueLineList} docInfo={docInfo} onedoc={onedoc} selectEmps={selectEmps}/>
         </>
     )
 }

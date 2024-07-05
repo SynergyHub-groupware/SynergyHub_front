@@ -1,7 +1,7 @@
 import SendTable from "./table/SendTable";
 import { useDispatch } from "react-redux";
 import { useState, useRef } from "react";
-import { callDelMsgAPI } from "../../../apis/MessageAPICalls";
+import { callDelSendMsgAPI } from "../../../apis/MessageAPICalls";
 
 function SendMsg() {
 
@@ -21,7 +21,7 @@ function SendMsg() {
         if ( window.confirm("메세지를 삭제하시겠습니까?")) {
 
             selectMsgCode.forEach(msgCode => {
-                dispatch(callDelMsgAPI(msgCode));
+                dispatch(callDelSendMsgAPI(msgCode));
             });
             
             alert("쪽지를 삭제하였습니다.");

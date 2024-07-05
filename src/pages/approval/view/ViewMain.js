@@ -18,16 +18,19 @@ function ViewMain({}){
     const location = useLocation();
     const {adCode} = useParams();
     const {document, showBtn} = {...location.state};
-    const {documents, viewlines} = useSelector(state => ({
+    const {viewlines, attaches} = useSelector(state => ({
         viewlines: state.approvalReducer.viewlines,
-        documents: state.approvalReducer.documents,
+        attaches: state.approvalReducer.attaches,
     }));
 
     useEffect(() => {
         adCode && dispatch(callviewLineListAPI(adCode));
     }, [adCode, dispatch]);
-
     console.log("viewlines", viewlines);
+
+    // talOrder가 0인 값을 제외
+    const filteredViewlines = viewlines.filter(item => item.talOrder !== 0);
+    const filteredRefers = viewlines.filter(item => item.talOrder === 0);
 
     const handleCancel = () => {
         if (window.confirm("해당 결재를 상신취소 및 삭제 하시겠습니까?")) {
@@ -40,7 +43,7 @@ function ViewMain({}){
     const handleModify = () => {
         if (window.confirm("해당 결재를 상신취소 및 수정 하시겠습니까?\n해당 문서는 임시저장으로 이동됩니다.")) {
             dispatch(callmodifyStatusAPI(adCode))
-                .then(() => {navigate(`/approval/form/${document.afCode}`, {state: {adCode, afName: document.afName}});})
+                .then(() => {navigate(`/approval/form/${document.afCode}`, {state: {parentAdCode: adCode, afName: document.afName}});})
                 .catch((error) => {console.log("문서 수정 실패: ", error);});
         }
     }
@@ -79,10 +82,7 @@ function ViewMain({}){
                 </table>
             </section>}
             <section className="bl_sect hp_padding15">
-                <div className="ly_spaceBetween hp_mb10">
-                    <h5 className="hp_fw700 hp_fs18">결재라인</h5>
-                </div>
-                <ViewLine document={document} viewlines={viewlines} showBtn={showBtn}/>
+                <ViewLine document={document} viewlines={filteredViewlines} referlines={filteredRefers} showBtn={showBtn}/>
                 <h5 className="hp_fw700 hp_fs18 hp_mb10 hp_mt30">결재정보</h5>
                 <table className="bl_tb3 el_approvalTb3__th">
                     <tbody>
@@ -94,7 +94,7 @@ function ViewMain({}){
                         <th scope="row">첨부파일</th>
                         <td colSpan="3">
                             <ul>
-                                {documents.map((doc, index) => (
+                                {attaches && attaches.map((doc, index) => (
                                     <li key={index}>
                                         <button className="el_file__downBtn" onClick={() => handleDownload(doc.attachSave, doc.attachOriginal)} title="다운받기">{doc.attachOriginal}</button>
                                     </li>
