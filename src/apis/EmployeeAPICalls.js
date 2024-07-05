@@ -1,5 +1,5 @@
 import { request } from './api';
-import { getDepartments, getDeptEmployees, getMyInfo, getRecordcard, getDeptDetail, success, getTeamRecordcard, registEmployees, getTitles, getPositions, getRegistEmpList, getRegistEmpListDetail, getOrgChart, registAppoint } from '../modules/EmployeeModules';
+import { getDepartments, getDeptEmployees, getMyInfo, getRecordcard, getDeptDetail, success, getTeamRecordcard, registEmployees, getTitles, getPositions, getRegistEmpList, getRegistEmpListDetail, getOrgChart, registAppoint, registAppoints } from '../modules/EmployeeModules';
 
 
 export const callDepartmentEmployeesAPI = () => {
