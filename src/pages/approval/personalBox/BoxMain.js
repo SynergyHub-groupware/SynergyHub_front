@@ -2,10 +2,15 @@ import PagingBar from "../../../components/commons/PagingBar";
 import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router";
 import {useDispatch, useSelector} from "react-redux";
-import {calldocListInStorageAPI} from "../../../apis/ApprovalAPICalls";
+import {
+    calldeleteDocInStorageAPI,
+    calldeleteDocumentAPI,
+    calldocListInStorageAPI, callregistBoxAPI
+} from "../../../apis/ApprovalAPICalls";
 import {useLocation} from "react-router-dom";
 
 function BoxMain(){
+    const navigate = useNavigate();
     const {abName} = useParams();
     const location = useLocation();
     const {abCode} = { ...location.state };
@@ -18,7 +23,7 @@ function BoxMain(){
         abCode && dispatch(calldocListInStorageAPI(abCode));
     }, [abCode]);
 
-    console.log("documents", documents);
+    // console.log("documents", documents);
 
     // 검색
     const [searchTerm, setSearchTerm] = useState('');
@@ -89,11 +94,7 @@ function BoxMain(){
         setCurrentPage(pageNumber);
     };
 
-
-
-
-    const navigate = useNavigate();
-
+    
     // 체크박스 관련 상태 및 함수
     const [selectAllChecked, setSelectAllChecked] = useState(false);
     const [checkedRows, setCheckedRows] = useState({});
@@ -115,12 +116,33 @@ function BoxMain(){
         setCheckedRows(newCheckedRows);
         setSelectAllChecked(false);
     };
+    
+    // 삭제
+    const deleteHandler = () => {
+        const selectedAdCodes = Object.keys(checkedRows).filter((adCode) => checkedRows[adCode]);
+        console.log("Selected adCodes:", selectedAdCodes);
+        
+        if(selectedAdCodes == null || selectedAdCodes.length < 1){
+            alert("삭제할 항목을 선택해주세요.");
+            return;
+        }else{
+
+            if (window.confirm("선택한 문서를 해당 보관함에서 삭제 하시겠습니까?")) {
+                selectedAdCodes.forEach(adCode => {
+                    dispatch(calldeleteDocInStorageAPI({adCode: adCode ,abCode: abCode}))
+                        .then()
+                        .catch((error) => { console.error("문서 삭제 실패: ", error); });
+                });
+            }            
+            window.location.reload();
+        }
+    }
 
     return (
         <div className="ly_cont">
             <h4 className="el_lv1Head hp_mb30">{abName}</h4>
             <div className="ly_spaceBetween">
-                <button type="button" className="el_btnS el_btn8Back">삭제</button>
+                <button type="button" className="el_btnS el_btn8Back" onClick={deleteHandler}>삭제</button>
                 <form onSubmit={handleSearch}>
                     <input type="text" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                            placeholder="검색어를 입력해주세요"/>

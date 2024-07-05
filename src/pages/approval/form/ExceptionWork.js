@@ -38,8 +38,6 @@ function ExceptionWork({handleDetail, formRefs, writtenCont = {}}){
     }, [exception.aattStart, exception.aattEnd]);
 
     // writtenCont 값이 있을 경우
-    console.log("writtenCont", writtenCont);
-
     useEffect(()=>{
         if(writtenCont !== null && Object.keys(writtenCont).length > 0){
             const formattedStart = writtenCont.aattStart?.replace(' ', 'T') || '';
@@ -53,6 +51,8 @@ function ExceptionWork({handleDetail, formRefs, writtenCont = {}}){
                 aattPlace: writtenCont.aattPlace,
                 aattCon: writtenCont.aattCon,
             }));
+        }else{
+            setException({});
         }
     },[writtenCont])
 

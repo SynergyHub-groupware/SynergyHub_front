@@ -57,6 +57,7 @@ import MyDayOff from "./pages/attendance/MyDayOff";
 import DayOffList from "./pages/attendance/DayOffList";
 import Preferences from "./pages/attendance/Preferences";
 import CreateMsg from './pages/message/storage/CreateMsg';
+import TempDetail from './pages/message/storage/detail/TempDetail';
 
 function App() {
   return (
@@ -75,7 +76,7 @@ function App() {
             <Route path="personalBox/:abName" element={<BoxMain/>}/>
             <Route path="setting">
               <Route path="form" element={<Form/>} />
-              <Route path="formView/:afCode" element={<FormView/>} />
+              <Route path="formView/:afCode?" element={<FormView/>} />
               <Route path="sign" element={<Sign/>} />
               <Route path="storage" element={<Storage/>} />
             </Route>
@@ -115,6 +116,7 @@ function App() {
               <Route path='send' element={<SendMsg/>}/>
               <Route path='send/detail/:msgCode' element={<SendDetail/>}/>
               <Route path='temp' element={<TempMsg/>}/>
+              <Route path='create/temp/:msgCode' element={<TempDetail/>}/>
               <Route path='important' element={<ImpMsg/>}/>
               <Route path='imp/detail/:msgCode' element={<ImpDetail/>}/>
               <Route path='work' element={<WorkMsg/>}/>

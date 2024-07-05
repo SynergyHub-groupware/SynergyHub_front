@@ -1,13 +1,14 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
-import { callSendDetailAPI } from "../../../../apis/MessageAPICalls";
+import { useNavigate, useParams } from "react-router";
+import { callSendDetailAPI, callDelMsgAPI } from "../../../../apis/MessageAPICalls";
 
 function SendDetail() {
 
     const { msgCode } = useParams();    // URL에서 msgCode 추출
     const dispatch = useDispatch();     
     const msgDetail = useSelector(state => state.messageReducer.messageDetail);
+    const navigate = useNavigate();
 
     useEffect(() => {
         
@@ -30,6 +31,30 @@ function SendDetail() {
         console.log("msgDetail : ", msgDetail);
         return <div>로딩중..</div>;
     }
+
+    /* 전달 핸들러 */
+    const transHandler = () => {
+        navigate('/message/storage/deliver', {
+            state: {
+                msgTitle: `FW: ${msgDetail.messageDetail.msgTitle}`,
+                msgCon: `${msgDetail.messageDetail.msgCon}`
+            }
+        })
+    }
+
+    /* 삭제 핸들러 */
+    const deleteHandler = async () => {
+
+        try {
+            console.log(msgCode);
+            await dispatch(callDelMsgAPI(msgCode));
+            alert("쪽지를 삭제했습니다.");
+            navigate("/message/storage/send");
+        } catch (error) {
+            console.log("삭제 중 오류 : ", error);
+            alert("쪽지 삭제에 실패했습니다.");
+        }
+    };    
 
     return (
         <div className="ly_cont">
@@ -62,12 +87,11 @@ function SendDetail() {
                     </tbody>
                 </table>
                 <div className="ly_spaceBetween hp_mt10">
-                    <button type="button" className="el_btnS el_btn0Back">읽지않음 처리</button>
+                    <div></div>
                     <div className="">
-                        <button type="button" className="el_btnS el_btn8Back">삭제</button>
+                        <button type="button" className="el_btnS el_btn8Back" onClick={deleteHandler}>삭제</button>
                         <button type="button" className="el_btnS el_btn8Bord hp_ml5">이동</button>
-                        <button type="button" className="el_btnS el_btnblueBord hp_ml5">전달</button>
-                        <button type="button" className="el_btnS el_btnblueBack hp_ml5">답장</button>
+                        <button type="button" className="el_btnS el_btnblueBord hp_ml5" onClick={transHandler}>전달</button>
                     </div>
                 </div>
             </section>

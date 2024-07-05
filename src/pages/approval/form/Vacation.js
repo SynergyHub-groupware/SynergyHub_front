@@ -48,6 +48,8 @@ function Vacation({handleDetail, formRefs, writtenCont = {}}){
                 aattStart: formattedStart,
                 aattEnd: formattedEnd,
             }));
+        }else{
+            setException({});
         }
     },[writtenCont])
 

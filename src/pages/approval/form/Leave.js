@@ -18,7 +18,7 @@ function Leave({handleDetail, formRefs, writtenCont = {}}){
 
     useEffect(() => {
         if(writtenCont && Object.keys(writtenCont).length > 0){
-            const [contact1 = '', contact2 = '', contact3 = ''] = writtenCont.apContact ? writtenCont.apContact.split('-') : ['', '', ''];
+            const [contact1 = '', contact2 = '', contact3 = ''] = writtenCont.apContact.split('-');
             setApContact1(contact1);
             setApContact2(contact2);
             setApContact3(contact3);
@@ -29,16 +29,13 @@ function Leave({handleDetail, formRefs, writtenCont = {}}){
                 apContact: writtenCont.apContact || '',
                 apReason: writtenCont.apReason || ''
             });
+        }else{
+            setApContact1('');
+            setApContact2('');
+            setApContact3('');
+            setException({});
         }
     }, [writtenCont]);
-
-    useEffect(() => {
-        const formattedContact = `${apContact1}-${apContact2}-${apContact3}`;
-        setException(prev => ({
-            ...prev,
-            apContact: formattedContact
-        }));
-    }, [apContact1, apContact2, apContact3]);
 
     const onContactChange = (e) => {
         const { name, value } = e.target;
@@ -47,6 +44,14 @@ function Leave({handleDetail, formRefs, writtenCont = {}}){
         if(name === 'apContact2') setApContact2(value);
         if(name === 'apContact3') setApContact3(value);
     };
+
+    useEffect(() => {
+        const formattedContact = `${apContact1}-${apContact2}-${apContact3}`;
+        setException(prev => ({
+            ...prev,
+            apContact: formattedContact
+        }));
+    }, [apContact1, apContact2, apContact3]);
 
     useEffect(() => {
         handleDetail(exception);
@@ -78,17 +83,19 @@ function Leave({handleDetail, formRefs, writtenCont = {}}){
     };
 
     // writtenCont 값이 있을 경우
-    useEffect(()=>{
-        if(writtenCont !== null && Object.keys(writtenCont).length > 0){
-            setException(prev => ({
-                ...prev,
-                apStart: writtenCont.apStart,
-                apEnd: writtenCont.apEnd,
-                apContact: writtenCont.apContact,
-                apReason: writtenCont.apReason
-            }));
-        }
-    },[writtenCont])
+    // useEffect(()=>{
+    //     if(writtenCont !== null && Object.keys(writtenCont).length > 0){
+    //         setException(prev => ({
+    //             ...prev,
+    //             apStart: writtenCont.apStart,
+    //             apEnd: writtenCont.apEnd,
+    //             apContact: writtenCont.apContact,
+    //             apReason: writtenCont.apReason
+    //         }));
+    //     }else{
+    //         setException({});
+    //     }
+    // },[writtenCont])
 
     return(
         <table className="bl_tb3 el_approvalTb3__th">

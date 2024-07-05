@@ -21,6 +21,7 @@ function PagingBar({pageInfo, setCurrentPage}){
                 <button className="bl_paging__btn bl_paging__next" title="다음 페이지로 이동"
                     onClick={() => setCurrentPage(pageInfo.currentPage+1)} disabled={pageInfo.currentPage >= pageInfo.maxPage}>
                 </button>
+
             </div>
         </section>
     )

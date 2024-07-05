@@ -1,10 +1,11 @@
 import {
+    getAttaches,
     getBoxes,
     getContent,
-    getDocuments,
+    getDocuments, getFormdetail,
     getForms,
     getLineemps,
-    getLines,
+    getLines, getOnedoc,
     getSuccess,
     getViewlines
 } from "../modules/ApprovalModules";
@@ -20,7 +21,7 @@ export const callFormListAPI = () => {              // 결재양식리스트 조
 export const callFormContentAPI = (afCode) => {     // 결재양식기본내용 조회
     return async (dispatch, getState) => {
         const result = await request('GET', `/approval/formContent?afCode=${afCode}`);
-        if(result && result.status === 200) dispatch(getContent(result));
+        if(result && result.status === 200) dispatch(getFormdetail(result));
     }
 }
 
@@ -92,6 +93,13 @@ export const callsendDocListAPI = ({currentPage = 1, empCode, status}) => {
     }
 }
 
+export const callviewInfoAPI = (adCode) => {
+    return async (dispatch, getState) => {
+        const result = await request('GET', `/approval/viewInfo?adCode=${adCode}`);
+        if(result && result.status === 200) dispatch(getOnedoc(result));
+    }
+}
+
 export const callviewLineListAPI = (adCode) => {
     return async (dispatch, getState) => {
         const result = await request('GET', `/approval/viewLine?adCode=${adCode}`);
@@ -109,7 +117,7 @@ export const callviewDetailAPI = (adDetail) => {
 export const callviewAttachAPI = (adCode) => {
     return async (dispatch, getState) => {
         const result = await request('GET', `/approval/viewAttach?adCode=${adCode}`);
-        if(result && result.status === 200) dispatch(getDocuments(result));
+        if(result && result.status === 200) dispatch(getAttaches(result));
     }
 }
 
@@ -281,8 +289,8 @@ export const callregistDocInStorageAPI = ({adCode, abCode}) => {
     }
 }
 
-// export const calldeleteDocInStorageAPI = () => {
-//     return async (dispatch, getState) => {
-//         await request('DELETE', `/approval/deleteDocInStorage?asCode=${}`);
-//     }
-// }
+export const calldeleteDocInStorageAPI = ({adCode, abCode}) => {
+    return async (dispatch, getState) => {
+        await request('DELETE', `/approval/deleteDocInStorage?adCode=${adCode}&abCode=${abCode}`);
+    }
+}

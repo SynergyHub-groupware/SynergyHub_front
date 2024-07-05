@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import AttendanceNav from "../../components/commons/AttendanceNav";
 
-function EmployeeLayout(){
+function AttendanceLayout(){
     return(
         <>
             <AttendanceNav/>
@@ -9,4 +9,4 @@ function EmployeeLayout(){
         </>
     )
 }
-export default EmployeeLayout;
+export default AttendanceLayout;

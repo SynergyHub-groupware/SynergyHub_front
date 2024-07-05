@@ -25,7 +25,7 @@ function Form(){
         if (window.confirm("해당 결재양식을 삭제 하시겠습니까?")) {
             dispatch(calldeleteFormAPI(afCode))
                 .then(() => {window.location.reload();})
-                .catch((error) => {console.error("결재양식 등록 실패 : ", error);});
+                .catch((error) => {console.error("결재양식 삭제 실패 : ", error);});
         }
     }
 

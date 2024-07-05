@@ -22,7 +22,7 @@ function AttendanceNav(){
                 <li>
                     <h3 className="bl_nav__ttlSub">환경설정</h3>
                     <ul className="bl_nav__menuSub">
-                        <li><NavLink to="/attendance/preferences">출/퇴근시간 관리</NavLink></li>
+                        <li><NavLink to="/attendance/preferences">근무시간 관리</NavLink></li>
                     </ul>
                 </li>
             </ul>
