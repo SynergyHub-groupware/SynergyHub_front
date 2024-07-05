@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 
 function AddressDir2({isOpen, closeModal, onConfirm, onClear}){
+
     const [originEmp, setOriginEmp] = useState([]);     // 원본 저장
     const [employees, setEmployees] = useState([]);        // 검색 결과 저장
     const [searchType, setSearchType] = useState('전체');   // 기본 검색
@@ -42,7 +43,7 @@ function AddressDir2({isOpen, closeModal, onConfirm, onClear}){
 
             // 전체 혹은 해당하는 부서, 이름, 직급 전부 가져오기
             case '전체':
-                employeeFilter = originEmp.filter(emp => (emp.dept_title.includes(searchKeyword) || emp.emp_name.includes(searchKeyword) || emp.position_name.includes(searchKeyword)) && !selectEmp.some(selected => selected.emp_code === emp.emp_code));
+                employeeFilter = originEmp.filter(emp => (emp.dept_title.includes(searchKeyword) || emp.emp_name.includes(searchKeyword) || emp.position_name.includes(searchKeyword) || emp.title_name.includes(searchKeyword)) && !selectEmp.some(selected => selected.emp_code === emp.emp_code));
                 break;
 
             // 부서에 맞는 값 가져오기
@@ -58,6 +59,11 @@ function AddressDir2({isOpen, closeModal, onConfirm, onClear}){
             // 직급에 맞는 값 가져오기
             case '직급':
                 employeeFilter = originEmp.filter(emp => emp.position_name.includes(searchKeyword) && !selectEmp.some(selected => selected.emp_code === emp.emp_code));
+                break;
+
+            // 직위에 맞는 값 가져오기
+            case '직위':
+                employeeFilter = originEmp.filter(emp => emp.title_name.includes(searchKeyword) && !selectEmp.some(selected => selected.emp_code === emp.emp_code));
                 break;
 
             // 페이지 로딩 시 기본 값
@@ -127,7 +133,7 @@ function AddressDir2({isOpen, closeModal, onConfirm, onClear}){
             <div className="modal-content" id="modal">
                 <section className="bl_sect ly_flex" style={{height: 'calc(100% - 30px - 42px)'}}>
                     <div className="ly_body hp_bordDE hp_margin15 ly_flexC hp_f9Back ly_fdirecCol ly_fitemC"
-                         style={{height: 'calc(100% - 20px)', width: '40%'}}>
+                         style={{height: 'calc(100% - 20px)', width: '50%'}}>
                         <div className="hp_w90 hp_mt20 hp_alignC" style={{height: '10%'}}>
                             <h4 className="el_lv1Head">주소록</h4>
                             <select className="hp_w100" onChange={handleSearchTypeChange}>
@@ -135,6 +141,7 @@ function AddressDir2({isOpen, closeModal, onConfirm, onClear}){
                                 <option>부서</option>
                                 <option>이름</option>
                                 <option>직급</option>
+                                <option>직위</option>
                             </select>
                             <div style={{display: 'flex'}}>
                                 <input type="text" className="hp_mt15 hp_floatL" onChange={handleKeywordChange}
@@ -155,6 +162,7 @@ function AddressDir2({isOpen, closeModal, onConfirm, onClear}){
                                     <th style={{width: '30px'}}>부서</th>
                                     <th>이름</th>
                                     <th>직급</th>
+                                    <th>직위</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -175,6 +183,10 @@ function AddressDir2({isOpen, closeModal, onConfirm, onClear}){
                                             e.stopPropagation();
                                             checkboxChange(employee);
                                         }}>{employee.position_name}</td>
+                                        <td onClick={(e) => {
+                                            e.stopPropagation();
+                                            checkboxChange(employee);
+                                        }}>{employee.title_name}</td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -182,7 +194,7 @@ function AddressDir2({isOpen, closeModal, onConfirm, onClear}){
                         </div>
                     </div>
                     <div className="ly_body hp_bordDE hp_margin15 hp_f9Back ly_flexC hp_f9Back ly_fdirecCol ly_fitemC"
-                         style={{height: '473px', width: '60%'}}>
+                         style={{height: '473px', width: '50%'}}>
                         <div className="hp_w95 hp_h100 hp_alignC hp_bordDE hp_br5 hp_fBack hp_mt30 hp_mb30">
                             <table className="bl_tb3" style={{height: '400px'}}>
                                 <colgroup>
@@ -206,10 +218,10 @@ function AddressDir2({isOpen, closeModal, onConfirm, onClear}){
                                             overflowY: 'auto',
                                             overflowX: 'auto'
                                         }}>
-                                            <ul>
+                                            <ul className="bl_listDash">
                                                 {receiver.map(emp => (
-                                                    <li key={emp.emp_code}>
-                                                        - {emp.emp_name} {'<'}{emp.dept_title} {emp.position_name}{'>'}
+                                                    <li key={emp.emp_code} className="hp_alignL">
+                                                        {emp.emp_name} {'['}{emp.dept_title} / {emp.position_name} / {emp.title_name}{']'}
                                                     </li>
                                                 ))}
                                             </ul>

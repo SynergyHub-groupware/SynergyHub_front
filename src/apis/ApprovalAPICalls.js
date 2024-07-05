@@ -229,6 +229,25 @@ export const callmodifyFormAPI = ({afCode, newForm}) => {
     }
 }
 
+export const callnonActiveFormAPI = (afCode) => {
+    return async (dispatch, getState) => {
+        await request('PATCH', `/approval/nonActiveForm?afCode=${afCode}`);
+    }
+}
+
+export const callactiveFormAPI = (afCode) => {
+    return async (dispatch, getState) => {
+        await request('PATCH', `/approval/activeForm?afCode=${afCode}`);
+    }
+}
+
+export const callcheckIsFormAPI = (afCode) => {
+    return async (dispatch, getState) => {
+        const result = await request('GET', `/approval/checkIsForm?afCode=${afCode}`);
+        return result.data;
+    }
+}
+
 export const callregistBoxAPI = (newBox) => {
     return async (dispatch, getState) => {
         try {
@@ -245,7 +264,7 @@ export const callregistBoxAPI = (newBox) => {
 
 export const callboxListAPI = (empCode) => {
     return async (dispatch, getState) => {
-        console.log("empCode", empCode);
+        // console.log("empCode", empCode);
         const result = await request('GET', `/approval/boxList?empCode=${empCode}`);
         if(result && result.status === 200) dispatch(getBoxes(result));
     }
