@@ -3,7 +3,7 @@ import {useEffect} from "react";
 import {callviewDetailAPI} from "../../../apis/ApprovalAPICalls";
 import {CKEditor} from "@ckeditor/ckeditor5-react";
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import {callDepartmentsAPI, callPositionsAPI, callTitlesAPI} from "../../../apis/EmployeeAPICalls";
+import {callPositionsAPI, callsimpleDeptsAPI, callTitlesAPI} from "../../../apis/EmployeeAPICalls";
 
 function ViewDetail({afCode, adDetail}){
     const dispatch = useDispatch();
@@ -21,7 +21,7 @@ function ViewDetail({afCode, adDetail}){
     const keys = content ? Object.keys(content) : [];
 
     useEffect(() => {
-        dispatch(callDepartmentsAPI());
+        dispatch(callsimpleDeptsAPI());
     }, [dispatch]);
 
     useEffect(() => {
@@ -82,7 +82,7 @@ function ViewDetail({afCode, adDetail}){
                             return (
                                 <tr key={key}>
                                     <th scope="col">{displayName}</th>
-                                    <td>{value}</td>
+                                    <td style={{whiteSpace: "pre-wrap"}}>{value}</td>
                                 </tr>
                             );
                         }

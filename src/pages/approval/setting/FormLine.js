@@ -1,7 +1,7 @@
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect, useState} from "react";
 import {callAllLineAPI} from "../../../apis/ApprovalAPICalls";
-import {callDepartmentsAPI, callTitlesAPI} from "../../../apis/EmployeeAPICalls";
+import {callsimpleDeptsAPI, callTitlesAPI} from "../../../apis/EmployeeAPICalls";
 
 function FormLine({setNewForm, parentLsCode = null}){
     const dispatch = useDispatch();
@@ -16,7 +16,7 @@ function FormLine({setNewForm, parentLsCode = null}){
     }, [dispatch]);
 
     useEffect(() => {
-        dispatch(callDepartmentsAPI());
+        dispatch(callsimpleDeptsAPI());
     }, [dispatch]);
 
     useEffect(() => {
