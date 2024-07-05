@@ -3,17 +3,25 @@ import { useEffect, useState } from "react";
 import { callImpMsgListAPI } from "../../../../apis/MessageAPICalls";
 import { Link } from "react-router-dom";
 
-function ImpTable({ selectMsgCode, setSelectMsgCode, search }) {
+function ImpTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCurrentPage }) {
 
     const dispatch = useDispatch();
     const [allCheck, setAllCheck] = useState(false);
-    const messages = useSelector(state => state.messageReducer.messages.message);
+    const messages = useSelector(state => state.messageReducer.impMessage.message);
     const [sort, setSort] = useState("desc");   // 쪽지 정렬 상태
+    const itemsPerPage = 10; // 페이지당 항목 수 10개로 설정
 
     useEffect(() => {
         console.log("API 호출");
         dispatch(callImpMsgListAPI());
     }, [dispatch])
+
+    /* 날짜 포맷 함수 */
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        
+        return date.toISOString().split('T')[0];
+    }
 
     /* 쪽지 배열 정렬 */
     const sortMsg = (messages, sort) => {
@@ -49,6 +57,9 @@ function ImpTable({ selectMsgCode, setSelectMsgCode, search }) {
     };
 
     const sortedMessages = sortMsg(filterMsg(messages, search), sort);
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const currentMessages = sortedMessages.slice(startIndex, startIndex + itemsPerPage);
 
     /* 체크박스 선택 */
     const checkboxChange = (msgCode) => {
@@ -88,7 +99,7 @@ function ImpTable({ selectMsgCode, setSelectMsgCode, search }) {
                     <thead>
                         <tr>
                             <th scope="col"><input type="checkbox" value="checkAll" checked={allCheck} onChange={allCheckChange} /></th>
-                            <th scope="col">작성일</th>
+                            <th scope="col">수신일</th>
                             <th scope="col">보낸사람</th>
                             <th scope="col">제목</th>
                             <th scope="col">긴급</th>
@@ -96,16 +107,21 @@ function ImpTable({ selectMsgCode, setSelectMsgCode, search }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {sortedMessages && sortedMessages.length > 0 ? (
-                            sortedMessages.map(msg => (
+                        {currentMessages && currentMessages.length > 0 ? (
+                            currentMessages.map(msg => (
                                 <tr key={msg.msgCode}>
                                     <td><input type="checkbox" onChange={() => checkboxChange(msg.msgCode)} checked={selectMsgCode.includes(msg.msgCode)}/></td>
-                                    <td>{msg.sendDate}</td>
+                                    <td>{formatDate(msg.sendDate)}</td>
                                     <td>{msg.sendName} {msg.sendPosition}</td>
                                     <td className="hp_alighL">
                                         <Link to={`/message/storage/imp/detail/${msg.msgCode}`}>{msg.msgTitle}</Link>
                                     </td>
-                                    <td>{msg.emerStatus}</td>
+                                    <td>
+                                        {msg.emerStatus === 'Y' ? (
+                                            <div>🚨</div>
+                                        ) : (
+                                            <div></div>
+                                        )}</td>
                                     <td>{msg.storCode}</td>
                                 </tr>
                             ))
@@ -118,7 +134,7 @@ function ImpTable({ selectMsgCode, setSelectMsgCode, search }) {
                 </table>
             </section>
             <div className="ly_spaceBetween ly_fitemC hp_mt10">
-                <div className="hp_ml10 hp_7Color">총 {messages ? messages.length : 0} / <b className="hp_0Color hp_fw700">1</b> 페이지</div>
+                <div className="hp_ml10 hp_7Color">총 {currentMessages.length} / <b className="hp_0Color hp_fw700">1</b> 페이지</div>
                 <select value={sort} onChange={sortChangeHandler}>
                     <option value="desc">정렬방식</option>
                     <option value="asc">날짜 오름차순</option>
