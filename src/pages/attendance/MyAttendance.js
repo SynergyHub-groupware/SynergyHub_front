@@ -39,7 +39,7 @@ function MyAttendance() {
                 <div className="hp_mr50">
                     <div style={{position: "sticky"}}>
                         <AttendanceSummary attendancesToday={attendancesToday} />
-                        <DefaultSchedule employee={employee}/>
+                        <DefaultSchedule employee={employee} attendancesToday={attendancesToday}/>
                     </div>
                 </div>
                 <div>
