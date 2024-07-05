@@ -59,6 +59,7 @@ import Preferences from "./pages/attendance/Preferences";
 import CreateMsg from './pages/message/storage/CreateMsg';
 import TempDetail from './pages/message/storage/detail/TempDetail';
 import SettingStor from './pages/message/storage/SettingStor';
+import BlockEmp from './pages/message/storage/BlockEmp';
 
 function App() {
   return (
@@ -125,6 +126,7 @@ function App() {
               <Route path='bin' element={<Bin/>}/>
               <Route path='bin/detail/:msgCode' element={<BinDetail/>}/>
               <Route path='setting' element={<SettingStor/>}/>
+              <Route path='block' element={<BlockEmp/>}/>
             </Route>
           </Route>
           <Route path="post" element={<PostLayout/>}>

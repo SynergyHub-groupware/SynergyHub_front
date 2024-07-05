@@ -26,7 +26,7 @@ function MessageNav() {
                     <h3 className="bl_nav__ttlSub">환경설정</h3>
                     <ul className="bl_nav__menuSub">
                         <li><NavLink to="/message/storage/setting">보관함 관리</NavLink></li>
-                        <li><NavLink to="">차단 관리</NavLink></li>
+                        <li><NavLink to="/message/storage/block">차단 관리</NavLink></li>
                     </ul>
                 </li>
             </ul>
