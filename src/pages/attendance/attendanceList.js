@@ -13,6 +13,7 @@ import {
     callMyInfoAPI
 } from "../../apis/AttendancelAPICalls";
 import DropdownComponent from "./component/DropdownComponent";
+import OverWorkHoursCalculator from "./util/OverWorkHoursCalculator";
 
 function AttendanceList() {
     const dispatch = useDispatch();
@@ -313,9 +314,18 @@ function AttendanceList() {
                                         <td>{attendance.atdEndTime}</td>
                                         <td>{attendance.startTime || '-'}</td>
                                         <td>{attendance.endTime || '-'}</td>
-                                        <td><WorkHoursCalculator startTime={attendance.startTime}
+                                        <td><WorkHoursCalculator date={attendance.atdDate}
+                                                                 startTime={attendance.startTime}
                                                                  endTime={attendance.endTime} /></td>
-                                        <td>-</td>
+                                        <td>{attendance.startTime !== null && attendance.endTime !== null ? (
+                                            <OverWorkHoursCalculator date={attendance.atdDate}
+                                                                     startTime={attendance.startTime}
+                                                                     endTime={attendance.endTime}
+                                                                     owStartTime={attendance.owStartTime}
+                                                                     owEndTime={attendance.owEndTime}/>
+                                        ) : (
+                                            "00:00:00"
+                                        )}</td>
                                     </tr>
                                 ))
                             ) : (

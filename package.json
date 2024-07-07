@@ -64,6 +64,7 @@
     ]
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/event-source-polyfill": "^1.0.5",
     "event-source-polyfill": "^1.0.31",
     "i": "^0.3.7",
