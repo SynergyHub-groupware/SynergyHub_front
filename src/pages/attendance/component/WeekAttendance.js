@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import WorkHoursCalculator from "../util/WorkHoursCalculator";
 import OverWorkHoursCalculator from "../util/OverWorkHoursCalculator";
 

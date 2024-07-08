@@ -9,7 +9,11 @@ const initialState = {
     dayOffs: [],
     dayOffBalance: {},
     schedules: [],
-    AllAttendanceToday: []
+    AllAttendanceToday: [],
+    documentBt: [],
+    documentOw: [],
+    documentDo: [],
+    documentMonthDo: [],
 };
 
 // 액션 타입 정의
@@ -22,16 +26,20 @@ const GET_DAY_OFF_ALL = 'dayOffs/GET_DAY_OFF_ALL';
 const GET_DAY_OFF_BALANCE = 'dayOffs/GET_DAY_OFF_BALANCE';
 const GET_DEFAULT_SCHEDULE = 'attendance/GET_DEFAULT_SCHEDULE';
 const GET_ALL_ATTENDANCE_TODAY = 'attendance/GET_ALL_ATTENDANCE_TODAY';
+const GET_DOC_BT = 'documents/GET_DOC_BT';
+const GET_DOC_OW = 'documents/GET_DOC_OW';
+const GET_DOC_DO = 'documents/GET_DOC_DO';
+const GET_DOC_MONTH_DO = 'documents/GET_DOC_MONTH_DO';
 
-// 액션 함수
+// 액션 함수 생성
 export const {
     employee: { getMyInfo },
     attendance: { getAttendanceForWeek, getAttendanceToday, getAttendanceAll, getDefaultSchedule, getAllAttendanceToday },
-    dayOffs: { getDayOffAll, getDayOffBalance }
-    } =
-    createActions({
-    [GET_MY_INFO]: (employee) => ({ employee }),
+    dayOffs: { getDayOffAll, getDayOffBalance },
+    documents: { getDocBt, getDocOw, getDocDo },
+} = createActions({
     [SUCCESS]: () => ({ success: true }),
+    [GET_MY_INFO]: (employee) => ({ employee }),
     [GET_ATTENDANCE_FOR_WEEK]: (attendances) => ({ attendances }),
     [GET_ATTENDANCE_TODAY]: (attendanceToday) => ({ attendanceToday }),
     [GET_ATTENDANCE_ALL]: (attendanceAll) => ({ attendanceAll }),
@@ -39,45 +47,61 @@ export const {
     [GET_DAY_OFF_BALANCE]: (dayOffBalance) => ({ dayOffBalance }),
     [GET_DEFAULT_SCHEDULE]: (schedules) => ({ schedules }),
     [GET_ALL_ATTENDANCE_TODAY]: (AllAttendanceToday) => ({ AllAttendanceToday }),
-    });
+    [GET_DOC_BT]: (documentBt) => ({ documentBt }),
+    [GET_DOC_OW]: (documentOw) => ({ documentOw }),
+    [GET_DOC_DO]: (documentDo) => ({ documentDo }),
+    [GET_DOC_MONTH_DO]: (documentMonthDo) => ({ documentMonthDo }),
+});
 
-// 리듀서
+// 리듀서 정의
 const attendanceReducer = handleActions({
-    [SUCCESS]: (state, { payload }) => ({
+    [SUCCESS]: (state, action) => ({
         ...state,
-        success: payload.success
+        success: action.payload.success
     }),
-    [GET_MY_INFO]: (state, { payload }) => ({
+    [GET_MY_INFO]: (state, action) => ({
         ...state,
-        employee: payload.employee
+        employee: action.payload.employee
     }),
-    [GET_ATTENDANCE_FOR_WEEK]: (state, { payload }) => ({
+    [GET_ATTENDANCE_FOR_WEEK]: (state, action) => ({
         ...state,
-        attendances: payload.attendances
+        attendances: action.payload.attendances
     }),
-    [GET_ATTENDANCE_TODAY]: (state, { payload }) => ({
+    [GET_ATTENDANCE_TODAY]: (state, action) => ({
         ...state,
-        attendanceToday: payload.attendanceToday
+        attendanceToday: action.payload.attendanceToday
     }),
-    [GET_ATTENDANCE_ALL]: (state, { payload }) => ({
+    [GET_ATTENDANCE_ALL]: (state, action) => ({
         ...state,
-        attendanceAll: payload.attendanceAll
+        attendanceAll: action.payload.attendanceAll
     }),
-    [GET_DAY_OFF_ALL]: (state, { payload }) => ({
+    [GET_DAY_OFF_ALL]: (state, action) => ({
         ...state,
-        dayOffs: payload.dayOffs
+        dayOffs: action.payload.dayOffs
     }),
-    [GET_DAY_OFF_BALANCE]: (state, { payload }) => ({
+    [GET_DAY_OFF_BALANCE]: (state, action) => ({
         ...state,
-        dayOffBalance: payload.dayOffBalance
+        dayOffBalance: action.payload.dayOffBalance
     }),
-    [GET_DEFAULT_SCHEDULE]: (state, { payload }) => ({
+    [GET_DEFAULT_SCHEDULE]: (state, action) => ({
         ...state,
-        schedules: payload.schedules
+        schedules: action.payload.schedules
     }),
-    [GET_ALL_ATTENDANCE_TODAY]: (state, { payload }) => ({
+    [GET_ALL_ATTENDANCE_TODAY]: (state, action) => ({
         ...state,
-        AllAttendanceToday: payload.AllAttendanceToday
+        AllAttendanceToday: action.payload.AllAttendanceToday
+    }),
+    [GET_DOC_BT]: (state, action) => ({
+        ...state,
+        documentBt: action.payload.documentBt
+    }),
+    [GET_DOC_OW]: (state, action) => ({
+        ...state,
+        documentOw: action.payload.documentOw
+    }),
+    [GET_DOC_DO]: (state, action) => ({
+        ...state,
+        documentDo: action.payload.documentDo
     }),
 }, initialState);
 
