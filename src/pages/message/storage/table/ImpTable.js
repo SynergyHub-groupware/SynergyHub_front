@@ -94,7 +94,6 @@ function ImpTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCur
                         <col style={{ width: "120px" }} />
                         <col style={{ width: "*" }} />
                         <col style={{ width: "*" }} />
-                        <col style={{ width: "120px" }} />
                     </colgroup>
                     <thead>
                         <tr>
@@ -103,7 +102,6 @@ function ImpTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCur
                             <th scope="col">보낸사람</th>
                             <th scope="col">제목</th>
                             <th scope="col">긴급</th>
-                            <th scope="col">첨부파일</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -122,12 +120,11 @@ function ImpTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCur
                                         ) : (
                                             <div></div>
                                         )}</td>
-                                    <td>{msg.storCode}</td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={6} className="hp_pt50 hp_pb50 hp_7Color">목록이 없습니다.</td>
+                                <td colSpan={5} className="hp_pt50 hp_pb50 hp_7Color">목록이 없습니다.</td>
                             </tr>
                         )}
                     </tbody>

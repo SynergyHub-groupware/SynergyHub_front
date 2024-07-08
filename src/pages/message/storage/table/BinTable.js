@@ -205,7 +205,6 @@ function BinTable({ currentPage, setCurrentPage }) {
                         <col style={{ width: "120px" }} />
                         <col style={{ width: "*" }} />
                         <col style={{ width: "*" }} />
-                        <col style={{ width: "120px" }} />
                     </colgroup>
                     <thead>
                         <tr>
@@ -215,7 +214,6 @@ function BinTable({ currentPage, setCurrentPage }) {
                             <th scope="col">받은사람</th>
                             <th scope="col">제목</th>
                             <th scope="col">긴급</th>
-                            <th scope="col">첨부파일 (임시 보관함 번호)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -238,12 +236,11 @@ function BinTable({ currentPage, setCurrentPage }) {
                                         ) : (
                                             <div></div>
                                         )}</td>
-                                <td>{msg.storCode}</td>
                             </tr>
                             ))
                     ) : (
                         <tr>
-                            <td colSpan={7} className="hp_pt50 hp_pb50 hp_7Color">목록이 없습니다.</td>
+                            <td colSpan={6} className="hp_pt50 hp_pb50 hp_7Color">목록이 없습니다.</td>
                         </tr>
                     )}
                     </tbody>

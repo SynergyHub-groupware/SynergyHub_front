@@ -55,11 +55,10 @@ function CreateTable({msgCode}) {
             fetch(`http://localhost:8080/emp/message/send/${msgCode}`)
                 .then(res => res.json())
                 .then(data => {
+                    console.log(data);
                     setMsgTitle(data.msgTitle);
                     setMsgCon(data.msgCon);
-                    if(data.empRev && data.empRev.emp_code) {
-                        setSelectEmpRev(data.empRev.emp_code);
-                    }
+                    setSelectEmpRev(data.empRev);
                     setEmerStatus(data.emerStatus);
                 })
                 .catch(error => console.log("error : ", error));
@@ -76,7 +75,6 @@ function CreateTable({msgCode}) {
                                 url: `${item.attachUrl}/${item.attachSave}`
                             });
                         });
-                        console.log("data ::::",data);
                         setFiles(fileList);
                     } else {
                         console.log("첨부파일을 가져오지 못했습니다.");
@@ -283,6 +281,7 @@ function CreateTable({msgCode}) {
                                         value="urgent" 
                                         style={{ minHeight: "inherit" }}
                                         onChange={(e) => setEmerStatus(e.target.checked ? 'Y' : 'N')} 
+                                        checked={emerStatus === 'Y'}
                                     /> 긴급
                                 </label>
                             </div>

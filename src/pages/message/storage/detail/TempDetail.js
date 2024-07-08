@@ -1,15 +1,10 @@
-import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
-import { useSelector } from "react-redux";
 import CreateTable from "../table/CreateTable";
 
 
 function TempDetail() {
 
     const { msgCode } = useParams();
-    const dispatch = useDispatch();
-    const msgDetail = useSelector(state => state.messageReducer.messageDetail);
-
 
     return (
         <div className="ly_cont">
