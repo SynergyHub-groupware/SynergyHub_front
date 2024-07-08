@@ -1,64 +1,89 @@
-import { useEffect, useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 function BlockEmp() {
     const [blockedEmp, setBlockedEmp] = useState([]);
     const [empSend, setEmpSend] = useState(null);
     const [options, setOptions] = useState([]);
-    const [currentDate, setCurrentDate] = useState('');
     const [selectedOptions, setSelectedOptions] = useState([]);
 
     // 로그인한 사용자의 정보 추출
     useEffect(() => {
+        const accessToken = localStorage.getItem('access-token');
+        if (!accessToken) {
+            // 로그인 정보가 없을 경우 처리 (예: 로그인 페이지로 리다이렉트)
+            return;
+        }
+
         fetch('http://localhost:8080/employee/myInfo', {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Authorization': `Bearer ${accessToken}`,
             }
         })
-            .then(res => res.json())
-            .then(data => {
-                setEmpSend(data.emp_code);
-            })
-            .catch(error => console.log("error : ", error));
+        .then(res => res.json())
+        .then(data => {
+            setEmpSend(data.emp_code);
+        })
+        .catch(error => console.log("error : ", error));
     }, []);
 
-
-    // 로그인한 사용자별 차단 목록 조회
+    // 차단 목록 및 선택 옵션 초기화
     useEffect(() => {
         if (empSend) {
-            const savedEmps = localStorage.getItem(`blockedEmp_${empSend}`);
-            setBlockedEmp(savedEmps ? JSON.parse(savedEmps) : []);
+            const savedEmps = JSON.parse(localStorage.getItem(`blockedEmp_${empSend}`)) || [];
+            setBlockedEmp(savedEmps);
+            const storedSelectedOptions = JSON.parse(localStorage.getItem(`selectedOptions_${empSend}`)) || [];
+            setSelectedOptions(storedSelectedOptions);
         }
     }, [empSend]);
 
-    // 차단 목록 저장
+    // 회원 주소록 조회 및 옵션 설정
     useEffect(() => {
         if (empSend) {
-            localStorage.setItem(`blockedEmp_${empSend}`, JSON.stringify(blockedEmp));
-        }
-    }, [blockedEmp, empSend]);
-
-    // 회원 주소록 조회
-    useEffect(() => {
-        fetch('http://localhost:8080/address/select')
-            .then(res => res.json())
-            .then(data => {
-                setOptions(data);
+            axios.get(`http://localhost:8080/emp/message/block/address?emp_code=${empSend}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                    'Content-Type': 'application/json'
+                }
             })
-            .catch(error => console.log('error : ', error));
-    }, []);
+            .then(res => {
+                setOptions(res.data);
+            })
+            .catch(error => console.log("error : ", error));
+        }
+    }, [empSend]);
 
     // 행 추가
     const addRow = () => {
-        setBlockedEmp([...blockedEmp, { member: '', date: '', blockDate: '' }]);
-        setSelectedOptions([...selectedOptions, false]); // 새로 추가된 행의 선택 여부를 기본값(false)으로 설정
+        const newBlockedEmp = [...blockedEmp, { member: '', date: '', blockDate: '', blkCode: '' }];
+        setBlockedEmp(newBlockedEmp);
+        const newSelectedOptions = [...selectedOptions, false];
+        setSelectedOptions(newSelectedOptions);
+        localStorage.setItem(`blockedEmp_${empSend}`, JSON.stringify(newBlockedEmp));
+        localStorage.setItem(`selectedOptions_${empSend}`, JSON.stringify(newSelectedOptions));
     };
 
     // 행 삭제
     const deleteRow = (index) => {
-        const newBlockEmp = blockedEmp.filter((_, i) => i !== index);
-        setBlockedEmp(newBlockEmp);
-        const newSelectedOptions = selectedOptions.filter((_, i) => i !== index);
-        setSelectedOptions(newSelectedOptions);
+        const blkCode = blockedEmp[index].blkCode; // 해당 행의 blkCode 추출
+
+        // DELETE 요청
+        axios.delete(`http://localhost:8080/emp/message/delete/${blkCode}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(() => {
+            // 삭제 성공 시 행 제거
+            const newBlockedEmp = blockedEmp.filter((_, i) => i !== index);
+            setBlockedEmp(newBlockedEmp);
+            const newSelectedOptions = selectedOptions.filter((_, i) => i !== index);
+            setSelectedOptions(newSelectedOptions);
+            localStorage.setItem(`blockedEmp_${empSend}`, JSON.stringify(newBlockedEmp));
+            localStorage.setItem(`selectedOptions_${empSend}`, JSON.stringify(newSelectedOptions));
+        })
+        .catch(error => console.log("error : ", error));
     };
 
     // 차단 회원 등록
@@ -66,52 +91,72 @@ function BlockEmp() {
         const currentDate = new Date().toISOString().slice(0, 10);
 
         const data = {
-            blkCode: 1,
             blkDate: currentDate,
             blkId: { emp_code: blkId },
             blkName: { emp_code: blkName }
         };
 
-        console.log(data);
-
-        fetch('http://localhost:8080/emp/message/block', {
-            method: 'POST',
+        axios.post('http://localhost:8080/emp/message/block', data, {
             headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            }
         })
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error('Network res was not ok');
+        .then(res => {
+            alert("회원 차단 성공!");
+
+            // 해당 행의 blockDate 업데이트
+            const newBlockedEmp = [...blockedEmp];
+            newBlockedEmp[index].blockDate = currentDate;
+            setBlockedEmp(newBlockedEmp);
+
+            // 차단 회원의 blkCode 조회
+            return axios.get(`http://localhost:8080/emp/message/${blkId}/${blkName}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                    'Content-Type': 'application/json'
                 }
+            });
+        })
+        .then(res => {
+            const blkCode = res.data.blkCode; // 서버 응답에서 blkCode 추출
 
-                alert("회원 차단 성공!");
+            console.log(res.data);
 
-                // 해당 행의 blockDate 업데이트
-                const newBlockedEmp = [...blockedEmp];
-                newBlockedEmp[index].blockDate = currentDate;
-                setBlockedEmp(newBlockedEmp);
-            })
-            .catch(error => console.log("error : ", error));
+            // 해당 행의 blkCode 업데이트
+            const newBlockedEmp = [...blockedEmp];
+            newBlockedEmp[index].blkCode = blkCode;
+            setBlockedEmp(newBlockedEmp);
+
+            // 선택된 회원 저장
+            const newSelectedOptions = [...selectedOptions];
+            newSelectedOptions[index] = true;
+            setSelectedOptions(newSelectedOptions);
+
+            // localStorage 업데이트
+            localStorage.setItem(`blockedEmp_${empSend}`, JSON.stringify(newBlockedEmp));
+            localStorage.setItem(`selectedOptions_${empSend}`, JSON.stringify(newSelectedOptions));
+        })
+        .catch(error => console.log("error : ", error));
     };
 
     // 차단 회원 선택 시 변경
     const empChangeHandler = (index, value) => {
         updateRow(index, 'member', value);
-        setCurrentDate(new Date());
         blockEmp(empSend, value, index);
     };
 
     // 행의 선택 여부 업데이트
     const updateRow = (index, field, value) => {
-        const newBlockEmp = [...blockedEmp];
-        newBlockEmp[index][field] = value;
-        setBlockedEmp(newBlockEmp);
+        const newBlockedEmp = [...blockedEmp];
+        newBlockedEmp[index][field] = value;
+        setBlockedEmp(newBlockedEmp);
 
         const newSelectedOptions = [...selectedOptions];
-        newSelectedOptions[index] = true; // 선택된 상태로 변경
+        newSelectedOptions[index] = true;
         setSelectedOptions(newSelectedOptions);
+
+        localStorage.setItem(`selectedOptions_${empSend}`, JSON.stringify(newSelectedOptions));
     };
 
     return (
@@ -139,7 +184,7 @@ function BlockEmp() {
                                 <button type="button" className="el_btnS el_btn8Bord hp_mt5" onClick={addRow}>+ 추가</button>
                             </th>
                         </tr>
-                        {blockedEmp && blockedEmp.map((row, index) => (
+                        {blockedEmp.map((row, index) => (
                             <tr key={index}>
                                 <td>
                                     <div className="ly_flex">
@@ -147,12 +192,12 @@ function BlockEmp() {
                                             style={{ width: "90%" }}
                                             value={row.member}
                                             onChange={(e) => empChangeHandler(index, e.target.value)}
-                                            disabled={selectedOptions[index] || row.member !== ''} // 선택된 경우 비활성화
+                                            disabled={selectedOptions[index] || row.member !== ''}
                                         >
-                                            <option>차단 회원 선택</option>
+                                            <option value="" disabled={!selectedOptions[index]}>{selectedOptions[index] ? `${row.member} (차단됨)` : "차단 회원 선택"}</option>
                                             {options.length > 0 && options.map((option) => (
-                                                <option key={option.emp_code} value={option.emp_code}>
-                                                    {option.emp_name} &lt;{option.dept_title} {option.position_name}&gt;  ({option.email})
+                                                <option key={option.emp_code} value={option.emp_code} disabled={selectedOptions[index] && option.emp_code === row.member}>
+                                                    {option.emp_name} &lt;{option.dept_title} {option.position_name}&gt; ({option.email})
                                                 </option>
                                             ))}
                                         </select>
@@ -163,7 +208,7 @@ function BlockEmp() {
                                         <input
                                             type="text"
                                             className="hp_w100"
-                                            value={row.blockDate} // 각 행의 blockDate를 표시
+                                            value={row.blockDate}
                                             readOnly
                                         />
                                     </div>
@@ -185,5 +230,5 @@ function BlockEmp() {
         </div>
     );
 }
-// commit
+
 export default BlockEmp;
