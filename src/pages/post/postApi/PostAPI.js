@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getReadypost,getPostedit,getPostsearch,getAlllow,getComment,getPostlist, getAlllowboard,getSortlist,getPostdatainboard,getPostdatainboardpin,getDetail,getFile } from '../module/PostReducer';
+import { getPostrole,getRoll,getPostready,getPostedit,getPostsearch,getAlllow,getComment,getPostlist, getAlllowboard,getSortlist,getPostdatainboard,getPostdatainboardpin,getDetail,getFile } from '../module/PostReducer';
 import {getAllboard}  from '../module/PostReducer';
 
 const DOMAIN = 'http://localhost:8080'
@@ -24,13 +24,39 @@ export const request = async (method, url, data) => {
       throw error; // 오류를 다시 throw하여 호출자가 처리할 수 있도록 함
     }
   };
+  export function callGETRoll(LowBoardCode, Roll) {
+    return async (dispatch, getState) => {
+      try {
+        if (!LowBoardCode) {
+          // console.log("LowBoardCode가 유효하지 않습니다.");
+          return;
+        }
+  
+        const result = await request("GET", `/post/getRoll/${LowBoardCode}/${Roll}`);
+        console.log("API 응답 데이터:", result);
+  
+        // 정상적으로 데이터가 있는지 확인 후 dispatch
+        if (result) {
+          dispatch(getRoll(result));
+        } else {
+          console.log("API 응답 데이터가 없습니다.");
+        }
+      } catch (error) {
+        console.error("API 요청 중 오류 발생:", error);
+        throw error; // 상위 컴포넌트에서 에러를 처리할 수 있도록 다시 throw
+      }
+    };
+  }
+    
+
+  
 export function callGETReadyPost(empCode){
   return async(dispatch,getState)=>{
     try{
       const result=await request("GET",`/post/ReadyPost/${empCode}`)
       console.log(result)
 
-      dispatch(getReadypost(result))
+      dispatch(getPostready(result))
     }catch(error){
       throw(error)
     }
@@ -107,6 +133,18 @@ export function callGETPostEdit(postCode){
       }
     };
   }
+  export function callGETPostRole(){
+    return async (dispatch,getState)=>{
+      try{
+        const result=await request('GET',`/post/PostRole`);
+        dispatch(getPostrole(result))
+        console.log(result)
+      }catch(error){
+        console.log(error)
+      }
+    };
+  }
+
   export function callGETpostSearch(postSearch) {
     return async (dispatch, getState) => {
       console.log("callGETpostSearch call");

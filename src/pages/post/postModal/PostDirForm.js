@@ -1,7 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { callGETRoll } from "../postApi/PostAPI";
 
-function PostDirForm({ closeModal, onConfirm, onClear, defaultData }) {
+function PostDirForm({ Roll, LowBoardCode, closeModal, onConfirm, onClear, defaultData }) {
+    const dispatch = useDispatch();
 
     const [originEmp, setOriginEmp] = useState([]);     // 원본 저장
     const [employees, setEmployees] = useState([]);        // 검색 결과 저장
@@ -13,6 +16,15 @@ function PostDirForm({ closeModal, onConfirm, onClear, defaultData }) {
     const [DefaultData, setDefaultData] = useState([]);   // 받는사람 인원 배열
 
     const [selectAll, setSelectAll] = useState(false);
+
+    const RollState = useSelector(state => state.post.RollState);
+    useEffect(() => {
+        // console.log("RollState", RollState)
+        setReceiver(RollState)
+        // console.log(RollState)
+        // console.log(receiver)
+
+    }, [RollState])
     useEffect(() => {
         if (defaultData && defaultData.length > 0) {
             setDefaultData(defaultData);
@@ -42,6 +54,14 @@ function PostDirForm({ closeModal, onConfirm, onClear, defaultData }) {
                 console.log('error : ', error);
             });
     }, []);
+    useEffect(() => {
+        if (LowBoardCode !== 0){
+        dispatch(callGETRoll(LowBoardCode, Roll))
+        // console.log(LowBoardCode, Roll)
+        }else{
+            receiverClear()
+        }
+    }, [LowBoardCode, Roll])
 
     // 검색어 입력
     const handleKeywordChange = (e) => {
@@ -202,13 +222,16 @@ function PostDirForm({ closeModal, onConfirm, onClear, defaultData }) {
                                     </div>
                                     <div style={{ width: '250px', height: '88%', overflowY: 'auto', overflowX: 'auto' }}>
                                         {receiver && receiver.length > 0 && (
-                                            <ul>
-                                                {receiver.map(emp => (
-                                                    <li key={emp.emp_code}>
-                                                        - {emp.emp_name} {'<'}{emp.dept_title} {emp.position_name}{'>'}
-                                                    </li>
-                                                ))}
-                                            </ul>
+                                            <>
+                                                <ul>
+                                                    {receiver.map(emp => (
+                                                        <li key={emp.emp_code || emp.empCode}>
+                                                            - {emp.emp_name || emp.empName} {'<'}{emp.dept_title || emp.deptTitle} {emp.position_name || emp.positionName}{'>'}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+
+                                            </>
                                         )}
                                     </div>
                                 </td>

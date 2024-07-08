@@ -7,8 +7,9 @@ import { useParams } from 'react-router-dom';
 
 function PostReadyList() {
   const dispatch = useDispatch();
-  const postState = useSelector(state => state.post.PostReadyState);
-  const { Postdata, PostSearch } = postState;
+  const PostReadyState = useSelector(state => state.post.PostReadyState);
+  console.log(PostReadyState)
+  const { Postdata, PostSearch } = PostReadyState;
   const { empcode } = useParams();
   const [postsearch, setPostSearch] = useState('');
   const [displayData, setDisplayData] = useState([]);
@@ -32,11 +33,11 @@ function PostReadyList() {
   }, [postsearch, Postdata, PostSearch]);
 
   const renderRows = () => {
-    if (!Array.isArray(displayData) || displayData.length === 0) {
+    if (!Array.isArray(PostReadyState) || PostReadyState.length === 0) {
       return <tr><td colSpan="6">로딩 중...</td></tr>;
     }
 
-    return displayData.map(item => {
+    return PostReadyState.map(item => {
       const lowBoardCode = item.lowBoardCode ? item.lowBoardCode.lowBoardCode : 'N/A';
       const lowBoardName = item.lowBoardCode ? item.lowBoardCode.lowBoardName : 'N/A';
 
