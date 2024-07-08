@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { callGetAttachmentListAPI } from "../../../../apis/MessageAPICalls";
+import axios from "axios";
 
 function CreateTable({msgCode}) {
 
@@ -26,20 +27,18 @@ function CreateTable({msgCode}) {
         }
 
         /* 회원 주소록 조회 */
-        fetch('http://localhost:8080/address/select')
-            .then(res => res.json())
-            .then(data => {
-                setOptions(data)
-
-                if(location.state && location.state.empRev) {
-                    const selectedOption = data.find(option => option.emp_name === location.state.empRev);
-
-                    if(selectedOption) {
-                        setSelectEmpRev(selectedOption.emp_code);
-                    }
+        if(empSend) {
+            axios.get(`http://localhost:8080/emp/message/block/address?emp_code=${empSend}`,{
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                    'Content-Type': 'application/json'
                 }
             })
-            .catch(error => console.log('error : ', error));
+            .then(res => {
+                setOptions(res.data);
+            })
+            .catch(error => console.log("error : ", error));
+        }
 
         /* 로그인한 사용자의 정보 추출 */
         fetch('http://localhost:8080/employee/myInfo',{
@@ -87,7 +86,7 @@ function CreateTable({msgCode}) {
                     console.log("오류 발생 : ", error);
                 });
         }
-    }, [location.state, msgCode]);
+    }, [location.state, msgCode, empSend]);
 
     /* 확인 버튼 처리 */
     const submitHandler = () => {
