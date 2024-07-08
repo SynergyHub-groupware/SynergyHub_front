@@ -58,6 +58,7 @@ import DayOffList from "./pages/attendance/DayOffList";
 import Preferences from "./pages/attendance/Preferences";
 import CreateMsg from './pages/message/storage/CreateMsg';
 import TempDetail from './pages/message/storage/detail/TempDetail';
+import TaskMain from './pages/calendar/TaskMain';
 import SettingStor from './pages/message/storage/SettingStor';
 import BlockEmp from './pages/message/storage/BlockEmp';
 
@@ -92,6 +93,7 @@ function App() {
           </Route>
           <Route path="calendar" element={<CalendarLayout/>}>
             <Route path="myCalendar" element={<MyCalendar/>} />
+            <Route path="taskMain" element={<TaskMain/>} />
             {/* 내용추가 */}
           </Route>
           <Route path="employee" element={<EmployeeLayout/>}>
