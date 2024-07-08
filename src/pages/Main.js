@@ -1,16 +1,34 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import '../css/main.css';
 import Header from "../components/commons/Header";
 import PheedComponent from "./pheed/PheedComponent";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    callAllAttendanceTodayAPI,
+    callAttendanceTodayAPI,
+    callMyAttendanceForWeekAPI,
+    callMyInfoAPI
+} from "../apis/AttendancelAPICalls";
+import AttendanceSummary from "./attendance/component/AttendanceSummary";
+import DefaultSchedule from "./attendance/component/DefaultSchedule";
 
 function Main() {
+    const MainDispatch = useDispatch();
+    const employee = useSelector((state) => state.attendanceReducer.employee);
+    const attendancesToday = useSelector((state) => state.attendanceReducer.attendanceToday);
+
+    useEffect(() => {
+        MainDispatch(callMyInfoAPI())
+        MainDispatch(callAttendanceTodayAPI())
+    }, [MainDispatch]);
+
     return (
         <>
             <Header />
             <div className="ly_body">
                 <div className="ly_cont ly_flex" style={{height: 'calc(100vh - 65px)'}}>
                     <div className="ly_flex ly_fdirecCol hp_w400px ly_fshirnk">
-                        <section className="bl_sect hp_padding30 el_shadowD4 hp_mb30 ly_fgrow1 bl_mainProfile">
+                        <section className="bl_sect hp_padding30 el_shadowD4 hp_mb30 ly_fgrow1 bl_mainProfile" style={{width: '370px'}}>
                             <a className="bl_mainProfile__img hp_mb15"
                                style={{}} href=""></a>
                             <ul className="hp_alignC">
@@ -22,18 +40,8 @@ function Main() {
                                 </li>
                             </ul>
                         </section>
-                        <section className="bl_sect hp_padding30 el_shadowD4 hp_mb30">
-                            <div className="hp_fw700">2024년 01월 23일</div>
-                            <div className="ly_spaceBetween ly_fitemC hp_mt5">
-                                <div className="hp_fw700 hp_fs28">PM 12:34:56</div>
-                                <ul className="hp_alignR">
-                                    <li className=""><b className="hp_fw700 hp_mr15">출근 시간</b> 00:00:00</li>
-                                    <li className=""><b className="hp_fw700 hp_mr15">퇴근 시간</b> 00:00:00</li>
-                                </ul>
-                            </div>
-                            <button type="button" className="el_btn0Back el_btnF hp_mt20 hp_fs16">출근하기</button>
-                        </section>
-                        <section className="bl_sect hp_padding30 el_shadowD4">
+                        <AttendanceSummary attendancesToday={attendancesToday}/>
+                        <section className="bl_sect hp_padding30 el_shadowD4" style={{width: '370px'}}>
                             <div className="hp_fw700">연차 사용 현황</div>
                             <div className="hp_fw700 hp_fs28 hp_mt5">1 / 15 <span className="hp_fs16">일</span></div>
                             <div className="hp_mt15">막대그래프 자리</div>

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import '../../css/timeAndAttendance.css';
 import MonthWeekComponent from './util/MonthWeekComponent';
 import TodayDate2Component from './util/TodayDate2Component';
 import {
     callAllAttendanceTodayAPI,
-    callAttendanceTodayAPI,
+    callAttendanceTodayAPI, callDocBTAPI, callDocDOAPI, callDocOWAPI,
     callMyAttendanceForWeekAPI,
     callMyInfoAPI
 } from '../../apis/AttendancelAPICalls';
@@ -14,22 +14,32 @@ import MoveButton from "./button/MoveButton";
 import AttendanceSummary from "./component/AttendanceSummary";
 import DefaultSchedule from "./component/DefaultSchedule";
 import PreferencesAttendance from "./component/PreferencesAttendance";
-import TodayDateComponent from "./util/TodayDateComponent";
+import CurrentStatus from "./component/CurrentStatus";
+import BarChart from "./util/BarChart";
 
 function MyAttendance() {
-    const AttendanceDispatch = useDispatch();
+    const dispatch = useDispatch();
     const employee = useSelector((state) => state.attendanceReducer.employee);
     const attendances = useSelector((state) => state.attendanceReducer.attendances);
     const attendancesToday = useSelector((state) => state.attendanceReducer.attendanceToday);
     const AllAttendanceToday = useSelector((state) => state.attendanceReducer.AllAttendanceToday);
-
+    const documentBt = useSelector((state) => state.attendanceReducer.documentBt);
+    const documentOw = useSelector((state) => state.attendanceReducer.documentOw);
+    const documentDo = useSelector((state) => state.attendanceReducer.documentDo);
 
     useEffect(() => {
-        AttendanceDispatch(callMyInfoAPI());
-        AttendanceDispatch(callMyAttendanceForWeekAPI());
-        AttendanceDispatch(callAttendanceTodayAPI());
-        AttendanceDispatch(callAllAttendanceTodayAPI());
-    }, [AttendanceDispatch]);
+        dispatch(callMyInfoAPI());
+        dispatch(callMyAttendanceForWeekAPI());
+        dispatch(callAttendanceTodayAPI());
+        dispatch(callAllAttendanceTodayAPI());
+        dispatch(callDocBTAPI());
+        dispatch(callDocOWAPI());
+        dispatch(callDocDOAPI());
+    }, [dispatch]);
+
+    console.log('예외근무 기록:', documentBt);
+    console.log('초과근무 기록:', documentOw);
+    console.log('휴가신청 기록:', documentDo);
 
     const [showDiv1, setShowDiv1] = useState(true);
     const [isOpenFirst, setIsOpenFirst] = useState(true);
@@ -122,7 +132,7 @@ function MyAttendance() {
                                         <div className="">
                                             <div className="hp_fw700 hp_fs32">18h 00m</div>
                                             <div className="hp_mt15" style={{paddingBottom: '5px'}}>
-                                                막대그래프 자리
+                                                <BarChart regularHours={40} overHours={12} />
                                             </div>
                                             <ul className="hp_mt15">
                                                 <li className="" style={{paddingBottom: '5px'}}>
@@ -172,7 +182,7 @@ function MyAttendance() {
                                             </h4>
                                         </div>
                                     </section>
-                                    <WeekAttendance weekData={attendances} isOpen={isOpenSecond} toggle={toggleSecond}/>
+                                    <CurrentStatus document={documentBt} isOpen={isOpenSecond} toggle={toggleSecond}/>
                                 </section>
                                 <section>
                                     <section
@@ -185,7 +195,7 @@ function MyAttendance() {
                                             </h4>
                                         </div>
                                     </section>
-                                    <WeekAttendance weekData={attendances} isOpen={isOpenThird} toggle={toggleThird}/>
+                                    <CurrentStatus document={documentOw} isOpen={isOpenThird} toggle={toggleThird}/>
                                 </section>
                                 <section>
                                     <section
@@ -198,7 +208,7 @@ function MyAttendance() {
                                             </h4>
                                         </div>
                                     </section>
-                                    <WeekAttendance weekData={attendances} isOpen={isOpenFourth} toggle={toggleFourth}/>
+                                    <CurrentStatus document={documentDo} isOpen={isOpenFourth} toggle={toggleFourth}/>
                                 </section>
                             </div>
                         )

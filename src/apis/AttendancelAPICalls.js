@@ -6,7 +6,9 @@ import {
     getAttendanceAll,
     getDayOffAll,
     getDayOffBalance,
-    getDefaultSchedule, getAllAttendanceToday
+    getDefaultSchedule,
+    getAllAttendanceToday,
+    getDocBT, getDocBt, getDocOw, getDocDo
 } from "../modules/AttendanceModules";
 
 export const callMyInfoAPI = () => {
@@ -173,6 +175,69 @@ export const callAllAttendanceTodayAPI = () => {
             }
         } catch (error) {
             console.error('오늘의 모든 근태정보 조회 실패 error : ', error);
+        }
+    };
+};
+
+export const callDocBTAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/api/attendance/currentBT', {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            });
+
+            console.log('callCurrentBTAPI result : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(getDocBt(result.data.results.document));
+            } else {
+                console.error('예외근무 신청 현황 조회 실패 result : ', result);
+            }
+        } catch (error) {
+            console.error('error : ', error);
+        }
+    };
+};
+
+export const callDocOWAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/api/attendance/currentOW', {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            });
+
+            console.log('callCurrentOWAPI result : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(getDocOw(result.data.results.document));
+            } else {
+                console.error('초과근무 신청 현황 조회 실패 result : ', result);
+            }
+        } catch (error) {
+            console.error('error : ', error);
+        }
+    };
+};
+
+export const callDocDOAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/api/attendance/currentDO', {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            });
+
+            console.log('callCurrentOWAPI result : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(getDocDo(result.data.results.document));
+            } else {
+                console.error('휴가신청 현황 조회 실패 result : ', result);
+            }
+        } catch (error) {
+            console.error('error : ', error);
         }
     };
 };
