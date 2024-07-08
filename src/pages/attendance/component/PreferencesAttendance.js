@@ -4,99 +4,93 @@ import PagingBar from "../../../components/commons/PagingBar";
 
 const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleData, employee }) => {
     const [filteredData, setFilteredTodayData] = useState([]);
-    const [all, setAll] = useState(0); // 전체 인원 수
-    const [checkIn, setCheckIn] = useState(0); // 출근 인원 수
-    const [late, setLate] = useState(0); // 지각 인원 수
-    const [NoCheckIn, setNoCheckIn] = useState(0); // 결근 인원 수
-    const [dayOff, setDayOff] = useState(0); // 휴가 인원 수
-    const [fieldWork, setFieldWork] = useState(0); // 외근 인원 수
-    const [business, setBusiness] = useState(0); // 출장 인원 수
-
-    // 페이징
     const [currentPage, setCurrentPage] = useState(1);
     const resultsPerPage = 10;
 
-    // 현재 페이지의 결과 계산
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    // 페이지당 결과 계산
     const indexOfLastResult = currentPage * resultsPerPage;
     const indexOfFirstResult = indexOfLastResult - resultsPerPage;
     const currentResults = filteredData.slice(indexOfFirstResult, indexOfLastResult);
     const totalPages = Math.ceil(filteredData.length / resultsPerPage);
 
-    // 페이지 변경 핸들러
-    const handlePageChange = (pageNumber) => {
-        if (pageNumber < 1 || pageNumber > totalPages) return;
-        setCurrentPage(pageNumber);
-    };
+    // 상태 설정 함수
+    const [all, setAll] = useState(0);
+    const [checkIn, setCheckIn] = useState(0);
+    const [late, setLate] = useState(0);
+    const [NoCheckIn, setNoCheckIn] = useState(0);
+    const [dayOff, setDayOff] = useState(0);
+    const [fieldWork, setFieldWork] = useState(0);
+    const [business, setBusiness] = useState(0);
 
     useEffect(() => {
-        // 사용자의 직책과 부서코드에 따라 필요한 부서 및 팀 옵션 설정
         const { empTitle, deptCode } = userRoleData;
-
         if (empTitle === 'T2' && deptCode === 'D2') {
-            // T2, D2에 대한 설정
             const myDept = departmentsData.find(dep => dep.name === '전략기획부');
             if (myDept) {
-                // 전략기획부의 subDepartments 선언 (영업부 하위, 마케팅부 하위)
+                // 내 하위부서 탐색
                 const allSubDepts = myDept.subDepartments;
 
-                // todayData 의 subTitle 이 "영업부" 와 "마케팅부"이면서 직책이 팀장인 근태 기록
-                const filteredData = todayData.filter(data =>
-                    (allSubDepts.some(subDept => subDept.name === data.subTitle))
-                );
+                const filteredData = todayData.filter(data => allSubDepts.some(subDept => subDept.name === data.subTitle));
 
                 const sortedData = filteredData.sort((a, b) => {
-                    // 부서장 여부 확인
                     const isDepartmentHeadA = a.empTitle === '부서장';
                     const isDepartmentHeadB = b.empTitle === '부서장';
-
-                    // 부서장이면 팀명 ㄱㄴㄷ 순으로 정렬
                     if (isDepartmentHeadA && !isDepartmentHeadB) return -1;
                     if (!isDepartmentHeadA && isDepartmentHeadB) return 1;
-
-                    // 팀장 여부 확인
                     const isTeamLeaderA = a.empTitle === '팀장';
                     const isTeamLeaderB = b.empTitle === '팀장';
-
-                    // 팀장이면 팀명 ㄱㄴㄷ 순으로 정렬
                     if (isTeamLeaderA && !isTeamLeaderB) return -1;
                     if (!isTeamLeaderA && isTeamLeaderB) return 1;
-
-                    // 모두 부서장 또는 팀장이 아닌 경우에는 팀명 ㄱㄴㄷ 순으로 정렬
                     if (a.deptTitle == null) return 1;
                     if (b.deptTitle == null) return -1;
-
-                    return a.deptTitle.localeCompare(b.deptTitle); // 팀명 가나다 순으로 정렬
+                    return a.deptTitle.localeCompare(b.deptTitle);
                 });
-
                 setFilteredTodayData(sortedData);
-
-                // 출근 인원 수 계산
-                const checkInCount = filteredData.filter(data => data.attendanceStatus.atsName === '출근').length;
-                setCheckIn(checkInCount);
-
-                // 지각 인원 수 계산 (지각 + 미출근)
-                const lateCount1 = filteredData.filter(data => data.attendanceStatus.atsName === '지각').length;
-                const lateCount2 = filteredData.filter(data => data.attendanceStatus.atsName === '미출근').length;
+                setCheckIn(sortedData.filter(data => data.attendanceStatus.atsName === '출근').length);
+                const lateCount1 = sortedData.filter(data => data.attendanceStatus.atsName === '지각').length;
+                const lateCount2 = sortedData.filter(data => data.attendanceStatus.atsName === '미출근').length;
                 setLate(lateCount1 + lateCount2);
+                setNoCheckIn(sortedData.filter(data => data.attendanceStatus.atsName === '결근').length);
+                setDayOff(sortedData.filter(data => data.attendanceStatus.atsName === '휴가').length);
+                setFieldWork(sortedData.filter(data => data.attendanceStatus.atsName === '외근').length);
+                setBusiness(sortedData.filter(data => data.attendanceStatus.atsName === '출장').length);
+                setAll(checkIn + lateCount1 + lateCount2 + NoCheckIn + dayOff + fieldWork + business);
+            }
+        } else if (empTitle === 'T2' && deptCode === 'D3') {
+            const myDept = departmentsData.find(dep => dep.name === '경영지원부');
+            if (myDept) {
+                // 내 하위부서 탐색
+                const allSubDepts = myDept.subDepartments;
 
-                // 결근 인원 수 계산
-                const NoCheckInCount = filteredData.filter(data => data.attendanceStatus.atsName === '결근').length;
-                setNoCheckIn(NoCheckInCount);
+                const filteredData = todayData.filter(data => allSubDepts.some(subDept => subDept.name === data.subTitle));
 
-                // 휴가 인원 수 계산
-                const DayOffCount = filteredData.filter(data => data.attendanceStatus.atsName === '휴가').length;
-                setDayOff(DayOffCount);
-
-                // 외근 인원 수 계산
-                const fieldWorkCount = filteredData.filter(data => data.attendanceStatus.atsName === '외근').length;
-                setFieldWork(fieldWorkCount);
-
-                // 출장 인원 수 계산
-                const businessCount = filteredData.filter(data => data.attendanceStatus.atsName === '출장').length;
-                setBusiness(businessCount);
-
-                // 전체 인원 수 계산 (휴직 제외)
-                setAll(checkIn + late + NoCheckIn + dayOff + fieldWork + business);
+                const sortedData = filteredData.sort((a, b) => {
+                    const isDepartmentHeadA = a.empTitle === '부서장';
+                    const isDepartmentHeadB = b.empTitle === '부서장';
+                    if (isDepartmentHeadA && !isDepartmentHeadB) return -1;
+                    if (!isDepartmentHeadA && isDepartmentHeadB) return 1;
+                    const isTeamLeaderA = a.empTitle === '팀장';
+                    const isTeamLeaderB = b.empTitle === '팀장';
+                    if (isTeamLeaderA && !isTeamLeaderB) return -1;
+                    if (!isTeamLeaderA && isTeamLeaderB) return 1;
+                    if (a.deptTitle == null) return 1;
+                    if (b.deptTitle == null) return -1;
+                    return a.deptTitle.localeCompare(b.deptTitle);
+                });
+                setFilteredTodayData(sortedData);
+                setCheckIn(sortedData.filter(data => data.attendanceStatus.atsName === '출근').length);
+                const lateCount1 = sortedData.filter(data => data.attendanceStatus.atsName === '지각').length;
+                const lateCount2 = sortedData.filter(data => data.attendanceStatus.atsName === '미출근').length;
+                setLate(lateCount1 + lateCount2);
+                setNoCheckIn(sortedData.filter(data => data.attendanceStatus.atsName === '결근').length);
+                setDayOff(sortedData.filter(data => data.attendanceStatus.atsName === '휴가').length);
+                setFieldWork(sortedData.filter(data => data.attendanceStatus.atsName === '외근').length);
+                setBusiness(sortedData.filter(data => data.attendanceStatus.atsName === '출장').length);
+                setAll(checkIn + lateCount1 + lateCount2 + NoCheckIn + dayOff + fieldWork + business);
             }
         }
     }, [todayData, departmentsData, userRoleData]);
@@ -107,16 +101,16 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                 className="bl_sect hp_padding40 el_shadowD4 hp_mb20"
                 style={{position: 'relative', width: '900px', zIndex: '2'}}
             >
-                <div className="hp_fw700 hp_fs22">
+                <div className="hp_fw700 hp_fs22 ly_flexC hp_mb5">
                     {employee.emp_name} {employee.position_name}님,
                 </div>
-                <div className="hp_fs22 hp_mb40">
-                    우리 팀원들의 근태 현황을 확인해보세요. 🕵️‍♀️
+                <div className="hp_fs22 hp_mb40 ly_flexC" style={{ textAlign: 'center' }}>
+                    지금 팀원들의 근태 현황을 확인해보세요. 🕵️‍♀️
                 </div>
-                <div className="" style={{display: "flex"}}>
-                    <div className="hp_mt40" style={{width: '300px'}}>
-                        <table className="ly_fitemC">
-                            <colgroup>
+                <div className="">
+                    <div className="hp_mt30" style={{ width: '300px' }}>
+                        <table className="ly_fitemC hp_ml40">
+                        <colgroup>
                                 <col style={{width: "20px"}}/>
                                 <col style={{width: "20px"}}/>
                                 <col style={{width: "20px"}}/>
@@ -228,14 +222,22 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                     {currentResults.length > 0 ? (
                         currentResults.map((employee, index) => (
                             <tr key={index} style={{height: '55px'}}>
-                                <td>{employee.deptTitle}</td>
+                                <td>
+                                    {employee.empTitle === '대표' || employee.empTitle === '책임자' ? (
+                                        <span>{employee.parTitle}</span>
+                                    ) : employee.empTitle === '부서장' ? (
+                                        <span>{employee.subTitle}</span>
+                                    ) : employee.empTitle === '팀장' || employee.empTitle === '팀원' ? (
+                                        <span>{employee.deptTitle}</span>
+                                    ) : "-"}
+                                </td>
                                 <td>{employee.empTitle}</td>
                                 <td>{employee.empName}</td>
                                 <td>{employee.attendanceStatus.atsName}</td>
-                                <td>{employee.startTime}</td>
-                                <td>{employee.endTime}</td>
-                                <td>{employee.owStartTime}</td>
-                                <td>{employee.owEndTime}</td>
+                                <td>{employee.startTime ? employee.startTime : "-"}</td>
+                                <td>{employee.endTime ? employee.endTime : "-"}</td>
+                                <td>{employee.owStartTime ? employee.owStartTime : "-"}</td>
+                                <td>{employee.owEndTime ? employee.owEndTime : "-"}</td>
                             </tr>
                         ))
                     ) : (
