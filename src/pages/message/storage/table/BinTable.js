@@ -43,7 +43,6 @@ function BinTable({ currentPage, setCurrentPage }) {
     const sortedMessages = sortMsg(messages, sort);
 
     useEffect(() => {
-        console.log("API 작동");
         dispatch(callBinMsgListAPI());        
     }, [dispatch]);
 
@@ -101,7 +100,6 @@ function BinTable({ currentPage, setCurrentPage }) {
                 .then(res => {
 
                     if(res.ok) {
-                        console.log('메세지 완전 삭제 : ', msgCode);
                         setSelectMsg(prev => {
                             const newSelect = new Set(prev);
                             newSelect.delete(msgCode);

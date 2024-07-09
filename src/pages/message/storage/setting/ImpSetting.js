@@ -14,7 +14,6 @@ function ImpSetting() {
     const impMsgClearHandler = () => {
         try {
             const msgCodes = (impMessages && impMessages.map(msg => msg.msgCode));
-            console.log("msgCodes : ", msgCodes);
             dispatch(callDelAllImpMsgAPI(msgCodes));
             window.location.reload();
         } catch (error) {

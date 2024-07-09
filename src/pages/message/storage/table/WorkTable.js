@@ -59,7 +59,6 @@ function WorkTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCu
     const currentMessages = sortedMessages.slice(startIndex, startIndex + itemsPerPage);
 
     useEffect(() => {
-        console.log("API 호출");
         dispatch(callWorkMsgListAPI());
     }, [dispatch])
 

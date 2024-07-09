@@ -41,195 +41,41 @@ export const { message : { getRevMsg, getSendMsg, getBinMsg, getImpMsg, getWorkM
     , getTempMsg, delSendMsg, upMsgStatus, getAttachList, movMsgImp, movMsgWork, movMsgRev, upRevMsgStatus, upMsgStatusNr,
     upAllRevStatus, upAllImpStatus, upAllWorkStatus, upAllSendStatus
 }} = createActions({
-    [GET_REV_MSG] : result => {
-        console.log('action : ', result);
-
-        return {message: result};
-    },
-
-    [GET_SEND_MSG] : result => {
-        console.log('action : ', result);
-
-        return {message: result};
-    },
-
-    [GET_BIN_MSG] : result => {
-        console.log('action : ', result);
-
-        return {message: result};
-    },
-
-    [GET_IMP_MSG] : result => {
-        console.log('action : ', result);
-
-        return {message: result};
-    },
-
-    [GET_WORK_MSG] : result => {
-        console.log('action : ', result);
-
-        return {message: result};
-    },
-
-    [GET_TEMP_MSG] : result => {
-        console.log('action : ', result);
-
-        return {message: result};
-    },
-
-    [DEL_MSG] : msgCode => {
-        console.log('del action : ', msgCode);
-
-        return { msgCode };
-    },
-
-    [GET_REV_DETAIL] : result => {
-        console.log('action : ', result);
-
-        return {messageDetail: result};
-    },
-
-    [GET_SEND_DETAIL] : result => {
-        console.log('action : ', result);
-
-        return {messageDetail: result};
-    },
-
-    [DEL_SEND_MSG] : msgCode => {
-        console.log('del action : ', msgCode);
-
-        return { msgCode };
-    },
-
-    [UP_MSG_STATUS] : msgCode => {
-        console.log('up action : ', msgCode);
-
-        return { msgCode };
-    },
-
-    [GET_ATTACH_LIST] : msgCode => {
-        console.log('attach action : ', msgCode);
-
-        return { msgCode };
-    },
-
-    [MOV_MSG_IMP] : msgCode => {
-        console.log('move to important : ', msgCode);
-
-        return { msgCode };
-    },
-
-    [MOV_MSG_WORK] : msgCode => {
-        console.log('move to work : ', msgCode);
-
-        return { msgCode };
-    },
-
-    [MOV_MSG_REV] : msgCode => {
-        console.log('move to rev : ', msgCode);
-
-        return { msgCode };
-    },
-
-    [UP_REV_MSG_STATUS] : msgCodes => {
-        console.log("up rev msg status action : ", msgCodes);
-
-        return { msgCodes };
-    },
-
-    [UP_MSG_STATUS_NR] : msgCode => {
-        console.log('up nr action : ', msgCode);
-
-        return { msgCode };
-    },
-
-    [UP_ALL_REV_STATUS] : msgCodes => {
-        console.log("up rev all msg status action : ", msgCodes);
-
-        return { msgCodes };
-    },
-
-    [UP_ALL_IMP_STATUS] : msgCodes => {
-        console.log("up imp all msg status action : ", msgCodes);
-
-        return { msgCodes };
-    },
-
-    [UP_ALL_WORK_STATUS] : msgCodes => {
-        console.log("up work all msg status action : ", msgCodes);
-
-        return { msgCodes };
-    },
-
-    [UP_ALL_SEND_STATUS] : msgCodes => {
-        console.log("up send all msg status action : ", msgCodes);
-
-        return { msgCodes };
-    }
+    [GET_REV_MSG] : result => {return {message: result};},
+    [GET_SEND_MSG] : result => {return {message: result};},
+    [GET_BIN_MSG] : result => {return {message: result};},
+    [GET_IMP_MSG] : result => {return {message: result};},
+    [GET_WORK_MSG] : result => {return {message: result};},
+    [GET_TEMP_MSG] : result => {return {message: result};},
+    [DEL_MSG] : msgCode => {return { msgCode };},
+    [GET_REV_DETAIL] : result => {return {messageDetail: result};},
+    [GET_SEND_DETAIL] : result => {return {messageDetail: result};},
+    [DEL_SEND_MSG] : msgCode => {return { msgCode };},
+    [UP_MSG_STATUS] : msgCode => {return { msgCode };},
+    [GET_ATTACH_LIST] : msgCode => {return { msgCode };},
+    [MOV_MSG_IMP] : msgCode => {return { msgCode };},
+    [MOV_MSG_WORK] : msgCode => {return { msgCode };},
+    [MOV_MSG_REV] : msgCode => {return { msgCode };},
+    [UP_REV_MSG_STATUS] : msgCodes => {return { msgCodes };},
+    [UP_MSG_STATUS_NR] : msgCode => {return { msgCode };},
+    [UP_ALL_REV_STATUS] : msgCodes => {return { msgCodes };},
+    [UP_ALL_IMP_STATUS] : msgCodes => {return { msgCodes };},
+    [UP_ALL_WORK_STATUS] : msgCodes => {return { msgCodes };},
+    [UP_ALL_SEND_STATUS] : msgCodes => {return { msgCodes };}
 
 }, initialState);
 
 
 /* 리듀서 */
 const messageReducer = handleActions({
-    [GET_REV_MSG] : (state, {payload}) => {
-        console.log("reducer : ", payload);
-
-        return {
-            ...state,
-            revMessage: payload
-        };
-    },
-
-    [GET_SEND_MSG] : (state, {payload}) => {
-        console.log("reducer : ", payload);
-
-        return {
-            ...state,
-            sendMessage: payload
-        };
-    },
-
-    [GET_BIN_MSG] : (state, {payload}) => {
-        console.log("reducer : ", payload);
-
-        return {
-            ...state,
-            binMessage: payload
-        }
-    },
-
-    [GET_IMP_MSG] : (state, {payload}) => {
-        console.log("reducer : ", payload);
-
-        return {
-            ...state,
-            impMessage: payload
-        }
-    },
-
-    [GET_WORK_MSG] : (state, {payload}) => {
-        console.log("reducer : ", payload);
-
-        return {
-            ...state,
-            workMessage: payload
-        }
-    },
-
-    [GET_TEMP_MSG] : (state, {payload}) => {
-        console.log("reducer : ", payload);
-
-        return {
-            ...state,
-            messages: payload
-        }
-        
-    },
+    [GET_REV_MSG] : (state, {payload}) => {return {...state, revMessage: payload};},
+    [GET_SEND_MSG] : (state, {payload}) => {return {...state, sendMessage: payload};},
+    [GET_BIN_MSG] : (state, {payload}) => {return {...state, binMessage: payload}},
+    [GET_IMP_MSG] : (state, {payload}) => {return {...state, impMessage: payload}},
+    [GET_WORK_MSG] : (state, {payload}) => {return {...state, workMessage: payload}},
+    [GET_TEMP_MSG] : (state, {payload}) => {return {...state, messages: payload}},
 
     [DEL_MSG] : (state, {payload}) => {
-        console.log("del reducer : ", payload);
-
         return {
             ...state,
             messages: state.messages.map(msg =>
@@ -238,19 +84,10 @@ const messageReducer = handleActions({
         }
     },
 
-    [GET_REV_DETAIL] : (state, {payload}) => ({
-        ...state,
-        messageDetail: payload
-    }),
-
-    [GET_SEND_DETAIL] : (state, {payload}) => ({
-        ...state,
-        messageDetail: payload
-    }),
+    [GET_REV_DETAIL] : (state, {payload}) => ({...state, messageDetail: payload}),
+    [GET_SEND_DETAIL] : (state, {payload}) => ({...state, messageDetail: payload}),
 
     [DEL_SEND_MSG] : (state, {payload}) => {
-        console.log("del reducer : ", payload);
-
         return {
             ...state,
             messages: state.messages.map(msg =>
@@ -260,8 +97,6 @@ const messageReducer = handleActions({
     },
 
     [UP_MSG_STATUS] : (state, {payload}) => {
-        console.log("up reducer : ", payload);
-
         const updatedMsg = state.messages.map(msg =>
             msg.msgCode === payload.msgCode ? { ...msg, msgStatus: 'Y'} : msg
         );
@@ -272,18 +107,9 @@ const messageReducer = handleActions({
         };
     },
 
-    [GET_ATTACH_LIST] : (state, {payload}) => {
-        console.log("attach reducer : ", payload);
-
-        return {
-            ...state,
-            attachments: payload
-        }
-    },
+    [GET_ATTACH_LIST] : (state, {payload}) => {return {...state, attachments: payload}},
 
     [MOV_MSG_IMP] : (state, {payload}) => {
-        console.log("move to imp reducer : ", payload);
-
         return {
             ...state,
             messages: state.messages.map(msg =>
@@ -293,8 +119,6 @@ const messageReducer = handleActions({
     },
 
     [MOV_MSG_WORK] : (state, { payload }) => {
-        console.log("move to work reducer : ", payload);
-
         return {
             ...state,
             messages: state.messages.map(msg =>
@@ -304,8 +128,6 @@ const messageReducer = handleActions({
     },
 
     [MOV_MSG_REV] : (state, { payload }) => {
-        console.log("move to rev reducer : ", payload);
-
         return {
             ...state,
             messages: state.messages.map(msg => 
@@ -315,8 +137,6 @@ const messageReducer = handleActions({
     },
 
     [UP_REV_MSG_STATUS] : (state, { payload }) => {
-        console.log("up rev msg status reducer : ", payload);
-
         const updateRevMsgs = state.revMessage.map(msg =>
             payload.msgcodes.includes(msg.msgCode) ? { ...msg, msgStatus: 'Y' } : msg
         );
@@ -328,13 +148,9 @@ const messageReducer = handleActions({
     },
 
     [UP_MSG_STATUS_NR] : (state, {payload}) => {
-        console.log("up nr reducer : ", payload);
-
         const updateMsgNr = state.messages.map(msg => 
             msg.msgCode === payload.msgCode ? { ...msg, msgStatus: 'N' } : msg
         );
-
-        console.log("updateMsgNr : ", updateMsgNr);
 
         return {
             ...state,
@@ -343,8 +159,6 @@ const messageReducer = handleActions({
     },
 
     [UP_ALL_REV_STATUS] : (state, { payload }) => {
-        console.log("up all rev msg to bin reducer : ", payload);
-
         const updateAllRevStor = state.revMessage.map(msg =>
             payload.msgCodes.includes(msg.msgCode) ? { ...msg, revStor: '5'} : msg
         );
@@ -356,8 +170,6 @@ const messageReducer = handleActions({
     },
 
     [UP_ALL_IMP_STATUS] : (state, { payload }) => {
-        console.log("up all imp msg to bin reducer : ", payload);
-
         const updateAllImpStor = state.impMessage.map(msg =>
             payload.msgCodes.includes(msg.msgCode) ? { ...msg, revStor: '5'} : msg
         );
@@ -369,8 +181,6 @@ const messageReducer = handleActions({
     },
 
     [UP_ALL_WORK_STATUS] : (state, { payload }) => {
-        console.log("up all work msg to bin reducer : ", payload);
-
         const updateAllWorkStor = state.workMessage.map(msg =>
             payload.msgCodes.includes(msg.msgCode) ? { ...msg, revStor: '5'} : msg
         );
@@ -382,8 +192,6 @@ const messageReducer = handleActions({
     },
 
     [UP_ALL_SEND_STATUS] : (state, { payload }) => {
-        console.log("up all send msg to bin reducer : ", payload);
-
         const updateAllSendStor = state.sendMessage.map(msg =>
             payload.msgCodes.includes(msg.msgCode) ? { ...msg, revStor: '5'} : msg
         );

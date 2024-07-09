@@ -12,7 +12,6 @@ function RevTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCur
     const itemsPerPage = 10; // 페이지당 항목 수 10개로 설정
 
     useEffect(() => {
-        console.log('API 호출');
         dispatch(callRevMsgListAPI());
     }, [dispatch]);
 

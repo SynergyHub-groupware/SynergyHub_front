@@ -9,7 +9,7 @@ export const callRevMsgListAPI = () => {
                 'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
                 'Content-Type': 'application/json'
             });
-
+            
             if (result && result.status === 200) {
 
                 dispatch(getRevMsg(result.data));
@@ -50,7 +50,7 @@ export const callBinMsgListAPI = () => {
                 'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
                 'Content-Type': 'application/json'
             });
-
+            
             if (result && result.status === 200) {
                 dispatch(getBinMsg(result.data));
             } else {
