@@ -31,7 +31,6 @@ function RevSetting() {
     const revMsgClearHandler = () => {
         try {
             const msgCodes = (revMessages && revMessages.map(msg => msg.msgCode));
-            console.log("msgCodes : ", msgCodes);
             dispatch(callDelAllMsgAPI(msgCodes));
             window.location.reload();
         } catch (error) {

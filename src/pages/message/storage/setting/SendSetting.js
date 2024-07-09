@@ -14,7 +14,6 @@ function SendSetting() {
     const sendMsgClearHandler = () => {
         try {
             const msgCodes = (sendMessages && sendMessages.map(msg => msg.msgCode));
-            console.log("msgCodes : ", msgCodes);
             dispatch(callDelAllSendMsgAPI(msgCodes));
             window.location.reload();
         } catch (error) {

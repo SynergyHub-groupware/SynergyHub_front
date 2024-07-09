@@ -16,9 +16,7 @@ function RevDetail() {
         
         const revMsgDetail = async () => {
             try {
-                console.log("API 시작");
                 await dispatch(callRevDetailAPI(msgCode));
-                console.log("msgCode : ", msgCode);
             } catch (error) {
                 console.log("error : ", error);
             }
@@ -26,9 +24,7 @@ function RevDetail() {
 
         const attachList = async () => {
             try {
-                console.log("API 시작");
                 await dispatch(callGetAttachListAPI(msgCode));
-                console.log("msgCode attach : ", msgCode);
             } catch (error) {
                 console.log("attach error : ", error);
             }
@@ -40,7 +36,6 @@ function RevDetail() {
     }, [dispatch, msgCode]);
 
     if (!msgDetail) {
-        console.log("msgDetail : ", msgDetail);
         return <div>로딩중..</div>;
     }
 
@@ -80,7 +75,6 @@ function RevDetail() {
     const deleteHandler = async () => {
 
         try {
-            console.log(msgCode);
             await dispatch(callDelMsgAPI(msgCode));
             alert("쪽지를 삭제했습니다.");
             navigate("/message/storage/receive");

@@ -15,7 +15,6 @@ function LoginForm() {
     } 
 
     const onClickLoginHandler = () => {
-        // event.preventDefault();
         dispatch(callLoginAPI({ loginRequest : form }));
     }
 

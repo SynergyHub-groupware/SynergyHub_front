@@ -63,7 +63,6 @@ function SendTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCu
     const currentMessages = sortedMessages.slice(startIndex, startIndex + itemsPerPage);
 
     useEffect(() => {
-        console.log("api 작동");
         dispatch(callSendMsgListAPI());
     }, [dispatch]);
 

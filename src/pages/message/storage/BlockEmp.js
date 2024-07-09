@@ -121,8 +121,6 @@ function BlockEmp() {
         .then(res => {
             const blkCode = res.data.blkCode; // 서버 응답에서 blkCode 추출
 
-            console.log(res.data);
-
             // 해당 행의 blkCode 업데이트
             const newBlockedEmp = [...blockedEmp];
             newBlockedEmp[index].blkCode = blkCode;

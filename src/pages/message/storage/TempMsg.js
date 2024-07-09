@@ -13,8 +13,6 @@ function TempMsg() {
     const [currentPage, setCurrentPage] = useState(1);  // 현재 페이지 상태
     const messages = useSelector(state => state.messageReducer.messages.message);
 
-    console.log("messages : ", messages);
-    
     const delMsgHandler = () => {
 
         if (selectMsgCode.length === 0) {
