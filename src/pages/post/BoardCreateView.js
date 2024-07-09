@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { callGETPostRole,getAllLowBoard } from './postApi/PostAPI';
+import { callGETPostRole, getAllLowBoard } from './postApi/PostAPI';
 import PostAddressDir from './postModal/PostAddressDir';
+import { callMyInfoAPI } from '../../apis/EmployeeAPICalls';
 
 function BoardCreateView() {
     const dispatch = useDispatch();
     const AllLowState = useSelector(state => state.post.AllLowState);
-    const PostRoleState=useSelector(state=>state.post.PostRoleState);
+    const PostRoleState = useSelector(state => state.post.PostRoleState);
     const [boards, setBoards] = useState({});
+    useEffect(() => {
+        dispatch(callMyInfoAPI());
+        dispatch(callGETPostRole())
+    }, []);
+    const employees = useSelector(state => state.employeeReducer.employee);
+    useEffect(() => {
+        dispatch(callGETPostRole())
+        console.log(PostRoleState)
+    }, [dispatch]);
 
     useEffect(() => {
         dispatch(getAllLowBoard());
@@ -317,7 +327,7 @@ function BoardCreateView() {
 
                 const postRoleData = await postRoleUpdateResponse.json();
                 console.log('게시글 역할 생성 응답:', postRoleData);
-            console.log(updatedRoles);
+                console.log(updatedRoles);
 
             }
 
@@ -399,55 +409,80 @@ function BoardCreateView() {
                                         </button>
                                     </td>
                                     <td>
-                                        {boards[boardName].lowBoards.map((lowBoard, index) => (lowBoard.lowBoardName !== 'Deleted' && (
-                                            <tr key={lowBoard.lowBoardCode} className="button-wrapper">
-                                                <td>
-                                                    <input
-                                                        value={lowBoard.lowBoardName}
-                                                        onChange={(e) => handleInputChange(e, boardName, index)}
-                                                    />
-                                                    <button type="button" onClick={(event) => handleSubmit(event, boardName, lowBoard)}>저장</button>
-                                                    <button type="button" onClick={() => handleDelete(boardName, lowBoard.lowBoardCode)}>삭제</button>
+                                        {boards[boardName].lowBoards.map((lowBoard, index) => {
+                                            console.log("employees",employees)
+                                            console.log("PostRoleState",PostRoleState)
+                                            console.log("lowBoard.lowBoardCode:", lowBoard.lowBoardCode); // lowBoardCode를 로그로 확인
+                                            const hasAdminPermission = PostRoleState.some(role =>
+                                                role.emp_Code === employees.emp_code &&
+                                                role.lowCode.lowBoardCode === lowBoard.lowBoardCode &&
+                                                role.prAdmin === 'Y'
+                                              );
+                                              
+                                              console.log(`EMP_CODE: ${employees.emp_code}, LOW_CODE: ${lowBoard.lowBoardCode}, PR_ADMIN: 'Y'`);
+                                              console.log("Role check:", hasAdminPermission);
+                                              
+                                            return (lowBoard.lowBoardName !== 'Deleted' && (
+                                                <tr key={lowBoard.lowBoardCode} className="button-wrapper">
+                                                    <td>
+                                                        <input
+                                                            value={lowBoard.lowBoardName}
+                                                            onChange={(e) => handleInputChange(e, boardName, index)}
+                                                            disabled={lowBoard.lowBoardCode !== 0 && !hasAdminPermission}
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={(event) => handleSubmit(event, boardName, lowBoard)}
+                                                            disabled={lowBoard.lowBoardCode !== 0 && !hasAdminPermission}
+                                                        >
+                                                            저장
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleDelete(boardName, lowBoard.lowBoardCode)}
+                                                            disabled={lowBoard.lowBoardCode !== 0 && !hasAdminPermission}
+                                                        >
+                                                            삭제
+                                                        </button>
+                                                    </td>
+                                                    <div className="button-group">
+                                                        <h1>읽기: <button type="button" onClick={() => openModal(lowBoard.lowBoardCode, 'read')}>추가</button></h1>
+                                                        <PostAddressDir
+                                                            isOpen={isReadModalOpen && readModalLowBoardCode === lowBoard.lowBoardCode}
+                                                            closeModal={() => closeModal('read')}
+                                                            onConfirm={ReadConfirmHandler}
+                                                            onClear={() => setReadSelectEmps([])}
+                                                            defaultData={ReadselectEmps}
+                                                            LowBoardCode={readModalLowBoardCode || ''}
+                                                            Roll={'Read'}
+                                                        />
+                                                        <h1>읽기/쓰기: <button type="button" onClick={() => openModal(lowBoard.lowBoardCode, 'write')}>추가</button></h1>
+                                                        <PostAddressDir
+                                                            key={JSON.stringify(WriteselectEmps)}
+                                                            isOpen={isWriteModalOpen && writeModalLowBoardCode === lowBoard.lowBoardCode}
+                                                            closeModal={() => closeModal('write')}
+                                                            onConfirm={WriteConfirmHandler}
+                                                            onClear={() => setWriteSelectEmps([])}
+                                                            defaultData={WriteselectEmps}
+                                                            LowBoardCode={writeModalLowBoardCode || ''}
+                                                            Roll={'Write'}
 
-                                                </td>
-                                                <div className="button-group">
-                                                    <h1>읽기: <button type="button" onClick={() => openModal(lowBoard.lowBoardCode, 'read')}>추가</button></h1>
-                                                    <PostAddressDir
-                                                        isOpen={isReadModalOpen && readModalLowBoardCode === lowBoard.lowBoardCode}
-                                                        closeModal={() => closeModal('read')}
-                                                        onConfirm={ReadConfirmHandler}
-                                                        onClear={() => setReadSelectEmps([])}
-                                                        defaultData={ReadselectEmps}
-                                                        LowBoardCode={readModalLowBoardCode || ''}
-                                                        Roll={'Read'}
-                                                    />
-                                                    <h1>읽기/쓰기: <button type="button" onClick={() => openModal(lowBoard.lowBoardCode, 'write')}>추가</button></h1>
-                                                    <PostAddressDir
-                                                        key={JSON.stringify(WriteselectEmps)}
-                                                        isOpen={isWriteModalOpen && writeModalLowBoardCode === lowBoard.lowBoardCode}
-                                                        closeModal={() => closeModal('write')}
-                                                        onConfirm={WriteConfirmHandler}
-                                                        onClear={() => setWriteSelectEmps([])}
-                                                        defaultData={WriteselectEmps}
-                                                        LowBoardCode={writeModalLowBoardCode || ''}
-                                                        Roll={'Write'}
+                                                        />
+                                                        <h1>관리자: <button type="button" onClick={() => openModal(lowBoard.lowBoardCode, 'admin')}>추가</button></h1>
+                                                        <PostAddressDir
+                                                            isOpen={isAdminModalOpen && adminModalLowBoardCode === lowBoard.lowBoardCode}
+                                                            closeModal={() => closeModal('admin')}
+                                                            onConfirm={AdminConfirmHandler}
+                                                            onClear={() => setAdminSelectEmps([])}
+                                                            defaultData={AdminselectEmps}
+                                                            LowBoardCode={adminModalLowBoardCode || ''}
+                                                            Roll={'Admin'}
 
-                                                    />
-                                                    <h1>관리자: <button type="button" onClick={() => openModal(lowBoard.lowBoardCode, 'admin')}>추가</button></h1>
-                                                    <PostAddressDir
-                                                        isOpen={isAdminModalOpen && adminModalLowBoardCode === lowBoard.lowBoardCode}
-                                                        closeModal={() => closeModal('admin')}
-                                                        onConfirm={AdminConfirmHandler}
-                                                        onClear={() => setAdminSelectEmps([])}
-                                                        defaultData={AdminselectEmps}
-                                                        LowBoardCode={adminModalLowBoardCode || ''}
-                                                        Roll={'Admin'}
-
-                                                    />
-                                                </div>
-                                                <ColoredLine color="black" />
-                                            </tr>
-                                        )))}
+                                                        />
+                                                    </div>
+                                                </tr>
+                                            ));
+                                        })}
                                         <ColoredLine color="black" />
                                     </td>
                                 </tr>

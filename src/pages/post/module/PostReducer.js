@@ -62,6 +62,7 @@ export const { post: {getPostrole,getRoll,getPostready,getPostedit,getPostsearch
 // console.log("getAlllow",getAlllow);
 console.log("getReadypost",getPostready)
 console.log("getRoll",getRoll)
+console.log("getPostrole",getPostrole)
 
 // 초기 상태 및 리듀서 정의
 const postReducer = handleActions(
@@ -122,7 +123,7 @@ const postReducer = handleActions(
       ...state,
       RollState:payload.rolldata
     }),
-    [GET_POSTROLE]:(state,[payload])=>({
+    [GET_POSTROLE]:(state,{payload})=>({
       ...state,
       PostRoleState:payload.postrole
     })
@@ -142,6 +143,8 @@ const postReducer = handleActions(
 // console.log("initialState.AllLowState",initialState.AllLowState);
 console.log("initialState.PostReadyState",initialState.PostReadyState);
 console.log("initialState.RollState",initialState.RollState);
+console.log("initialState.PostRoleState",initialState.PostRoleState);
+
 
 
 export default postReducer;

@@ -213,11 +213,11 @@ function PostCreateView() {
                             <td>{getCurrentDate()}</td>
                         </tr>
                         <tr>
-                            <td>알림</td>
+                            {/* <td>알림</td>
                             <td colSpan="3">
                                 <label><input type="checkbox" value="sendCall" />알림 발송</label>
                                 <label><input type="checkbox" value="sendMsg" />쪽지 발송</label>
-                            </td>
+                            </td> */}
                         </tr>
                         <tr>
                             <td>첨부파일</td>

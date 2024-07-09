@@ -6,6 +6,7 @@ import { callDepartmentEmployeesAPI } from '../../apis/EmployeeAPICalls';
 import axios from 'axios';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
+import { Link } from 'react-router-dom';
 
 function PostDetailView() {
     const dispatch = useDispatch();
@@ -150,7 +151,7 @@ function PostDetailView() {
                     <thead>
                         <tr>
                             <th colSpan="4">게시판</th>
-                            <button>수정</button>
+                            <Link to={`/post/PostEditView/${DetailData.postCode}`}>수정</Link>
                         </tr>
                         <tr>
                             <td>게시글 번호</td>
