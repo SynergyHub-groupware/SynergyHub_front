@@ -1,9 +1,10 @@
 // util/WorkHoursCalculator.js
 import React from 'react';
 
-const WorkHoursCalculator = ({ date, startTime, endTime }) => {
+const WorkHoursCalculator = ({ date, startTime, endTime, owStartTime, owEndTime  }) => {
     const calculateWorkHours = (date, startTime, endTime) => {
-        if (!date || !startTime || !endTime || startTime === "00:00:00" || endTime === "00:00:00") {
+        if (!startTime || !endTime || !owStartTime || !owEndTime ||
+            startTime === "00:00:00" || endTime === "00:00:00" || owStartTime === "00:00:00" || owEndTime === "00:00:00") {
             return "00:00:00";
         }
 
@@ -15,20 +16,42 @@ const WorkHoursCalculator = ({ date, startTime, endTime }) => {
             return "-";
         }
 
-        const diffMs = end.getTime() - start.getTime();
+        // 초과근무 내역이 있다면
+        if(owStartTime != null) {
+            const diffMs = end.getTime() - start.getTime() - (60 * 60 * 1000);
 
-        let totalSeconds = Math.floor(diffMs / 1000);
-        let hours = Math.floor(totalSeconds / 3600);
-        totalSeconds %= 3600;
-        let minutes = Math.floor(totalSeconds / 60);
-        let seconds = totalSeconds % 60;
+            const owStart = new Date(`${date}T${owStartTime}`);
+            const owEnd = new Date(`${date}T${owEndTime}`);
 
-        const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            const result = diffMs - (end.getTime() - owStart.getTime());
 
-        return formattedTime;
+            let totalSeconds = Math.floor(result / 1000);
+            let hours = Math.floor(totalSeconds / 3600);
+            totalSeconds %= 3600;
+            let minutes = Math.floor(totalSeconds / 60);
+            let seconds = totalSeconds % 60;
+
+            const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            return formattedTime;
+
+        // 초과근무 내역이 없다면
+        } else {
+            const diffMs = end.getTime() - start.getTime() - (60 * 60 * 1000);
+
+            let totalSeconds = Math.floor(diffMs / 1000);
+            let hours = Math.floor(totalSeconds / 3600);
+            totalSeconds %= 3600;
+            let minutes = Math.floor(totalSeconds / 60);
+            let seconds = totalSeconds % 60;
+
+            const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+            return formattedTime;
+        }
     };
 
-    const workHours = calculateWorkHours(date, startTime, endTime);
+    const workHours = calculateWorkHours(date, startTime, endTime, owStartTime, owEndTime);
 
     return (
         <>

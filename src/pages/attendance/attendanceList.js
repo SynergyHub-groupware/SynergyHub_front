@@ -316,7 +316,9 @@ function AttendanceList() {
                                         <td>{attendance.endTime || '-'}</td>
                                         <td><WorkHoursCalculator date={attendance.atdDate}
                                                                  startTime={attendance.startTime}
-                                                                 endTime={attendance.endTime} /></td>
+                                                                 endTime={attendance.endTime}
+                                                                 owStartTime={attendance.owStartTime}
+                                                                 owEndTime={attendance.owEndTime}/></td>
                                         <td>{attendance.startTime !== null && attendance.endTime !== null ? (
                                             <OverWorkHoursCalculator date={attendance.atdDate}
                                                                      startTime={attendance.startTime}

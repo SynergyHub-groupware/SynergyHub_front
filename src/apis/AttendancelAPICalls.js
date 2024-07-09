@@ -8,7 +8,7 @@ import {
     getDayOffBalance,
     getDefaultSchedule,
     getAllAttendanceToday,
-    getDocBT, getDocBt, getDocOw, getDocDo, getDocMonthDo
+    getDocBT, getDocBt, getDocOw, getDocDo, getDocMonthDo, getEmployeeInfo
 } from "../modules/AttendanceModules";
 
 export const callMyInfoAPI = () => {
@@ -28,6 +28,27 @@ export const callMyInfoAPI = () => {
             }
         } catch (error) {
             console.error('내정보 조회 실패 error : ', error);
+        }
+    };
+};
+
+export const callEmployeeInfoAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/employee/all', {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            });
+
+            console.log('callEmployeeInfoAPI result : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(getEmployeeInfo(result.data));
+            } else {
+                console.error('직원 정보 조회 실패 result : ', result);
+            }
+        } catch (error) {
+            console.error('직원 정보 조회 실패 error : ', error);
         }
     };
 };

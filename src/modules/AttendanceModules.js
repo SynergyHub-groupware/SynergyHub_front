@@ -14,11 +14,13 @@ const initialState = {
     documentOw: [],
     documentDo: [],
     documentMonthDo: [],
+    employeeInfo: [],
 };
 
 // 액션 타입 정의
 const SUCCESS = 'attendance/SUCCESS';
 const GET_MY_INFO = 'employee/GET_MY_INFO';
+const GET_EMPLOYEE_INFO = 'employee/GET_EMPLOYEE_INFO';
 const GET_ATTENDANCE_FOR_WEEK = 'attendance/GET_ATTENDANCE_FOR_WEEK';
 const GET_ATTENDANCE_TODAY = 'attendance/GET_ATTENDANCE_TODAY';
 const GET_ATTENDANCE_ALL = 'attendance/GET_ATTENDANCE_ALL';
@@ -33,13 +35,14 @@ const GET_DOC_MONTH_DO = 'documents/GET_DOC_MONTH_DO';
 
 // 액션 함수 생성
 export const {
-    employee: { getMyInfo },
+    employee: { getMyInfo, getEmployeeInfo },
     attendance: { getAttendanceForWeek, getAttendanceToday, getAttendanceAll, getDefaultSchedule, getAllAttendanceToday },
     dayOffs: { getDayOffAll, getDayOffBalance },
     documents: { getDocBt, getDocOw, getDocDo, getDocMonthDo },
 } = createActions({
     [SUCCESS]: () => ({ success: true }),
     [GET_MY_INFO]: (employee) => ({ employee }),
+    [GET_EMPLOYEE_INFO]: (employeeInfo) => ({ employeeInfo }),
     [GET_ATTENDANCE_FOR_WEEK]: (attendances) => ({ attendances }),
     [GET_ATTENDANCE_TODAY]: (attendanceToday) => ({ attendanceToday }),
     [GET_ATTENDANCE_ALL]: (attendanceAll) => ({ attendanceAll }),
@@ -62,6 +65,10 @@ const attendanceReducer = handleActions({
     [GET_MY_INFO]: (state, action) => ({
         ...state,
         employee: action.payload.employee
+    }),
+    [GET_EMPLOYEE_INFO]: (state, action) => ({
+        ...state,
+        employeeInfo: action.payload.employeeInfo
     }),
     [GET_ATTENDANCE_FOR_WEEK]: (state, action) => ({
         ...state,
