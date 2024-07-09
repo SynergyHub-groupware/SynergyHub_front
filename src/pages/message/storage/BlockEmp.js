@@ -7,7 +7,6 @@ function BlockEmp() {
     const [options, setOptions] = useState([]);
     const [selectedOptions, setSelectedOptions] = useState([]);
 
-    // commit 
     // 로그인한 사용자의 정보 추출
     useEffect(() => {
         const accessToken = localStorage.getItem('access-token');
@@ -121,8 +120,6 @@ function BlockEmp() {
         })
         .then(res => {
             const blkCode = res.data.blkCode; // 서버 응답에서 blkCode 추출
-
-            console.log(res.data);
 
             // 해당 행의 blkCode 업데이트
             const newBlockedEmp = [...blockedEmp];

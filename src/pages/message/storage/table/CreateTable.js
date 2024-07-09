@@ -57,9 +57,7 @@ function CreateTable({msgCode}) {
                 .then(data => {
                     setMsgTitle(data.msgTitle);
                     setMsgCon(data.msgCon);
-                    if(data.empRev && data.empRev.emp_code) {
-                        setSelectEmpRev(data.empRev.emp_code);
-                    }
+                    setSelectEmpRev(data.empRev);
                     setEmerStatus(data.emerStatus);
                 })
                 .catch(error => console.log("error : ", error));
@@ -76,7 +74,6 @@ function CreateTable({msgCode}) {
                                 url: `${item.attachUrl}/${item.attachSave}`
                             });
                         });
-                        console.log("data ::::",data);
                         setFiles(fileList);
                     } else {
                         console.log("첨부파일을 가져오지 못했습니다.");
@@ -123,15 +120,11 @@ function CreateTable({msgCode}) {
         })
         .then(res => res.json())
         .then(data => {
-            console.log('data create success : ', data);
-
             // 파일 저장하는 API 호출
             const formData = new FormData();
             Array.from(files).forEach(file => {
                 formData.append('files', file);
             });
-
-            console.log("files : ", files);
 
             fetch('http://localhost:8080/emp/message/attach', {
                 method: 'POST',
@@ -139,10 +132,10 @@ function CreateTable({msgCode}) {
             })
             .then(res => res.json())
             .then(attachData => {
-                console.log("파일 저장 성공~ ", attachData);
+                console.log("file insert success ", attachData);
             })
             .catch (error => {
-                console.log("파일 저장 실패 : ", error);
+                console.log("file insert fail : ", error);
             });
 
 
@@ -152,11 +145,10 @@ function CreateTable({msgCode}) {
                     method: 'DELETE'
                 })
                 .then(() => {
-                    console.log('임시 저장 쪽지 삭제 성공 :', msgCode);
+                    console.log('temp message insert success :', msgCode);
                 })
                 .catch(error => {
                     console.log("error : ", error);
-                    console.log("임시 저장된 쪽지 삭제 실패");
                 });
             }
 
@@ -218,8 +210,6 @@ function CreateTable({msgCode}) {
                 })
                 .then(res => res.json())
                 .then(data => {
-                    console.log('data temp success : ', data);
-                    
                     // 파일 저장하는 API 호출
                     const formData = new FormData();
                     Array.from(files).forEach(file => {
@@ -232,10 +222,10 @@ function CreateTable({msgCode}) {
                     })
                     .then(res => res.json())
                     .then(attachData => {
-                        console.log("파일 저장 성공 ~ ", attachData);
+                        console.log("file insert success : ", attachData);
                     })
                     .catch (error => {
-                        console.log("파일 저장 실패 : ", error);
+                        console.log("file insert fail : ", error);
                     });
 
                     
@@ -245,7 +235,6 @@ function CreateTable({msgCode}) {
                 .catch(error => {
                     console.log("error : : ", error);
                 });
-                console.log("임시저장 API 작동");
             }
             
         } else {
@@ -283,6 +272,7 @@ function CreateTable({msgCode}) {
                                         value="urgent" 
                                         style={{ minHeight: "inherit" }}
                                         onChange={(e) => setEmerStatus(e.target.checked ? 'Y' : 'N')} 
+                                        checked={emerStatus === 'Y'}
                                     /> 긴급
                                 </label>
                             </div>

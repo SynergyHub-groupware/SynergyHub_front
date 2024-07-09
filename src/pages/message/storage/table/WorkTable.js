@@ -59,7 +59,6 @@ function WorkTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCu
     const currentMessages = sortedMessages.slice(startIndex, startIndex + itemsPerPage);
 
     useEffect(() => {
-        console.log("API 호출");
         dispatch(callWorkMsgListAPI());
     }, [dispatch])
 
@@ -96,7 +95,6 @@ function WorkTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCu
                         <col style={{ width: "120px" }} />
                         <col style={{ width: "*" }} />
                         <col style={{ width: "*" }} />
-                        <col style={{ width: "120px" }} />
                     </colgroup>
                     <thead>
                         <tr>
@@ -105,7 +103,6 @@ function WorkTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCu
                             <th scope="col">보낸사람</th>
                             <th scope="col">제목</th>
                             <th scope="col">긴급</th>
-                            <th scope="col">첨부파일</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -124,12 +121,11 @@ function WorkTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCu
                                         ) : (
                                             <div></div>
                                         )}</td>
-                                    <td>{msg.storCode}</td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={6} className="hp_pt50 hp_pb50 hp_7Color">목록이 없습니다.</td>
+                                <td colSpan={5} className="hp_pt50 hp_pb50 hp_7Color">목록이 없습니다.</td>
                             </tr>
                         )}
                     </tbody>

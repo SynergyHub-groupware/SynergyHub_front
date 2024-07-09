@@ -15,9 +15,7 @@ function WorkDetail() {
         
         const sendMsgDetail = async () => {
             try {
-                console.log("API 시작");
                 await dispatch(callRevDetailAPI(msgCode));
-                console.log("msgCode : ", msgCode);
             } catch (error) {
                 console.log("error : ", error);
             }
@@ -25,9 +23,7 @@ function WorkDetail() {
         
         const attachList = async () => {
             try {
-                console.log("API 시작");
                 await dispatch(callGetAttachListAPI(msgCode));
-                console.log("msgCode attach : ", msgCode);
             } catch (error) {
                 console.log("attach error : ", error);
             }
@@ -39,7 +35,6 @@ function WorkDetail() {
     }, [dispatch, msgCode]);
 
     if (!msgDetail) {
-        console.log("msgDetail : ", msgDetail);
         return <div>로딩중..</div>;
     }
 
@@ -79,7 +74,6 @@ function WorkDetail() {
     const deleteHandler = async () => {
 
         try {
-            console.log(msgCode);
             await dispatch(callDelMsgAPI(msgCode));
             alert("쪽지를 삭제했습니다.");
             navigate("/message/storage/send");

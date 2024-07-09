@@ -14,7 +14,6 @@ function WorkSetting() {
     const workMsgClearHandler = () => {
         try {
             const msgCodes = (workMessages && workMessages.map(msg => msg.msgCode));
-            console.log("msgCodes : ", msgCodes);
             dispatch(callDelAllWorkMsgAPI(msgCodes));
             window.location.reload();
         } catch (error) {

@@ -1,7 +1,7 @@
 import TempTable from "./table/TempTable";
 import { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { callDelMsgAPI } from "../../../apis/MessageAPICalls";
+import { callDelSendMsgAPI } from "../../../apis/MessageAPICalls";
 import Pagination from "./paging/Pagination";
 
 function TempMsg() {
@@ -13,8 +13,6 @@ function TempMsg() {
     const [currentPage, setCurrentPage] = useState(1);  // 현재 페이지 상태
     const messages = useSelector(state => state.messageReducer.messages.message);
 
-    console.log("messages : ", messages);
-    
     const delMsgHandler = () => {
 
         if (selectMsgCode.length === 0) {
@@ -25,7 +23,7 @@ function TempMsg() {
         if ( window.confirm("메세지를 삭제하시겠습니까?")) {
 
             selectMsgCode.forEach(msgCode => {
-                dispatch(callDelMsgAPI(msgCode));
+                dispatch(callDelSendMsgAPI(msgCode));
             });
             
             alert("쪽지를 삭제하였습니다.");

@@ -15,7 +15,6 @@ function LoginForm() {
     } 
 
     const onClickLoginHandler = () => {
-        // event.preventDefault();
         dispatch(callLoginAPI({ loginRequest : form }));
     }
 
@@ -40,7 +39,7 @@ function LoginForm() {
             </div>
             <button 
             type="submit" 
-            className="el_btnF hp_wAuto ly_fgrow1 el_btnblueBack hp_ml10"
+            className="el_btnF hp_wAuto ly_fgrow1 el_btnLogin hp_ml10"
             onClick={ onClickLoginHandler }
             >
                 로그인

@@ -43,7 +43,6 @@ function BinTable({ currentPage, setCurrentPage }) {
     const sortedMessages = sortMsg(messages, sort);
 
     useEffect(() => {
-        console.log("API 작동");
         dispatch(callBinMsgListAPI());        
     }, [dispatch]);
 
@@ -101,7 +100,6 @@ function BinTable({ currentPage, setCurrentPage }) {
                 .then(res => {
 
                     if(res.ok) {
-                        console.log('메세지 완전 삭제 : ', msgCode);
                         setSelectMsg(prev => {
                             const newSelect = new Set(prev);
                             newSelect.delete(msgCode);
@@ -205,7 +203,6 @@ function BinTable({ currentPage, setCurrentPage }) {
                         <col style={{ width: "120px" }} />
                         <col style={{ width: "*" }} />
                         <col style={{ width: "*" }} />
-                        <col style={{ width: "120px" }} />
                     </colgroup>
                     <thead>
                         <tr>
@@ -215,7 +212,6 @@ function BinTable({ currentPage, setCurrentPage }) {
                             <th scope="col">받은사람</th>
                             <th scope="col">제목</th>
                             <th scope="col">긴급</th>
-                            <th scope="col">첨부파일 (임시 보관함 번호)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -226,7 +222,6 @@ function BinTable({ currentPage, setCurrentPage }) {
                                     <input type="checkbox" checked={selectMsg.has(msg.msgCode)} onChange={() => selectMsgHandler(msg.msgCode)}/>
                                 </td>
                                 <td>{formatDate(msg.sendDate)}</td>
-                                {/* <td>{msg.sendName ?  `${msg.sendName} ${msg.sendPosition}` : `${msg.revName} ${msg.revPosition}`}</td> */}
                                 <td>{msg.sendName} {msg.sendPosition}</td>
                                 <td>{msg.revName} {msg.revPosition}</td>
                                 <td className="hp_alighL">
@@ -238,12 +233,11 @@ function BinTable({ currentPage, setCurrentPage }) {
                                         ) : (
                                             <div></div>
                                         )}</td>
-                                <td>{msg.storCode}</td>
                             </tr>
                             ))
                     ) : (
                         <tr>
-                            <td colSpan={7} className="hp_pt50 hp_pb50 hp_7Color">목록이 없습니다.</td>
+                            <td colSpan={6} className="hp_pt50 hp_pb50 hp_7Color">목록이 없습니다.</td>
                         </tr>
                     )}
                     </tbody>
