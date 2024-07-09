@@ -1,7 +1,7 @@
 import React from 'react';
 
 const OverWorkHoursCalculator = ({ date, startTime, endTime, owStartTime, owEndTime }) => {
-    const calculateWorkHours = (date, startTime, endTime, owStartTime, owEndTime) => {
+    const calculateOverWorkHours = (date, startTime, endTime, owStartTime, owEndTime) => {
         if (!date || !startTime || !endTime || !owStartTime || !owEndTime ||
             startTime === "00:00:00" || endTime === "00:00:00" || owStartTime === "00:00:00" || owEndTime === "00:00:00") {
             return "00:00:00";
@@ -13,20 +13,24 @@ const OverWorkHoursCalculator = ({ date, startTime, endTime, owStartTime, owEndT
         const owEnd = new Date(`${date}T${owEndTime}`);
 
         let totalSeconds;
-        if (end > owEnd) {
-            totalSeconds = Math.floor((owEnd.getTime() - owStart.getTime()) / 1000);
-        } else {
-            totalSeconds = Math.floor((end.getTime() - owStart.getTime()) / 1000);
-        }
 
-        let hours = Math.floor(totalSeconds / 3600);
-        totalSeconds %= 3600;
-        let minutes = Math.floor(totalSeconds / 60);
-        let seconds = totalSeconds % 60;
-
+        // 주말 여부 확인
         if (start.getDay() === 6 || start.getDay() === 0) {
             // 주말 계산
-            let formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            if (!owStart || !owEnd || owStart === "00:00:00" || owEnd === "00:00:00") {
+                return "00:00:00";
+            }
+
+            if (end > owEnd) {
+                totalSeconds = Math.floor((owEnd.getTime() - owStart.getTime()) / 1000);
+            } else {
+                totalSeconds = Math.floor((end.getTime() - owStart.getTime()) / 1000);
+            }
+
+            let hours = Math.floor(totalSeconds / 3600);
+            totalSeconds %= 3600;
+            let minutes = Math.floor(totalSeconds / 60);
+            let seconds = totalSeconds % 60;
 
             // 법정 휴게시간을 포함하여 계산
             if (hours >= 4 && hours < 8) {
@@ -36,23 +40,36 @@ const OverWorkHoursCalculator = ({ date, startTime, endTime, owStartTime, owEndT
                     hours -= 1;
                     minutes += 60;
                 }
-                formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             } else if (hours >= 8) {
                 // 총 근무시간이 8시간 이상일 때
                 hours -= 1;
-                formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            } else {
+                hours -= 0;
             }
 
-            return formattedTime;
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         } else {
             // 평일 계산
-            const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            if (!owStart || !owEnd || owStart === "00:00:00" || owEnd === "00:00:00") {
+                return "00:00:00";
+            }
 
-            return formattedTime;
+            if (end > owEnd) {
+                totalSeconds = Math.floor((owEnd.getTime() - owStart.getTime()) / 1000);
+            } else {
+                totalSeconds = Math.floor((end.getTime() - owStart.getTime()) / 1000);
+            }
+
+            let hours = Math.floor(totalSeconds / 3600);
+            totalSeconds %= 3600;
+            let minutes = Math.floor(totalSeconds / 60);
+            let seconds = totalSeconds % 60;
+
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
     };
 
-    const workHours = calculateWorkHours(date, startTime, endTime, owStartTime, owEndTime);
+    const workHours = calculateOverWorkHours(date, startTime, endTime, owStartTime, owEndTime);
 
     return (
         <>

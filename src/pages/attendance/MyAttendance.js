@@ -130,18 +130,7 @@ function MyAttendance() {
                                     </div>
                                     <div className="ly_spaceBetween hp_mt5">
                                         <div className="">
-                                            <div className="hp_fw700 hp_fs32">18h 00m</div>
-                                            <div className="hp_mt15" style={{paddingBottom: '5px'}}>
-                                                <BarChart regularHours={40} overHours={12} />
-                                            </div>
-                                            <ul className="hp_mt15">
-                                                <li className="" style={{paddingBottom: '5px'}}>
-                                                    <b className="hp_fw700 hp_mr15">누적 정규 근무</b> 00:00:00
-                                                </li>
-                                                <li className="">
-                                                    <b className="hp_fw700 hp_mr15">누적 초과 근무</b> 00:00:00
-                                                </li>
-                                            </ul>
+                                            <BarChart />
                                         </div>
                                         <div className="ly_spaceBetween ly_fdirecCol ly_fitemEnd">
                                             <div className="hp_fw700 hp_fs22 hp_alignR">

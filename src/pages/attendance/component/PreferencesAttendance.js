@@ -105,7 +105,7 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                     {employee.emp_name} {employee.position_name}님,
                 </div>
                 <div className="hp_fs22 hp_mb40 ly_flexC" style={{ textAlign: 'center' }}>
-                    지금 팀원들의 근태 현황을 확인해보세요. 🕵️‍♀️
+                    지금np 팀원들의 근태 현황을 확인해보세요. 🕵️‍♀️
                 </div>
                 <div className="">
                     <div className="hp_mt30" style={{ width: '300px' }}>
