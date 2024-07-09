@@ -15,7 +15,8 @@ const PheedComponent = () => {
 
         const connectSSE = () => {
             if (eventSource) {
-                return; // 이미 연결된 경우 재연결 방지
+                eventSource.removeEventListener('newPheed', handleNewPheed);
+                eventSource.close();
             }
 
             eventSource = new EventSourcePolyfill(sseURL, {
@@ -81,6 +82,17 @@ const PheedComponent = () => {
         fetchPheeds();
     }, []); // 처음 마운트될 때 한 번만 호출
 
+    const handleDetailClick = (url, e) => {
+        e.preventDefault(); // 기본 동작 방지
+        console.log('상세보기 클릭됨', url);
+        if (url) {
+            window.location.href = url; // 해당 URL로 페이지 이동
+        } else {
+            console.error('URL이 없습니다.');
+            // 필요 시 오류 처리 로직을 추가할 수 있습니다.
+        }
+    };
+
     return (
         <div className="bl_mainBoard">
             {loading ? (
@@ -99,7 +111,10 @@ const PheedComponent = () => {
                                 </ul>
                             </div>
                             <div className="ly_flex ly_fitemC">
-                                <button type="button" className="el_btnS el_btn8Back hp_ml30">상세보기</button>
+                                <a className="el_btnS el_btn8Back hp_ml30" href={pheed.url}
+                                   onClick={(e) => handleDetailClick(pheed.url, e)}>
+                                    상세보기
+                                </a>
                                 <button type="button" className="bl_mainBoard__delete hp_ml20"></button>
                             </div>
                         </section>

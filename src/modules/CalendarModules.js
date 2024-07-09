@@ -11,7 +11,11 @@ export const {calendar: {getEvents}} = createActions({
 });
 
 const calendarReducer = handleActions({
-    [GET_EVENTS]: (state, { payload }) => ({...state, events: payload.events})
+    [GET_EVENTS]: (state, { payload }) => {
+        console.log('리듀서 payload:', payload);
+        return { ...state, events: payload.events };
+    }
 }, initialState);
+
 
 export default calendarReducer;
