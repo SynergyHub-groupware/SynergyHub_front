@@ -194,7 +194,13 @@ function RevDetail() {
                                 {attachmentList.msgCode && attachmentList.msgCode.length > 0 ? (
                                     <ul>
                                         {attachmentList.msgCode.map(attach => (
-                                            <li key={attach.attachSave} onClick={() => downloadAttach(attach.attachOriginal, attach.attachSave)}>{attach.attachOriginal}</li>
+                                            <li 
+                                                key={attach.attachSave} 
+                                                onClick={() => downloadAttach(attach.attachOriginal, attach.attachSave)}
+                                                style={{ cursor: "pointer"}}
+                                            >
+                                                {attach.attachOriginal}
+                                            </li>
                                         ))}
                                     </ul>
                                 ) : (
