@@ -10,5 +10,5 @@
 
 .bl_mainBoard{height:calc(100% - 53px);overflow-y:auto;}
 .bl_mainBoard__alarm{display:inline-block;background:#000;color:#fff;border-radius:50%;font-size:18px;width:30px;height:30px;text-align:center;vertical-align:5px;}
-/*.bl_mainBoard__delete{width:24px;height:24px;background:url('/img/icon/icon_bin.png')no-repeat center/contain}*/
+.bl_mainBoard__delete{width:24px;height:24px;background:url("../../public/images/icon/icon_bin.png")no-repeat center/contain;background-size: 20px 20px;}
 .bl_mainBoard__read{opacity:0.6;}
