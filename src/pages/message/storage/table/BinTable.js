@@ -224,7 +224,6 @@ function BinTable({ currentPage, setCurrentPage }) {
                                     <input type="checkbox" checked={selectMsg.has(msg.msgCode)} onChange={() => selectMsgHandler(msg.msgCode)}/>
                                 </td>
                                 <td>{formatDate(msg.sendDate)}</td>
-                                {/* <td>{msg.sendName ?  `${msg.sendName} ${msg.sendPosition}` : `${msg.revName} ${msg.revPosition}`}</td> */}
                                 <td>{msg.sendName} {msg.sendPosition}</td>
                                 <td>{msg.revName} {msg.revPosition}</td>
                                 <td className="hp_alighL">

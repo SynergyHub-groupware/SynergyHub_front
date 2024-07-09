@@ -5,6 +5,7 @@
 .WA{display:inline-block;overflow:hidden;border:0;position:absolute;margin:-1px;width:1px;height:1px;clip:rect(1px, 1px, 1px, 1px);clip-path:inset(50%);top:0;left:0;}
 /* 공통 */
 .ly_all{background:#f9f9f9!important;min-height:100vh;padding-top:65px;}
+.ly_login_all{background:#f9f9f9!important;min-height:100vh;}
 .ly_body{display:flex;}
 .ly_cont{flex-grow:1;padding:30px;}
 /* .ly_all{min-height:100vh;position:relative;padding-top:75px;padding-bottom:550px;}

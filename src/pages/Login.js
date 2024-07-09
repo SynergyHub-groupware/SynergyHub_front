@@ -21,10 +21,10 @@ function Login() {
     return(
         <>
             <ToastContainer position="top-center" autoClos={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" transition={Bounce}/>
-            <div className="ly_all ly_fitemC ly_flexC">
-                <div className="bl_sect bl_login hp_w600px">
+            <div className="ly_login_all ly_fitemC ly_flexC">
+                <div className="bl_login_sect bl_login hp_w600px">
                     <div className="bl_login__wrap hp_padding50">
-                        <div className="bl_login__logo hp_f9Back hp_mb30 bl_header__logoImg">
+                        <div className="bl_login__logo hp_f9Back hp_mb30 bl_header__loginImg">
                         </div>
                             <div className="ly_flex">
                                 <LoginForm/>
