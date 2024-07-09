@@ -8,7 +8,7 @@ import {
     getDayOffBalance,
     getDefaultSchedule,
     getAllAttendanceToday,
-    getDocBT, getDocBt, getDocOw, getDocDo
+    getDocBT, getDocBt, getDocOw, getDocDo, getDocMonthDo
 } from "../modules/AttendanceModules";
 
 export const callMyInfoAPI = () => {
@@ -235,6 +235,27 @@ export const callDocDOAPI = () => {
                 dispatch(getDocDo(result.data.results.document));
             } else {
                 console.error('휴가신청 현황 조회 실패 result : ', result);
+            }
+        } catch (error) {
+            console.error('error : ', error);
+        }
+    };
+};
+
+export const callDocMonthDOAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/api/attendance/monthDO', {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            });
+
+            console.log('callMonthDoAPI result : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(getDocMonthDo(result.data.results.document));
+            } else {
+                console.error('월간 휴가 승인현황 조회 실패 result : ', result);
             }
         } catch (error) {
             console.error('error : ', error);

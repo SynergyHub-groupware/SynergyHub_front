@@ -36,7 +36,7 @@ export const {
     employee: { getMyInfo },
     attendance: { getAttendanceForWeek, getAttendanceToday, getAttendanceAll, getDefaultSchedule, getAllAttendanceToday },
     dayOffs: { getDayOffAll, getDayOffBalance },
-    documents: { getDocBt, getDocOw, getDocDo },
+    documents: { getDocBt, getDocOw, getDocDo, getDocMonthDo },
 } = createActions({
     [SUCCESS]: () => ({ success: true }),
     [GET_MY_INFO]: (employee) => ({ employee }),
@@ -102,6 +102,10 @@ const attendanceReducer = handleActions({
     [GET_DOC_DO]: (state, action) => ({
         ...state,
         documentDo: action.payload.documentDo
+    }),
+    [GET_DOC_MONTH_DO]: (state, action) => ({
+        ...state,
+        documentMonthDo: action.payload.documentMonthDo
     }),
 }, initialState);
 
