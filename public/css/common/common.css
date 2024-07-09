@@ -16,7 +16,7 @@
 .bl_header__structure{background-image:url("/images/icon/icon_structure.png");background-size:25px;}
 .bl_header__alarm{background-image:url("/images/icon/icon_alarm.png");background-size:21px;}
 .bl_header__myinfo{background-image:url("/images/icon/icon_myinfo.png");background-size:22px;}
-.bl_header__loginImg{display:block;width:500px;height:150px;background:url('/images/logo/logo.png')no-repeat center/146%;}
+.bl_header__loginImg{display:block;width:357px;height:150px;background:url('/images/logo/logo.png')no-repeat center/136%;}
 
 
 /* nav */
