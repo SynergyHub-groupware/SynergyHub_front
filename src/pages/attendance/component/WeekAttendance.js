@@ -34,10 +34,13 @@ const WeekAttendance = ({ weekData, isOpen, toggle }) => {
                                                     "00:00:00"
                                                 )}
                                             </li>
-                                            <li style={{ margin: '0 10px' }}><b className="hp_fw700">총 근무시간</b> &nbsp;
+                                            <li style={{ margin: '0 10px' }}><b className="hp_fw700">정규근무시간</b> &nbsp;
                                                 {dayData.startTime !== null && dayData.endTime !== null ? (
-                                                    <WeekWorkHoursCalculator startTime={dayData.startTime}
-                                                                             endTime={dayData.endTime}/>
+                                                    <WeekWorkHoursCalculator date={dayData.atdDate}
+                                                                             startTime={dayData.startTime}
+                                                                             endTime={dayData.endTime}
+                                                                             owStartTime={dayData.owStartTime}
+                                                                             owEndTime={dayData.owEndTime}/>
                                                 ) : (
                                                     "00:00:00"
                                                 )}
