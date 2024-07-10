@@ -35,7 +35,7 @@ export const callMyInfoAPI = () => {
 export const callEmployeeInfoAPI = () => {
     return async (dispatch, getState) => {
         try {
-            const result = await request('GET', '/employee/all', {
+            const result = await request('GET', '/employee/alldd', {
                 'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
                 'Content-Type': 'application/json'
             });
