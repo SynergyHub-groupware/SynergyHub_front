@@ -100,7 +100,7 @@ function App() {
             <Route path='employeeList' element={<EmployeeList />} />
             <Route path='appointList' element={<AppointList />} />
             <Route path='appointRegist' element={<AppointRegist />} />
-            <Route path='appointView' element={<AppointView />} />
+            <Route path='appointView/:aappNo' element={<AppointView />} />
             <Route path='deptManagerMent' element={<DeptManagerMent />} />
           </Route> 
           <Route path='myInfo' element={<MyInfoLayout />} >

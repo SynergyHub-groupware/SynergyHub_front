@@ -1,5 +1,5 @@
 import { request } from './api';
-import { getDepartments, getDeptEmployees, getMyInfo, getRecordcard, getDeptDetail, success, getTeamRecordcard, registEmployees, getTitles, getPositions, getRegistEmpList, getRegistEmpListDetail, getOrgChart, registAppoint } from '../modules/EmployeeModules';
+import { getDepartments, getDeptEmployees, getMyInfo, getRecordcard, getDeptDetail, success, getTeamRecordcard, registEmployees, getTitles, getPositions, getRegistEmpList, getRegistEmpListDetail, getOrgChart, registAppoints, getEmployeeAll, getRegistAppList, getRegistAppListDetail, updateMyInfo, registMyRecordcard, updateMyRecordcard } from '../modules/EmployeeModules';
 
 
 export const callDepartmentEmployeesAPI = () => {
@@ -51,6 +51,67 @@ export const callMyInfoAPI = () => {
     };
 };
 
+export const callUpdateMyInfoAPI = (formData) => {
+
+    return async (dispatch, getState) => {
+
+        try {
+            const accessToken = localStorage.getItem('access-token');
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            };
+
+            const result = await request('PATCH', '/employee/updateMyInfo', headers, formData);
+
+            console.log('callUpdateMyInfo result', result);
+
+            if (result && result.status === 200) {
+
+                console.log('Dispatching updateMyInfo with data: ', result.data);
+
+                dispatch(updateMyInfo(result.data));
+                dispatch(getMyInfo(result.data));
+
+            } else {
+                console.log('내정보 수정 실패 result', result);
+            }
+        } catch (error) {
+            console.error('내정보 수정 실패 error', error);
+        }
+    };
+};
+
+export const callEmployeeAll = () => {
+
+    return async (dispatch, getState) => {
+
+        try {
+            const accessToken = localStorage.getItem('access-token');
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            };
+
+            const result = await request('GET', '/employee/employeeAll', headers);
+
+            console.log('callEmployeeAll result : ', result);
+
+            if (result && result.status === 200) {
+
+                console.log('Dispatching getOrgChart with data: ', result.data);
+
+                dispatch(getEmployeeAll(result.data));
+
+            } else {
+                console.log('전체 사원 조회 실패 result', result);
+            }
+        } catch (error) {
+            console.error('전체 사원 조회 실패 error', error);
+        }
+    };
+};
+
 
 export const callRecordCardAPI = () => {
 
@@ -62,11 +123,11 @@ export const callRecordCardAPI = () => {
                 'Content-Type': 'application/json'
             });
 
-            console.log('callRecordCardAPI result: ', result);
+            // console.log('callRecordCardAPI result: ', result);
 
             if (result && result.status === 200) {
 
-                console.log('Dispatching getRecordCard with data: ', result.data); // 디버깅용 로그
+                // console.log('Dispatching getRecordCard with data: ', result.data);
 
                 dispatch(getRecordcard(result.data));
 
@@ -78,6 +139,67 @@ export const callRecordCardAPI = () => {
         } catch (error) {
 
             console.error('인사기록카드 조회 실패(error)', error)
+        }
+    };
+};
+
+export const callRegistRecordCardAPI = (registRecordCard) => {
+
+    return async (dispatch, getState) => {
+
+        try {
+            const accessToken = localStorage.getItem('access-token');
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            };
+
+            const result = await request('POST', '/employee/registRecordCard', headers, registRecordCard);
+
+            // console.log('callRegistRecordCardAPI result: ', result);
+
+            if(result && result.status === 201) {
+
+                // console.log('Dispatching registMyRecordcard with data: ', result.data);
+
+                dispatch(registMyRecordcard(result.data));
+
+            } else {
+
+                console.log('인사기록카드 등록 실패 result', result);
+            }
+        } catch (error) {
+            console.error('인사기록카드 등록 실패 error', error);
+        }
+    };
+};
+
+export const callUpdateRecordCardAPI = (updatedRecordCard) => {
+
+    return async (dispatch, getState) => {
+
+        try {
+            const accessToken = localStorage.getItem('access-token');
+            const headers = {
+                "Authorization": `Bearer ${accessToken}`,
+                "Content-Type": 'application/json'
+            };
+
+            const result = await request('PACTH', '/employee/updateRecordCard', headers, updatedRecordCard);
+
+            console.log('callUpdateRecordCard result : ', result);
+
+            if(result && result.status === 200) {
+
+                console.log('Dispatching updateMyRecordcard with data: ', result.data);
+
+                dispatch(updateMyRecordcard(result.data));
+
+            } else {
+                console.log('인사기록카드 수정 실패 result', result);
+            }
+        } catch(error) {
+            console.error('인사기록카드 수정 실패 error', error);
         }
     };
 };
@@ -517,3 +639,55 @@ export const callPositionsAPI = () => {
     }
 }
 
+export const callRegistAppListAPI = () => {
+
+    return async (dispatch, getState) => {
+
+        try {
+
+            const result = await request('GET', '/employee/appRegistList');
+
+            console.log('callRegistAppListAPI result : ', result);
+
+            if (result && result.status === 200) {
+
+                console.log('Dispatching registAppList with data : ', result.data);
+
+                dispatch(getRegistAppList(result.data));
+
+            } else {
+                console.log('발령등록 리스트 조회 실패 result', result);
+            }
+        } catch (error) {
+            console.error('발령등록 리스트 조회 실패 error', error);
+        }
+    };
+};
+
+export const callRegistAppListDetailAPI = (aappNo) => {
+
+    return async (dispatch, getState) => {
+
+        try {
+            const accessToken = localStorage.getItem('access-token');
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            };
+
+            const result = await request('GET', `/employee/appRegistListDetail/${aappNo}`, headers);
+
+            if(result && result.status === 200) {
+
+                console.log('Dispatching registAppListDetail with data : ', result.data)
+
+                dispatch(getRegistAppListDetail(result.data));
+
+            } else {
+                console.log('발령등록 리스트 상세조회 실패 result', result);
+            }
+        } catch (error) {
+            console.error('발령등록 리스트 상세조회 실패 error', error);
+        }
+    };
+};

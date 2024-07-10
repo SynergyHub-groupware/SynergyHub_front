@@ -1,450 +1,314 @@
-export const transformData = (data) => {
-  const transformNode = (node) => ({
-    id: node.emp_code,
-    parentId: node.par_code,
-    name: node.emp_name,
-    positionName: node.position_name,
-    department: node.dept_title,
-    imageUrl: node.emp_img || "/images/profileImg/profileImg.png",
-    _directSubordinates: node._directSubordinates,
-    _totalSubordinates: node._totalSubordinates
+export const transformData = (orgChart) => {
+  let rootEmployee = null;
+
+  // 1. 루트 노드 찾기
+  orgChart.forEach(employee => {
+    if (employee.dept_code === "D1" && employee.position_code === "P1") {
+      rootEmployee = {
+        empCode: employee.emp_code,
+        name: employee.emp_name,
+        attributes: {
+          dept: employee.dept_title,
+          positionName: employee.position_name,
+          Img: employee.emp_img || `/images/profileImg/profileImg.png`
+        },
+        children: [] // 루트 노드의 자식 초기화
+      };
+    }
   });
 
-  const transformedData = data.map(transformNode);
-  console.log("Transformed Data:", transformedData); // 변환된 데이터 확인
+  // 루트 노드가 없으면 종료
+  if (!rootEmployee) {
+    console.error("Root employee not found.");
+    return null;
+  }
 
-  return transformedData;
+  // 부서 코드를 기반으로 부서맵 생성
+  const deptMap = {};
+
+  // 2. 모든 직원 데이터를 반복하여 구조화된 형태로 변환
+  orgChart.forEach(employee => {
+    const { emp_code, emp_name, dept_code, par_dept_code, sub_dept_code, position_code } = employee;
+
+    const uniqueDeptCode = `${dept_code}-${emp_code}`;
+
+    // 부서맵에 부서 코드가 없으면 새로운 부서 추가
+    if (!deptMap[uniqueDeptCode]) {
+      deptMap[uniqueDeptCode] = {
+        empCode: emp_code,
+        name: emp_name,
+        attributes: {
+          dept: employee.dept_title,
+          positionName: employee.position_name,
+          Img: employee.emp_img || `/images/profileImg/profileImg.png`
+        },
+        children: [] // 자식 배열 초기화
+      };
+    }
+
+    // par_dept_code를 기준으로 부모-자식 관계 처리
+    if (par_dept_code) {
+      const parentDeptCodes = Object.keys(deptMap).filter(code => code.startsWith(par_dept_code));
+      parentDeptCodes.forEach(parentDeptCode => {
+        const parentEmployee = deptMap[parentDeptCode]; // Use deptMap to find parent
+        if (parentEmployee) {
+          // Check if the parent already has a child with the same empCode
+          if (!parentEmployee.children.some(child => child.empCode === emp_code)) {
+            parentEmployee.children.push(deptMap[uniqueDeptCode]); // Push the correct child node
+          }
+        }
+      });
+    }
+
+    // sub_dept_code를 기준으로 하위 부서 처리
+    if (sub_dept_code) {
+      const subDepts = sub_dept_code.split(", ");
+      subDepts.forEach(subDept => {
+        const subDeptCodes = Object.keys(deptMap).filter(code => code.startsWith(subDept));
+        subDeptCodes.forEach(subDeptCode => {
+          if (deptMap[subDeptCode] && !deptMap[uniqueDeptCode].children.some(child => child.empCode === deptMap[subDeptCode].empCode)) {
+            deptMap[uniqueDeptCode].children.push(deptMap[subDeptCode]); // Push the correct child node
+          }
+        });
+      });
+    }
+  });
+
+  // 3. 루트에 부서 정보 추가 (루트 부서의 직속 자식만 추가)
+  orgChart.forEach(employee => {
+    if (employee.par_dept_code === "D1" && rootEmployee.empCode !== employee.emp_code) {
+      const uniqueDeptCode = `${employee.dept_code}-${employee.emp_code}`;
+      if (deptMap[uniqueDeptCode]) {
+        rootEmployee.children.push(deptMap[uniqueDeptCode]);
+      }
+    }
+  });
+
+  // 4. 각 부서의 직급 코드 기준으로 정렬하기
+  const sortChildrenByPositionCode = (node) => {
+    if (!node.children || node.children.length === 0) {
+      return node;
+    }
+
+    // 직급 코드 순서 배열
+    const positionOrder = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6']; // 예시, 필요에 따라 수정할 것
+
+    // 부서의 직급 코드를 기준으로 정렬
+    node.children.sort((a, b) => {
+      return positionOrder.indexOf(a.attributes.positionName) - positionOrder.indexOf(b.attributes.positionName);
+    });
+
+    // 정렬된 각 자식에 대해 재귀적으로 정렬 적용
+    node.children.forEach(child => {
+      sortChildrenByPositionCode(child);
+    });
+
+    return node;
+  };
+
+  // 루트 노드부터 정렬 적용
+  rootEmployee = sortChildrenByPositionCode(rootEmployee);
+
+  // 중복 제거 함수
+  function removeDuplicates(node) {
+    if (!node.children || node.children.length === 0) {
+      return node;
+    }
+
+    let empCodeSet = new Set();
+    let newChildren = [];
+
+    for (let child of node.children) {
+      if (!empCodeSet.has(child.empCode)) {
+        empCodeSet.add(child.empCode);
+        newChildren.push(removeDuplicates(child));
+      }
+    }
+
+    node.children = newChildren;
+    return node;
+  }
+
+  // 중복 제거 함수 호출
+  if (rootEmployee) {
+    rootEmployee = removeDuplicates(rootEmployee);
+  }
+
+  console.log('rootEmployee', rootEmployee);
+
+  return rootEmployee;
 };
+
+export default transformData;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // 샘플 데이터
-const employees = 
+
+// const orgChart = [
+//   {
+//     emp_code: 2021011,
+//     par_code: 2021011,
+//     emp_name: "이재현",
+//     dept_code: "D3",
+//     dept_title: "경영지원부",
+//     position_code: "P2",
+//     position_name: "이사",
+//     title_name: "책임자",
+//     phone: "010-3456-7890",
+//     hire_date: "2021-01-10",
+//     emp_status: "Y",
+//     social_security_no: "1992-03-03",
+//     emp_img: null,
+//     par_dept_code: "D1",
+//     sub_dept_code: "D4, D13"
+//   },
+//   // 다른 조직원들의 데이터...
+// ];
+
+// const myTreeData = [
+//   {
+//     name: "Gaurang Torvekar",
+//     attributes: {
+//       keyA: "val A",
+//       keyB: "val B",
+//       keyC: "val C"
+//     },
+//     children: [
+//       {
+//         name: "Avadhoot",
+//         attributes: {
+//           keyA: "val A",
+//           keyB: "val B",
+//           keyC: "val C"
+//         },
+//         children: [
+//           {
+//             name: "Richard"
+//           },
+//           {
+//             name: "Constantine",
+//             children: [
+//               {
+//                 name: "Mia"
+//               }
+//             ]
+//           },
+//           {
+//             name: "Daniel"
+//           }
+//         ]
+//       },
+//       {
+//         name: "Mia"
+//       },
+//       {
+//         name: "Varun",
+//         attributes: {
+//           keyA: "val A",
+//           keyB: "val B",
+//           keyC: "val C"
+//         },
+//         children: [
+//           {
+//             name: "Ivo",
+//             attributes: {
+//               keyA: "val A",
+//               keyB: "val B",
+//               keyC: "val C"
+//             },
+//             children: [
+//               {
+//                 name: "Level 2: A",
+//                 attributes: {
+//                   keyA: "val A",
+//                   keyB: "val B",
+//                   keyC: "val C"
+//                 },
+//                 children: [
+//                   {
+//                     name: "Level 2: A",
+//                     attributes: {
+//                       keyA: "val A",
+//                       keyB: "val B",
+//                       keyC: "val C"
+//                     }
+//                   },
+//                   {
+//                     name: "Level 2: B"
+//                   }
+//                 ]
+//               },
+//               {
+//                 name: "Level 2: B"
+//               }
+//             ]
+//           },
+//           {
+//             name: "Vijay"
+//           }
+//         ]
+//       },
+//       {
+//         name: "Mohit",
+//         children: [
+//           {
+//             name: "Rohit",
+//             attributes: {
+//               keyA: "val A",
+//               keyB: "val B",
+//               keyC: "val C"
+//             },
+//             children: [
+//               {
+//                 name: "Level 2: A",
+//                 attributes: {
+//                   keyA: "val A",
+//                   keyB: "val B",
+//                   keyC: "val C"
+//                 },
+//                 children: [
+//                   {
+//                     name: "Level 2: A",
+//                     attributes: {
+//                       keyA: "val A",
+//                       keyB: "val B",
+//                       keyC: "val C"
+//                     }
+//                   },
+//                   {
+//                     name: "Level 2: B"
+//                   }
+//                 ]
+//               }
+//             ]
+//           },
+//           {
+//             name: "Pranav"
+//           }
+//         ]
+//       }
+//     ]
+//   }
+// ];
+
+
+// const employees =
 // [
-
-  [
-    {
-      "position_code": "P1",
-      "emp_code": 2020011,
-      "par_code": null,
-      "name": "박진영",
-      "dept_code": "D1",
-      "dept_title": "임원진",
-      "positionName": "대표",
-      "title_name": "대표",
-      "phone": "010-1234-5678",
-      "hire_date": "2020-01-01",
-      "emp_status": "Y",
-      "social_security_no": "1990-01-01",
-      "emp_img": null,
-      "children": [
-        {
-          "position_code": "P2",
-          "emp_code": 2020021,
-          "par_code": 2020011,
-          "emp_name": "박은비",
-          "dept_code": "D2",
-          "dept_title": "전략기획부",
-          "position_name": "이사",
-          "title_name": "책임자",
-          "phone": "010-2345-6789",
-          "hire_date": "2020-02-15",
-          "emp_status": "Y",
-          "social_security_no": "1991-02-02",
-          "emp_img": null,
-          "children": [
-            {
-              "position_code": "P3",
-              "emp_code": 2023061,
-              "par_code": 2020021,
-              "emp_name": "정지훈",
-              "dept_code": "D10",
-              "dept_title": "마케팅부",
-              "position_name": "부장",
-              "title_name": "부서장",
-              "phone": "010-6789-0123",
-              "hire_date": "2023-06-01",
-              "emp_status": "Y",
-              "social_security_no": "1995-06-06",
-              "emp_img": null,
-              "children": [
-                {
-                  "position_code": "P4",
-                  "emp_code": 2022041,
-                  "par_code": 2023061,
-                  "emp_name": "강예지",
-                  "dept_code": "D11",
-                  "dept_title": "브랜드관리팀",
-                  "position_name": "과장",
-                  "title_name": "팀장",
-                  "phone": "010-2345-6789",
-                  "hire_date": "2022-04-05",
-                  "emp_status": "Y",
-                  "social_security_no": "1999-03-03",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P5",
-                  "emp_code": 2024031,
-                  "par_code": 2023061,
-                  "emp_name": "이수민",
-                  "dept_code": "D12",
-                  "dept_title": "디지털마케팅팀",
-                  "position_name": "대리",
-                  "title_name": "팀원",
-                  "phone": "010-1234-5678",
-                  "hire_date": "2024-03-01",
-                  "emp_status": "Y",
-                  "social_security_no": "072232-1234567",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P4",
-                  "emp_code": 2022091,
-                  "par_code": 2023061,
-                  "emp_name": "황민서",
-                  "dept_code": "D12",
-                  "dept_title": "디지털마케팅팀",
-                  "position_name": "과장",
-                  "title_name": "팀장",
-                  "phone": "010-3456-7890",
-                  "hire_date": "2022-09-15",
-                  "emp_status": "Y",
-                  "social_security_no": "2000-04-04",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P5",
-                  "emp_code": 2023032,
-                  "par_code": 2023061,
-                  "emp_name": "김서준",
-                  "dept_code": "D11",
-                  "dept_title": "브랜드관리팀",
-                  "position_name": "대리",
-                  "title_name": "팀원",
-                  "phone": "010-0123-4567",
-                  "hire_date": "2023-03-10",
-                  "emp_status": "Y",
-                  "social_security_no": "072131-0123456",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P6",
-                  "emp_code": 2023025,
-                  "par_code": 2023061,
-                  "emp_name": "이지훈",
-                  "dept_code": "D12",
-                  "dept_title": "디지털마케팅팀",
-                  "position_name": "사원",
-                  "title_name": "팀원",
-                  "phone": "010-8901-2345",
-                  "hire_date": "2023-02-25",
-                  "emp_status": "Y",
-                  "social_security_no": "2002-03-13",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P5",
-                  "emp_code": 2023021,
-                  "par_code": 2023061,
-                  "emp_name": "박준우",
-                  "dept_code": "D11",
-                  "dept_title": "브랜드관리팀",
-                  "position_name": "대리",
-                  "title_name": "팀원",
-                  "phone": "010-9012-3456",
-                  "hire_date": "2023-02-15",
-                  "emp_status": "Y",
-                  "social_security_no": "072030-9012345",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P5",
-                  "emp_code": 2024041,
-                  "par_code": 2023061,
-                  "emp_name": "박시우",
-                  "dept_code": "D12",
-                  "dept_title": "디지털마케팅팀",
-                  "position_name": "대리",
-                  "title_name": "팀원",
-                  "phone": "010-2345-6789",
-                  "hire_date": "2024-04-05",
-                  "emp_status": "Y",
-                  "social_security_no": "072333-2345678",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P6",
-                  "emp_code": 2023014,
-                  "par_code": 2023061,
-                  "emp_name": "김현우",
-                  "dept_code": "D11",
-                  "dept_title": "브랜드관리팀",
-                  "position_name": "사원",
-                  "title_name": "팀원",
-                  "phone": "010-7890-1234",
-                  "hire_date": "2023-01-14",
-                  "emp_status": "Y",
-                  "social_security_no": "2001-12-20",
-                  "emp_img": null,
-                  "children": null
-                }
-              ]
-            },
-            {
-              "position_code": "P3",
-              "emp_code": 2022051,
-              "par_code": 2020021,
-              "emp_name": "강다영",
-              "dept_code": "D7",
-              "dept_title": "영업부",
-              "position_name": "부장",
-              "title_name": "부서장",
-              "phone": "010-5678-9012",
-              "hire_date": "2022-05-10",
-              "emp_status": "Y",
-              "social_security_no": "1994-05-05",
-              "emp_img": null,
-              "children": [
-                {
-                  "position_code": "P4",
-                  "emp_code": 2024101,
-                  "par_code": 2022051,
-                  "emp_name": "박재원",
-                  "dept_code": "D9",
-                  "dept_title": "고객관리팀",
-                  "position_name": "과장",
-                  "title_name": "팀장",
-                  "phone": "010-7890-1234",
-                  "hire_date": "2024-10-30",
-                  "emp_status": "Y",
-                  "social_security_no": "2004-08-08",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P5",
-                  "emp_code": 2022111,
-                  "par_code": 2022051,
-                  "emp_name": "박서진",
-                  "dept_code": "D8",
-                  "dept_title": "영업기획팀",
-                  "position_name": "대리",
-                  "title_name": "팀원",
-                  "phone": "010-5678-9012",
-                  "hire_date": "2022-11-01",
-                  "emp_status": "Y",
-                  "social_security_no": "071727-6789012",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P6",
-                  "emp_code": 2022109,
-                  "par_code": 2022051,
-                  "emp_name": "김지현",
-                  "dept_code": "D8",
-                  "dept_title": "영업기획팀",
-                  "position_name": "사원",
-                  "title_name": "팀원",
-                  "phone": "010-4567-8901",
-                  "hire_date": "2022-10-01",
-                  "emp_status": "N",
-                  "social_security_no": "081515-4567890",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P6",
-                  "emp_code": 2032092,
-                  "par_code": 2022051,
-                  "emp_name": "박성민",
-                  "dept_code": "D9",
-                  "dept_title": "고객관리팀",
-                  "position_name": "사원",
-                  "title_name": "팀원",
-                  "phone": "010-3456-7890",
-                  "hire_date": "2023-09-01",
-                  "emp_status": "N",
-                  "social_security_no": "071414-3456789",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P6",
-                  "emp_code": 2022102,
-                  "par_code": 2022051,
-                  "emp_name": "김민성",
-                  "dept_code": "D8",
-                  "dept_title": "영업기획팀",
-                  "position_name": "사원",
-                  "title_name": "팀원",
-                  "phone": "010-4567-8901",
-                  "hire_date": "2022-10-22",
-                  "emp_status": "Y",
-                  "social_security_no": "1999-04-22",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P6",
-                  "emp_code": 2022095,
-                  "par_code": 2022051,
-                  "emp_name": "박은지",
-                  "dept_code": "D8",
-                  "dept_title": "영업기획팀",
-                  "position_name": "사원",
-                  "title_name": "팀원",
-                  "phone": "010-3456-7890",
-                  "hire_date": "2022-09-15",
-                  "emp_status": "Y",
-                  "social_security_no": "1998-09-01",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P5",
-                  "emp_code": 2024012,
-                  "par_code": 2022051,
-                  "emp_name": "김유진",
-                  "dept_code": "D8",
-                  "dept_title": "영업기획팀",
-                  "position_name": "대리",
-                  "title_name": "팀원",
-                  "phone": "010-6789-0123",
-                  "hire_date": "2024-01-01",
-                  "emp_status": "Y",
-                  "social_security_no": "2003-07-07",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P5",
-                  "emp_code": 2021056,
-                  "par_code": 2022051,
-                  "emp_name": "정수지",
-                  "dept_code": "D9",
-                  "dept_title": "고객관리팀",
-                  "position_name": "대리",
-                  "title_name": "팀원",
-                  "phone": "010-3456-7890",
-                  "hire_date": "2021-05-16",
-                  "emp_status": "Y",
-                  "social_security_no": "1992-09-01",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P5",
-                  "emp_code": 2023035,
-                  "par_code": 2022051,
-                  "emp_name": "김서연",
-                  "dept_code": "D9",
-                  "dept_title": "고객관리팀",
-                  "position_name": "대리",
-                  "title_name": "팀원",
-                  "phone": "010-2345-6789",
-                  "hire_date": "2023-03-25",
-                  "emp_status": "N",
-                  "social_security_no": "1996-08-08",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P6",
-                  "emp_code": 2022125,
-                  "par_code": 2022051,
-                  "emp_name": "박준호",
-                  "dept_code": "D9",
-                  "dept_title": "고객관리팀",
-                  "position_name": "사원",
-                  "title_name": "팀원",
-                  "phone": "010-6789-0123",
-                  "hire_date": "2022-12-31",
-                  "emp_status": "Y",
-                  "social_security_no": "2000-11-03",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P5",
-                  "emp_code": 2022121,
-                  "par_code": 2022051,
-                  "emp_name": "김민지",
-                  "dept_code": "D8",
-                  "dept_title": "영업기획팀",
-                  "position_name": "대리",
-                  "title_name": "팀원",
-                  "phone": "010-6789-0123",
-                  "hire_date": "2022-12-25",
-                  "emp_status": "Y",
-                  "social_security_no": "071828-7890123",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P6",
-                  "emp_code": 2022119,
-                  "par_code": 2022051,
-                  "emp_name": "이승현",
-                  "dept_code": "D9",
-                  "dept_title": "고객관리팀",
-                  "position_name": "사원",
-                  "title_name": "팀원",
-                  "phone": "010-5678-9012",
-                  "hire_date": "2022-11-28",
-                  "emp_status": "Y",
-                  "social_security_no": "2000-04-28",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P5",
-                  "emp_code": 2023011,
-                  "par_code": 2022051,
-                  "emp_name": "이서아",
-                  "dept_code": "D8",
-                  "dept_title": "영업기획팀",
-                  "position_name": "대리",
-                  "title_name": "팀원",
-                  "phone": "010-7890-1234",
-                  "hire_date": "2023-01-01",
-                  "emp_status": "Y",
-                  "social_security_no": "071929-8901234",
-                  "emp_img": null,
-                  "children": null
-                },
-                {
-                  "position_code": "P5",
-                  "emp_code": 2024035,
-                  "par_code": 2022051,
-                  "emp_name": "박시현",
-                  "dept_code": "D9",
-                  "dept_title": "고객관리팀",
-                  "position_name": "대리",
-                  "title_name": "팀원",
-                  "phone": "010-3456-7890",
-                  "hire_date": "2024-03-25",
-                  "emp_status": "N",
-                  "social_security_no": "1997-09-09",
-                  "emp_img": null,
-                  "children": null
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-  export default employees;
-
 //   {
 //     id: 1,
 //     parentId: "",
@@ -788,3 +652,4 @@ const employees =
 //   },
 // ];
 
+// export default employees;

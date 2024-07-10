@@ -5,7 +5,7 @@ function EmployeeNav(){
         <div className="bl_nav">
             <h2 className="bl_nav__ttl">인사</h2>
             <ul className="bl_nav__menu">
-                <li className="bl_nav__ttlSub"><NavLink to="/employee/organization">조직도</NavLink></li>
+                <li className="bl_nav__menuSub"><NavLink to="/employee/organization">조직도</NavLink></li>
                 <li>
                     <h3 className="bl_nav__ttlSub">인사</h3>
                     <ul className="bl_nav__menuSub">
