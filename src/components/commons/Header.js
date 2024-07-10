@@ -11,10 +11,9 @@ function Header(){
     function AfterLogin() {
         const { success } = useSelector(state => state.loginReducer);
 
-        // 마지막 머지에 ('/')로 바꿀 것
         useEffect(() => {
             if(success === true) {
-                window.location.replace('/login');
+                window.location.replace('/');
             }
         }, [success]);
 
@@ -32,7 +31,7 @@ function Header(){
         <header className="bl_header el_shadowD">
             <div className="bl_header__wrap">
                 <h1 className="bl_header__logo">
-                    <NavLink to="/" className="bl_header__logoImg"><span className="WA">SYNERGY HUB</span></NavLink>
+                    <NavLink to="/main" className="bl_header__logoImg"><span className="WA">SYNERGY HUB</span></NavLink>
                 </h1>
                 <ul className="bl_header__menuL">
                     <li><NavLink to="/employee/organization">인사</NavLink></li>
