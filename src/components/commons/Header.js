@@ -11,7 +11,6 @@ function Header(){
     function AfterLogin() {
         const { success } = useSelector(state => state.loginReducer);
 
-        // 마지막 머지에 ('/')로 바꿀 것
         useEffect(() => {
             if(success === true) {
                 window.location.replace('/');
