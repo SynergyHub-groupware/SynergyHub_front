@@ -1,36 +1,60 @@
 // import '../../css/personal.css';
 
-function AppointView(){
-    return(        
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
+import { callRegistAppListDetailAPI } from "../../apis/EmployeeAPICalls";
+
+function AppointView() {
+
+    const { aappNo } = useParams();
+
+    const dispatch = useDispatch();
+
+    const registAppListDetail = useSelector(state => state.employeeReducer.registAppListDetail);
+
+    console.log('registAppListDetail 컴포넌트 : ', registAppListDetail);
+
+    useEffect(() => {
+        if (aappNo) {
+            dispatch(callRegistAppListDetailAPI(aappNo));
+        }
+    }, [dispatch, aappNo]);
+
+    return (
         <div class="ly_cont">
             <h4 class="el_lv1Head hp_mb30">발령내용</h4>
             <section class="bl_sect hp_padding15">
                 <table class="bl_tb3">
                     <colgroup>
-                        <col style={{width: "120px"}} />
-                        <col style={{width: "*"}} />
+                        <col style={{ width: "120px" }} />
+                        <col style={{ width: "*" }} />
                     </colgroup>
                     <tbody>
-                        <tr>
-                            <th scope="row">발령번호</th>
-                            <td>app-2024-05-0001</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">제목</th>
-                            <td>2024년 1분기 인사발령</td>
-                        </tr>
+                        {registAppListDetail && registAppListDetail.length > 0 && (
+                            <>
+                                <tr>
+                                    <th scope="row">발령번호</th>
+                                    <td>{registAppListDetail[0].aappNo}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">제목</th>
+                                    <td>{registAppListDetail[0].aappTitle}</td>
+                                </tr>
+                            </>
+                        )}
                     </tbody>
                 </table>
                 <h5 class="hp_fw700 hp_fs18 hp_mt20">발령상세내용</h5>
                 <div class="bl_sect hp_mt10">
                     <table class="bl_tb1">
                         <colgroup>
-                            <col style={{width: "50px"}} />
-                            <col style={{width: "120px"}} />
-                            <col style={{width: "120px"}} />
-                            <col style={{width: "120px"}} />
-                            <col style={{width: "120px"}} />
-                            <col style={{width: "120px"}} />
+                            <col style={{ width: "50px" }} />
+                            <col style={{ width: "120px" }} />
+                            <col style={{ width: "120px" }} />
+                            <col style={{ width: "120px" }} />
+                            <col style={{ width: "120px" }} />
+                            <col style={{ width: "120px" }} />
                         </colgroup>
                         <thead>
                             <tr>
@@ -45,51 +69,17 @@ function AppointView(){
                         </thead>
                         {/* <!-- 5개씩 나열 --> */}
                         <tbody>
-                            <tr>
-                                <th scope="row"><input type="checkbox" class="" id="" name="" value="checkOne" />
-                                </th>
-                                <td>2024-05-28</td>
-                                <td>김대한</td>
-                                <td>승진</td>
-                                <td>대리</td>
-                                <td>과장</td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><input type="checkbox" class="" id="" name="" value="checkOne" />
-                                </th>
-                                <td>2024-05-28</td>
-                                <td>김대한</td>
-                                <td>이동</td>
-                                <td>영업부</td>
-                                <td>고객관리팀</td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><input type="checkbox" class="" id="" name="" value="checkOne" />
-                                </th>
-                                <td>2024-05-28</td>
-                                <td>김대한</td>
-                                <td>승진</td>
-                                <td>대리</td>
-                                <td>과장</td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><input type="checkbox" class="" id="" name="" value="checkOne" />
-                                </th>
-                                <td>2024-05-28</td>
-                                <td>김대한</td>
-                                <td>이동</td>
-                                <td>영업부</td>
-                                <td>고객관리팀</td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><input type="checkbox" class="" id="" name="" value="checkOne" />
-                                </th>
-                                <td>2024-05-28</td>
-                                <td>김대한</td>
-                                <td>이동</td>
-                                <td>영업부</td>
-                                <td>고객관리팀</td>
-                            </tr>
+                            {registAppListDetail && registAppListDetail.map((detail, index) => (
+                                <tr key={index}>
+                                    <th scope="row"><input type="checkbox" class="" id="" name="" value="checkOne" />
+                                    </th>
+                                    <td>{detail.aappDate}</td>
+                                    <td>{detail.empName}</td>
+                                    <td>{detail.adetType}</td>
+                                    <td>{detail.adetBefore}</td>
+                                    <td>{detail.adetAfter}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>

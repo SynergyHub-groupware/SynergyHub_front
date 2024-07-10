@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 
 const styles = {
@@ -20,26 +20,18 @@ const styles = {
   },
 };
 
-const CustomExpandButton = ({ node }) => {
-  const [expanded, setExpanded] = useState(false);
-
-  const toggleExpand = () => {
-    setExpanded(!expanded);
-  };
-
+const CustomExpandButton = (node) => {
   return (
-    <div
-      style={{
-        ...styles.expandBtn,
-        backgroundColor: expanded ? "#ffcb77" : "#fef9ef",
-      }}
-      onClick={toggleExpand}
-    >
-      <span>{node._directSubordinates}</span>
-      <span style={styles.flex}>
-        {expanded ? <FaAngleUp /> : <FaAngleDown />}
-      </span>
-    </div>
+    <>
+      {node && (
+        <div style={styles.expandBtn}>
+          <span>{node.data._directSubordinates}</span>
+          <span style={styles.flex}>
+            {node.children ? <FaAngleUp /> : <FaAngleDown />}
+          </span>
+        </div>
+      )}
+    </>
   );
 };
 

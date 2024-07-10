@@ -139,6 +139,12 @@ function EventInfo({ show, event, handleClose, handleUpdate, handleDelete }) {
     return null;
   }
 
+  const isEventOwner = event.extendedProps.empCode === employee.emp_code;
+
+  console.log("로그인한 사용자", employee.empCode)
+  console.log("이벤트 작성자", event.extendedProps.empCode)
+
+
   return (
     <>
       <div className="bl_popBack">
@@ -191,25 +197,29 @@ function EventInfo({ show, event, handleClose, handleUpdate, handleDelete }) {
                     <th scope="row">내용</th>
                     <td><textarea className="hp_w100" placeholder="내용을 입력해주세요" name='eventCon' value={formData.eventCon} onChange={handleChange}></textarea></td>
                   </tr>
-                  <tr>
-                    <th scope="row">참석자</th>
-                    <td>
-                      <button type="button" className="el_btnS el_btn8Bord hp_p3-5" onClick={openModal}>참석자 수정 </button>
-                      {guests.length > 0 ? guests.map((guest, index) => (
-                        <span key={guest.guestCode || `new-${guest.empCode}`}>
-                          {index > 0 && ", "}
-                          {getEmployeeName(guest.empCode)}
-                        </span>
-                      )) : <span>참석자가 없습니다</span>}
-                    </td>
-                  </tr>
+                  {isEventOwner && (
+                    <tr>
+                      <th scope="row">참석자</th>
+                      <td>
+                        <button type="button" className="el_btnS el_btn8Bord hp_p3-5" onClick={openModal}>참석자 수정 </button>
+                        {guests.length > 0 ? guests.map((guest, index) => (
+                          <span key={guest.guestCode || `new-${guest.empCode}`}>
+                            {index > 0 && ", "}
+                            {getEmployeeName(guest.empCode)}
+                          </span>
+                        )) : <span>참석자가 없습니다</span>}
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
-            <div className="hp_alignC hp_mb20 hp_mt10">
-              <button type="button" className="el_btnS el_btnblueBack" onClick={handleUpdateClick}>수정</button>
-              <button type="button" className="el_btnS el_btnredBack" onClick={handleDeleteClick}>삭제</button>
-            </div>
+            {isEventOwner && (
+              <div className="hp_alignC hp_mb20 hp_mt10">
+                <button type="button" className="el_btnS el_btnblueBack" onClick={handleUpdateClick}>수정</button>
+                <button type="button" className="el_btnS el_btnredBack" onClick={handleDeleteClick}>삭제</button>
+              </div>
+            )}
           </div>
         </div>
       </div>

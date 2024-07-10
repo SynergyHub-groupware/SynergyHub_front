@@ -66,9 +66,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='login' element={<Login/>}/>
+        <Route index element={<Login/>}/>
         <Route path='/' element={<Layout/>}>
-          <Route index element={<Main/>}/>
+          <Route path='main' element={<Main/>}/>
           <Route path="approval" element={<ApprovalLayout/>}>
             <Route path="formList" element={<FormList/>} />
             <Route path="temporary" element={<Temporary/>} />
@@ -104,7 +104,7 @@ function App() {
             <Route path='employeeList' element={<EmployeeList />} />
             <Route path='appointList' element={<AppointList />} />
             <Route path='appointRegist' element={<AppointRegist />} />
-            <Route path='appointView' element={<AppointView />} />
+            <Route path='appointView/:aappNo' element={<AppointView />} />
             <Route path='deptManagerMent' element={<DeptManagerMent />} />
           </Route> 
           <Route path='myInfo' element={<MyInfoLayout />} >

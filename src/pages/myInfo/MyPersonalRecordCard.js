@@ -1,36 +1,105 @@
 // import '../../css/personal.css';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { callRecordCardAPI } from '../../apis/EmployeeAPICalls';
+import { callRecordCardAPI, callRegistRecordCardAPI, callUpdateRecordCardAPI } from '../../apis/EmployeeAPICalls';
 
-function MyPersonalRecordCard(){
+function MyPersonalRecordCard() {
 
     const dispatch = useDispatch();
 
     const recordCard = useSelector(state => state.employeeReducer.recordCard);
+    const registRecordCard = useSelector(state => state.employeeReducer.registRecordCard);
+    const updateRecordCard = useSelector(state => state.employeeReducer.updateRecordCard);
 
-    console.log('recordCard in component: ', recordCard);
+    // console.log('recordCard in component: ', recordCard);
 
     useEffect(() => {
         dispatch(callRecordCardAPI());
     }, [dispatch]);
 
-    return(        
+    const [schoolInfos, setSchoolInfos] = useState(recordCard.schoolInfos || []);
+    const [certificates, setCertificates] = useState(recordCard.certificates || []);
+    const [registStatus, setRegistStatus] = useState(null);
+
+
+
+    const handleAddSchoolInfo = () => {
+        const newSchoolInfo = {
+            sch_name: '',
+            grad_status: '',
+            enrole_date: '',
+            grad_date: '',
+            major: '',
+            day_n_night: '',
+            location: ''
+        };
+        setSchoolInfos([...schoolInfos, newSchoolInfo]);
+    }
+
+    const handleAddCertificate = () => {
+        const newCertificate = {
+            cer_name: '',
+            cer_score: '',
+            cer_date: '',
+            cer_num: '',
+            iss_organ: ''
+        }
+        setCertificates([...certificates, newCertificate]);
+    }
+
+    const handleSubmit = async e => {
+        e.preventDefault();
+        try {
+            const newRecordCard = {
+                schoolInfos: [...recordCard.schoolInfos, ...schoolInfos],
+                certificates: [...recordCard.certificates, ...certificates]
+            };
+
+            if (recordCard && recordCard.id) {
+
+                await dispatch(callRegistRecordCardAPI(newRecordCard));
+            }
+
+            setRegistStatus('success');
+            alert('저장이 완료 되었습니다.');
+        } catch (error) {
+            setRegistStatus('fail');
+            alert('저장에 실패하였습니다.');
+        }
+    };
+
+
+    const handleSchoolInfoChange = (index, field, value) => {
+        const updatedSchoolInfos = [...schoolInfos];
+        updatedSchoolInfos[index][field] = value;
+        setSchoolInfos(updatedSchoolInfos);
+    };
+
+    const handleCertificateChange = (index, field, value) => {
+        const updatedCertificates = [...certificates];
+        updatedCertificates[index][field] = value;
+        setCertificates(updatedCertificates);
+    };
+
+    return (
         <div class="ly_cont">
             <div class="ly_spaceBetween ly_fitemEnd hp_mb30">
                 <h4 class="el_lv1Head">인사기록카드</h4>
-                <button type="button" class="el_btnS el_btn0Bord">출력하기</button>
+                <div>
+                    <button type="button" class="el_btnS el_btnblueBack" onClick={handleSubmit}>저장</button>
+                    <button type="button" class="el_btnS el_btn0Bord">출력하기</button>
+                </div>
             </div>
             <section class="bl_sect hp_padding15">
                 <h5 class="hp_fw700 hp_fs18 hp_mb10">기본정보</h5>
                 <table class="bl_tb3">
                     <colgroup>
-                        <col style={{width: "150px"}} />
-                        <col style={{width: "150px"}} />
-                        <col style={{width: "*"}} />
-                        <col style={{width: "150px"}} />
-                        <col style={{width: "*"}} />
+                        <col style={{ width: "150px" }} />
+                        <col style={{ width: "150px" }} />
+                        <col style={{ width: "*" }} />
+                        <col style={{ width: "150px" }} />
+                        <col style={{ width: "*" }} />
                     </colgroup>
                     <tbody>
                         <tr>
@@ -55,13 +124,13 @@ function MyPersonalRecordCard(){
                 <h5 class="hp_fw700 hp_fs18 hp_mb10 hp_mt30">발령내역</h5>
                 <table class="bl_tb3">
                     <colgroup>
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
                     </colgroup>
                     <thead>
                         <tr>
@@ -89,13 +158,13 @@ function MyPersonalRecordCard(){
                 <h5 class="hp_fw700 hp_fs18 hp_mb10 hp_mt30">경력사항</h5>
                 <table class="bl_tb3">
                     <colgroup>
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
                     </colgroup>
                     <thead>
                         <tr>
@@ -118,16 +187,21 @@ function MyPersonalRecordCard(){
                         </tr>
                     </tbody>
                 </table>
-                <h5 class="hp_fw700 hp_fs18 hp_mb10 hp_mt30">학력사항</h5>
+                <div class="ly_spaceBetween ly_fitemC hp_mt30 hp_mb10">
+                    <h5 class="hp_fw700 hp_fs18 hp_mb10 hp_mt30">학력사항</h5>
+                    <div class="">
+                        <button type="button" class="el_btnS el_btn8Bord" onClick={handleAddSchoolInfo}>추가</button>
+                    </div>
+                </div>
                 <table class="bl_tb3">
                     <colgroup>
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
-                        <col style={{width: "calc(100% / 7)"}} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
+                        <col style={{ width: "calc(100% / 7)" }} />
                     </colgroup>
                     <thead>
                         <tr>
@@ -141,15 +215,26 @@ function MyPersonalRecordCard(){
                         </tr>
                     </thead>
                     <tbody>
-                        {recordCard.schoolInfos && recordCard.schoolInfos.map((school, index) => (
+                    {recordCard.schoolInfos?.map((schoolInfo, index) => (
                             <tr key={index}>
-                                <td><input style={{ textAlign: 'center' }} value={school.sch_name}></input></td>
-                                <td><input style={{ textAlign: 'center' }} value={school.grad_status} /></td>
-                                <td><input style={{ textAlign: 'center' }} value={school.enrole_date} /></td>
-                                <td><input style={{ textAlign: 'center' }} value={school.grad_date} /></td>
-                                <td><input style={{ textAlign: 'center' }} value={school.major} /></td>
-                                <td><input style={{ textAlign: 'center' }} value={school.day_n_night} /></td>
-                                <td><input style={{ textAlign: 'center' }} value={school.location} /></td>
+                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={schoolInfo.sch_name} /></td>
+                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={schoolInfo.grad_status}  /></td>
+                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={schoolInfo.enrole_date}  /></td>
+                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={schoolInfo.grad_date}  /></td>
+                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={schoolInfo.major}  /></td>
+                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={schoolInfo.day_n_night}  /></td>
+                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={schoolInfo.location}  /></td>
+                            </tr>
+                        ))}
+                        {schoolInfos.map((school, index) => (
+                            <tr key={index}>
+                                <td><input style={{ textAlign: 'center' }} value={school.sch_name} onChange={(e) => handleSchoolInfoChange(index, 'sch_name', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} value={school.grad_status} onChange={(e) => handleSchoolInfoChange(index, 'grad_status', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} value={school.enrole_date} onChange={(e) => handleSchoolInfoChange(index, 'enrole_date', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} value={school.grad_date} onChange={(e) => handleSchoolInfoChange(index, 'grad_date', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} value={school.major} onChange={(e) => handleSchoolInfoChange(index, 'major', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} value={school.day_n_night} onChange={(e) => handleSchoolInfoChange(index, 'day_n_night', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} value={school.location} onChange={(e) => handleSchoolInfoChange(index, 'location', e.target.value)} /></td>
                             </tr>
                         ))}
                     </tbody>
@@ -157,17 +242,16 @@ function MyPersonalRecordCard(){
                 <div class="ly_spaceBetween ly_fitemC hp_mt30 hp_mb10">
                     <h5 class="hp_fw700 hp_fs18">자격증</h5>
                     <div class="">
-                        <button type="button" class="el_btnS el_btnblueBack">저장</button>
-                        <button type="button" class="el_btnS el_btn8Bord">추가</button>
+                        <button type="button" class="el_btnS el_btn8Bord" onClick={handleAddCertificate}>추가</button>
                     </div>
                 </div>
                 <table class="bl_tb3">
                     <colgroup>
-                        <col style={{width: "calc(100% / 5)"}} />
-                        <col style={{width: "calc(100% / 5)"}} />
-                        <col style={{width: "calc(100% / 5)"}} />
-                        <col style={{width: "calc(100% / 5)"}} />
-                        <col style={{width: "calc(100% / 5)"}} />
+                        <col style={{ width: "calc(100% / 5)" }} />
+                        <col style={{ width: "calc(100% / 5)" }} />
+                        <col style={{ width: "calc(100% / 5)" }} />
+                        <col style={{ width: "calc(100% / 5)" }} />
+                        <col style={{ width: "calc(100% / 5)" }} />
                     </colgroup>
                     <thead>
                         <tr>
@@ -179,23 +263,22 @@ function MyPersonalRecordCard(){
                         </tr>
                     </thead>
                     <tbody>
-                        {recordCard.certificates && recordCard.certificates.map((cer, index) => (
+                    {recordCard.certificates?.map((certificate, index) => (
                             <tr key={index}>
-                                <td>
-                                    <input style={{ textAlign: 'center' }} type="text" class="hp_w100" value={cer.cer_name} />
-                                </td>
-                                <td>
-                                    <input style={{ textAlign: 'center' }} type="number" class="hp_w100" value={cer.cer_score} />
-                                </td>
-                                <td>
-                                    <input style={{ textAlign: 'center' }} type="date" class="hp_w100" value={cer.cer_date} />
-                                </td>
-                                <td>
-                                    <input style={{ textAlign: 'center' }} type="text" class="hp_w100" value={cer.cer_num} />
-                                </td>
-                                <td>
-                                    <input style={{ textAlign: 'center' }} type="text" class="hp_w100" value={cer.iss_organ} />
-                                </td>
+                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={certificate.cer_name}  /></td>
+                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={certificate.cer_score}  /></td>
+                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={certificate.cer_date}  /></td>
+                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={certificate.cer_num}  /></td>
+                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={certificate.iss_organ}  /></td>
+                            </tr>
+                        ))}
+                        {certificates.map((cer, index) => (
+                            <tr key={index}>
+                                <td><input style={{ textAlign: 'center' }} type="text" class="hp_w100" value={cer.cer_name} onChange={(e) => handleCertificateChange(index, 'cer_name', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="number" class="hp_w100" value={cer.cer_score} onChange={(e) => handleCertificateChange(index, 'cer_score', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="date" class="hp_w100" value={cer.cer_date} onChange={(e) => handleCertificateChange(index, 'cer_date', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" class="hp_w100" value={cer.cer_num} onChange={(e) => handleCertificateChange(index, 'cer_num', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" class="hp_w100" value={cer.iss_organ} onChange={(e) => handleCertificateChange(index, 'iss_organ', e.target.value)} /></td>
                             </tr>
                         ))}
                     </tbody>

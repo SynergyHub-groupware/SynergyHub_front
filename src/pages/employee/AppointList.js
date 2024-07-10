@@ -1,14 +1,35 @@
 // import '../../css/personal.css';
 
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { callRegistAppListAPI } from "../../apis/EmployeeAPICalls";
+import { useNavigate } from "react-router";
+
 function AppointList(){
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const registAppList = useSelector(state => state.employeeReducer.registAppList);
+
+    useEffect(() => {
+        dispatch(callRegistAppListAPI());
+    }, [dispatch]);
+
+    const handleRowClick = (aappNo) => {
+        navigate(`/employee/appointView/${aappNo}`);
+    }
+    
+    console.log('registAppList 컴포넌트', registAppList);
+
     return(        
         <div className="ly_cont">
             <h4 className="el_lv1Head hp_mb30">발령내역</h4>
             <div className="ly_spaceBetween">
                 <button type="button" className="el_btnS el_btnblueBack" onClick={() => window.location.href= 'appointRegist'}>등록</button>
                 <form action="" method="">
-                    <input type="text" className="" id="" name="" value="" placeholder="검색어를 입력해주세요" />
-                    <input type="submit" className="el_btnS el_btnblueBord hp_ml5" id="" name="" value="검색" />
+                    <input type="text" placeholder="검색어를 입력해주세요" />
+                    <input type="submit" className="el_btnS el_btnblueBord hp_ml5" value="검색" />
                 </form>
             </div>
             <section className="bl_sect hp_mt10">
@@ -22,27 +43,29 @@ function AppointList(){
                     </colgroup>
                     <thead>
                         <tr>
-                            <th scope="col"><input type="checkbox" className="" id="" name="" value="checkAll" /></th>
+                            <th scope="col"><input type="checkbox" value="checkAll" /></th>
                             <th scope="col">발령번호</th>
                             <th scope="col">제목</th>
                             <th scope="col">결재상태</th>
-                            <th scope="col">완료일</th>
+                            <th scope="col">등록일</th>
                         </tr>
                     </thead>
                     {/* <!-- 15개씩 나열 --> */}
                     <tbody>
-                        <tr onClick={() => window.location.href= 'appointView'}>
-                            <th scope="row"><input type="checkbox" className="" id="" name="" value="checkOne" /></th>
-                            <td>app-2024-05-0001</td>
-                            <td className="" style={{ textAlign: 'center' }}>2024년 1분기 부서이동</td>
-                            <td>진행중</td>
-                            <td>2024.12.34</td>
+                        {registAppList && registAppList.map((appList) => (
+                        <tr key={appList.aappCode} onClick={() => handleRowClick(appList.aappNo)}>
+                            <th scope="row"><input type="checkbox" value="checkOne" /></th>
+                            <td>{appList.aappNo}</td>
+                            <td style={{ textAlign: 'center' }}>{appList.aappTitle}</td>
+                            <td></td>
+                            <td>{appList.aappDate}</td>
                         </tr>
+                        ))}
                     </tbody>
                 </table>
             </section>
             <div className="ly_spaceBetween ly_fitemC hp_mt10">
-                <div className="hp_ml10 hp_7Color">총 1 / <b class="hp_0Color hp_fw700">1</b> 페이지</div>
+                <div className="hp_ml10 hp_7Color">총 1 / <b className="hp_0Color hp_fw700">1</b> 페이지</div>
                 <select className="">
                     <option value="">정렬방식</option>
                 </select>
