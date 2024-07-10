@@ -154,17 +154,17 @@ function PostDetailView() {
                             <Link to={`/post/PostEditView/${DetailData.postCode}`}>수정</Link>
                         </tr>
                         <tr>
-                            <td style={{backgroundColor:"lightgray"}}>게시글 번호</td>
+                            <td style={{backgroundColor:"lightgray",border: "1px solid grey"}}>게시글 번호</td>
                             <td>{DetailData.postCode}</td>
                         </tr>
                         <tr>
-                            <td style={{backgroundColor:"lightgray"}}>작성자</td>
+                            <td style={{backgroundColor:"lightgray",border: "1px solid grey"}}>작성자</td>
                             <td>{DetailData.empName}</td>
-                            <td style={{backgroundColor:"lightgray"}}>작성일</td>
+                            <td style={{backgroundColor:"lightgray",border: "1px solid grey"}}>작성일</td>
                             <td>{DetailData.postDate}</td>
                         </tr>
                         <tr>
-                            <td style={{backgroundColor:"lightgray"}}>첨부파일</td>
+                            <td style={{backgroundColor:"lightgray",border: "1px solid grey"}}>첨부파일</td>
                             <td colSpan="3" >
                                 {FileData && FileData.length > 0 ? (
                                     FileData.map((file, index) => (
@@ -183,7 +183,7 @@ function PostDetailView() {
                             </td>
                         </tr>
                         <tr>
-                            <td style={{backgroundColor:"lightgray"}}>제목</td>
+                            <td style={{backgroundColor:"lightgray",border: "1px solid grey"}}>제목</td>
                             <td colSpan="3">{DetailData.postName}</td>
                         </tr>
                         <tr>
