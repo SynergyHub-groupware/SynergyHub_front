@@ -66,9 +66,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='login' element={<Login/>}/>
+        <Route index element={<Login/>}/>
         <Route path='/' element={<Layout/>}>
-          <Route index element={<Main/>}/>
+          <Route path='main' element={<Main/>}/>
           <Route path="approval" element={<ApprovalLayout/>}>
             <Route path="formList" element={<FormList/>} />
             <Route path="temporary" element={<Temporary/>} />

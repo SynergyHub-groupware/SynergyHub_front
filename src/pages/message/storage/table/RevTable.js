@@ -150,5 +150,5 @@ function RevTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCur
         </div>
     );
 }
-// commit
+
 export default RevTable;
