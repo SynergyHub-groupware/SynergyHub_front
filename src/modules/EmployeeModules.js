@@ -4,6 +4,10 @@ import { createActions, handleActions } from 'redux-actions';
 const initialState = {
     employees: [],
     employee: {},
+    updateEmployee: {},
+    registRecordCard: {},
+    updateRecordCard: {},
+    employeeAll: {},
     recordCard: {},
     departments: [],
     titles: [],
@@ -16,12 +20,18 @@ const initialState = {
     registEmpListDetail: [],
     orgChart: [],
     registAppoints: [],
+    registAppList: [],
+    registAppListDetail: [],
 };
 
 /* 액션 타입 */
 const GET_DEPT_EMPLOYEES = 'employee/GET_DEPT_EMPLOYEES';   // 부서인원
 const GET_MY_INFO = 'employee/GET_MY_INFO';                 // 내정보 조회
+const UPDATE_MY_INFO = 'employee/UPDATE_MY_INFO';
+const GET_EMPLOYEE_ALL = 'employee/GET_EMPLOYEE_ALL';
 const GET_RECORDCARD = 'employee/GET_RECORDCARD';           // 나의 인사기록카드
+const REGIST_MY_RECORDCARD = 'employee/REGIST_MY_RECORDCARD';
+const UPDATE_MY_RECORDCARD = 'employee/UPDATE_MY_RECORDCARD';
 const GET_DEPARTMENTS = 'employee/GET_DEPARTMENTS';         // 부서 목록
 const GET_TITLES = 'employee/GET_TITLES';
 const GET_POSITIONS = 'employee/GET_POSITIONS';
@@ -33,9 +43,11 @@ const GET_REGIST_EMP_LIST = 'employee/GET_REGIST_EMP_LIST';
 const GET_REGIST_EMP_LIST_DETAIL = 'employee/GET_REGIST_EMP_LIST_DETAIL';
 const GET_ORG_CHART = 'employee/GET_ORG_CHART';
 const REGIST_APPOINTS = 'employee/REGIST_APPOINTS';
+const GET_REGIST_APP_LIST = 'employee/GET_REGIST_APP_LIST';
+const GET_REGIST_APP_LIST_DETAIL = 'employee/GET_REGIST_APP_LIST_DETAIL';
 
 /* 액션 함수 */
-export const { employee : { getDeptEmployees, getMyInfo, getRecordcard, getDepartments, getTitles, getPositions, getDeptDetail, success, getTeamRecordcard, registEmployees, getRegistEmpList, getRegistEmpListDetail, getOrgChart, registAppoints } } = createActions ({
+export const { employee : { getDeptEmployees, getMyInfo, updateMyInfo, getEmployeeAll, getRecordcard, registMyRecordcard, updateMyRecordcard, getDepartments, getTitles, getPositions, getDeptDetail, success, getTeamRecordcard, registEmployees, getRegistEmpList, getRegistEmpListDetail, getOrgChart, registAppoints, getRegistAppList, getRegistAppListDetail } } = createActions ({
 
     [GET_DEPT_EMPLOYEES] : result => {
 
@@ -50,11 +62,35 @@ export const { employee : { getDeptEmployees, getMyInfo, getRecordcard, getDepar
 
         return {employee: result};
     },
+    [UPDATE_MY_INFO] : result => {
+
+        console.log('UPDATE_MY_INFO Action payload', result);
+
+        return {updateEmployee: result};
+    },
+    [GET_EMPLOYEE_ALL] : result => {
+
+        console.log('GET_EMPLOYEE_ALL Action payload', result);
+
+        return {employeeAll : result};
+    },
     [GET_RECORDCARD] : result => {
 
-        console.log('GET_RECORDCARD Action payload : ', result);
+        // console.log('GET_RECORDCARD Action payload : ', result);
 
         return {recordCard: result};
+    },
+    [REGIST_MY_RECORDCARD] : result => {
+
+        console.log('REGIST_MY_RECORDCARD Action payload', result);
+
+        return {registRecordCard : result};
+    },
+    [UPDATE_MY_RECORDCARD] : result => {
+
+        console.log('UPDATE_MY_RECORDCARD Action payload', result);
+
+        return { updateRecordCard : result};
     },
     [GET_DEPARTMENTS] : result => {
 
@@ -118,6 +154,18 @@ export const { employee : { getDeptEmployees, getMyInfo, getRecordcard, getDepar
 
         return { registAppoints : result };
     },
+    [GET_REGIST_APP_LIST] : result => {
+
+        console.log('GET_REGIST_APP_LIST Action payload : ', result);
+
+        return { registAppList : result} ;
+    },
+    [GET_REGIST_APP_LIST_DETAIL] : result => {
+
+        console.log('GET_REGIST_APP_LIST_DETAIL Action payload : ', result);
+
+        return { registAppListDetail : result };
+    },
 
 });
 
@@ -145,13 +193,49 @@ const employeeReducer = handleActions({
             employee: payload.employee,
         };
     },
+    [UPDATE_MY_INFO] : (state, { payload }) => {
+
+        console.log('Reducer UPDATE_MY_INFO payload', payload);
+
+        return {
+            ...state,
+            updateEmployee: payload.updateEmployee,
+        };
+    },
+    [GET_EMPLOYEE_ALL] : (state, { payload }) => {
+
+        console.log('Reducer GET_EMPLOYEE_ALL payload : ', payload);
+
+        return {
+            ...state,
+            employeeAll: payload.employeeAll,
+        };
+    },
     [GET_RECORDCARD] : ( state, { payload }) => {
 
-        console.log('Reducer GET_RECORDCARD payload : ', payload);
+        // console.log('Reducer GET_RECORDCARD payload : ', payload);
 
         return {
             ...state,
             recordCard: payload.recordCard,
+        };
+    },
+    [REGIST_MY_RECORDCARD] : (state, { payload }) => {
+
+        console.log('Reducer REGIST_MY_RECORDCARD payload : ', payload);
+
+        return {
+            ...state,
+            registRecordCard: payload.registRecordCard,
+        };
+    },
+    [UPDATE_MY_RECORDCARD] : ( state, { payload }) => {
+
+        console.log('Reducer UPDATE_MY_RECORDCARD payload : ', payload);
+
+        return {
+            ...state,
+            updateRecordCard: payload.updateRecordCard,
         };
     },
     [GET_DEPARTMENTS] : ( state, { payload }) => {
@@ -248,6 +332,25 @@ const employeeReducer = handleActions({
             registAppoints: payload.registAppoints,
         };
     },
+    [GET_REGIST_APP_LIST] : ( state, { payload }) => {
+
+        console.log('Reducer GET_REGIST_APP_LIST payload : ', payload);
+
+        return {
+            ...state,
+            registAppList: payload.registAppList,
+        };
+    },
+    [GET_REGIST_APP_LIST_DETAIL] : ( state, { payload }) => {
+
+        console.log('Reducer GET_REGIST_APP_LIST_DETAIL payload : ', payload);
+
+        return {
+            ...state,
+            registAppListDetail: payload.registAppListDetail,
+        };
+    },
+
 }, initialState);
 
 export default employeeReducer;

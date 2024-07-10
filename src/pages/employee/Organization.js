@@ -1,37 +1,25 @@
 import { useDispatch, useSelector } from 'react-redux';
 import '../../css/personal.css';
-import OrganizationalChart from "./orgChart/orgChart";
-import employees, { transformData } from "./orgChart/transformData";
 import { useEffect } from 'react';
 import { callOrgChartAPI } from '../../apis/EmployeeAPICalls';
+import OrgD3Tree from './orgChart/OrgD3Tree';
+
+// npm install react-d3-tree
 
 function Organization() {
 
     const dispatch = useDispatch();
     const orgChart = useSelector((state) => state.employeeReducer.orgChart);
 
-    // useEffect(() => {
-    //     // API 호출하여 부서 데이터 가져오기
-    //     dispatch(callDepartmentsAPI());
-    // }, [dispatch]);
-
     useEffect(() => {
         dispatch(callOrgChartAPI());
     }, [dispatch]);
 
-  // 데이터 변환 및 상태 관리
-  const transformedData = transformData(orgChart);
-  console.log('transformedData', transformedData);
-  console.log('orgChart', orgChart);
-    // console.log('departments', departments);
-    console.log('employees', employees);
-    
-
-    return(
+    return (
         <div className="ly_cont">
             <h4 className="el_lv1Head hp_mb30">조직도</h4>
-            <section className="bl_sect" style={{height: 'calc(100% - 30px - 42px)' }}>
-                <OrganizationalChart data={transformedData} />
+            <section className="bl_sect" style={{ height: 'calc(100% - 30px - 42px)' }}>
+                <OrgD3Tree data={orgChart} />
             </section>
             {/* <div className="bl_popBack">
                 <div className="bl_popup">
