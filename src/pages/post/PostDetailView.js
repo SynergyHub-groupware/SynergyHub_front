@@ -4,6 +4,9 @@ import { useParams } from 'react-router-dom';
 import { callGETDetail, callGETFile, callGETComment } from './postApi/PostAPI';
 import { callDepartmentEmployeesAPI } from '../../apis/EmployeeAPICalls';
 import axios from 'axios';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import { Link } from 'react-router-dom';
 
 function PostDetailView() {
     const dispatch = useDispatch();
@@ -11,10 +14,9 @@ function PostDetailView() {
     const [newComment, setNewComment] = useState('');
     const [comments, setComments] = useState([]);
     const [isAnonymous, setIsAnonymous] = useState(false);
+    const [editingComment, setEditingComment] = useState(null); // 수정할 댓글 정보를 저장할 상태
 
     const employees = useSelector(state => state.employeeReducer.employees?.employees || []);
-
-    console.log('employees in component: ', employees);
 
     useEffect(() => {
         dispatch(callDepartmentEmployeesAPI());
@@ -27,18 +29,27 @@ function PostDetailView() {
     }, [dispatch, postCode]);
 
     const DetailData = useSelector(state => state.post.DetailState);
-    console.log(DetailData);
     const FileData = useSelector(state => state.post.FileState);
-    console.log(FileData);
     const CommentState = useSelector(state => state.post.CommentState);
 
-    const downloadAttachment = (attachmentUrl, filename) => {
-        const link = document.createElement('a');
-        link.href = attachmentUrl;
-        link.setAttribute('download', filename); // 파일 이름 설정
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    const generateHtmlContent = () => {
+        let htmlContent = '';
+
+        if (FileData && FileData.length > 0) {
+            htmlContent = FileData.map((file, index) => {
+                if (file.attachOriginal.toLowerCase().endsWith('.jpg') || file.attachOriginal.toLowerCase().endsWith('.png')) {
+                    return `<img src="http://localhost:8080/post/downloadFile/${file.attachSave}" alt="${file.attachOriginal}" style="max-width: 100%; max-height: 500px;" />`;
+                } else {
+                    return null;
+                }
+            }).join('<br/>');
+        }
+
+        if (DetailData.postCon) {
+            htmlContent += `<br/>${DetailData.postCon}`;
+        }
+
+        return htmlContent;
     };
 
     const handleCommentChange = (e) => {
@@ -56,8 +67,7 @@ function PostDetailView() {
         };
 
         try {
-            const token = localStorage.getItem('token');
-            console.log(commentData);
+            const token = localStorage.getItem('access-token');
             const response = await axios.post('http://localhost:8080/post/commentAdd', commentData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -72,30 +82,90 @@ function PostDetailView() {
         }
     };
 
+    const handleEditClick = (commentId) => {
+        // 클릭한 댓글의 정보를 editingComment 상태에 저장
+        const commentToEdit = CommentState.find(comment => comment.comm_code === commentId);
+        if (commentToEdit) {
+            setEditingComment(commentToEdit);
+            setNewComment(commentToEdit.comm_con); // 댓글 입력칸에 수정할 댓글 내용을 반영
+        }
+    };
+
+    const handleEditSave = async () => {
+        if (!editingComment) return;
+
+        const editedCommentData = {
+            commCon: newComment,
+            commStatus: isAnonymous ? 'Y' : 'N',
+            postCode: DetailData.postCode,
+            commDate: new Date().toISOString() // ISO 8601 형식으로 변환
+        };
+
+        try {
+            const token = localStorage.getItem('access-token');
+            const response = await axios.put(`http://localhost:8080/post/commentEdit/${editingComment.comm_code}`, editedCommentData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            // 수정된 댓글을 CommentState에서 업데이트
+            const updatedComments = CommentState.map(comment =>
+                comment.comm_code === editingComment.comm_code ? response.data : comment
+            );
+
+            // 업데이트된 댓글 목록을 상태에 반영
+            setComments(updatedComments);
+            setEditingComment(null); // 수정 상태 초기화
+            setNewComment(''); // 입력 칸 초기화
+        } catch (error) {
+            console.error('Failed to edit comment:', error);
+        }
+    };
+
+    const handleDeleteClick = async (commCode) => {
+        try {
+            const token = localStorage.getItem('access-token');
+            await axios.put(`http://localhost:8080/post/commentDelete/${commCode}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            // 삭제된 댓글을 comments 상태에서 제거
+            const updatedComments = CommentState.filter(comment => comment.comm_code !== commCode);
+            setComments(updatedComments);
+        } catch (error) {
+            console.error('Failed to delete comment:', error);
+        }
+    };
+
     const renderDetail = () => {
         if (!DetailData) return null; // DetailData가 없으면 아무것도 렌더링하지 않음
 
         return (
-            <div className="main">
-                <table>
+            <div className="main" style={{width: "900px",height:"500px"}}>
+                <table >
                     <thead>
                         <tr>
-                            <th colSpan="4">게시판</th>
-                            <button>수정</button>
+                            <th colSpan="4" >게시판</th>
+                            <Link to={`/post/PostEditView/${DetailData.postCode}`}>수정</Link>
                         </tr>
                         <tr>
-                            <td>게시글 번호</td>
+                            <td style={{backgroundColor:"lightgray"}}>게시글 번호</td>
                             <td>{DetailData.postCode}</td>
                         </tr>
                         <tr>
-                            <td>작성자</td>
-                            <td>{DetailData.empCode}</td>
-                            <td>작성일</td>
+                            <td style={{backgroundColor:"lightgray"}}>작성자</td>
+                            <td>{DetailData.empName}</td>
+                            <td style={{backgroundColor:"lightgray"}}>작성일</td>
                             <td>{DetailData.postDate}</td>
                         </tr>
                         <tr>
-                            <td>첨부파일</td>
-                            <td colSpan="3">
+                            <td style={{backgroundColor:"lightgray"}}>첨부파일</td>
+                            <td colSpan="3" >
                                 {FileData && FileData.length > 0 ? (
                                     FileData.map((file, index) => (
                                         <a
@@ -113,50 +183,35 @@ function PostDetailView() {
                             </td>
                         </tr>
                         <tr>
-                            <td>제목</td>
+                            <td style={{backgroundColor:"lightgray"}}>제목</td>
                             <td colSpan="3">{DetailData.postName}</td>
                         </tr>
                         <tr>
-                            <td>내용</td>
-                            {FileData && FileData.length > 0 ? (
-                                FileData.map((file, index) => (
-                                    (file.attachOriginal.toLowerCase().endsWith('.jpg') || file.attachOriginal.toLowerCase().endsWith('.png')) ? (
-                                        <img
-                                            key={index}
-                                            src={`http://localhost:8080/post/downloadFile/${file.attachSave}`}
-                                            alt={file.attachOriginal}
-                                            style={{ maxWidth: '100%', maxHeight: '500px' }}
-                                        />
-                                    ) : (
-                                        <span key={index}>{file.attachOriginal}</span>
-                                    )
-                                ))
-                            ) : (
-                                <span>첨부 파일이 없습니다.</span>
-                            )}
-                            <br />
-                            <td colSpan="3" style={{ whiteSpace: "pre-wrap" }}>{DetailData.postCon}</td>
+                            <td style={{backgroundColor:"lightgray",border: "1px solid grey"}}>내용</td>
+                            <td colSpan="3">
+                                <div dangerouslySetInnerHTML={{ __html: generateHtmlContent() }} style={{ border: "1px solid grey" }}/>
+                            </td>
                         </tr>
                         <tr>
                             <td colSpan="4">
                                 <h1>댓글 구현위치</h1>
                                 {DetailData.postCommSet === 'ALLOW_NORMAL' && (
                                     <>
-                                        <form onSubmit={handleCommentSubmit}>
+                                        <form onSubmit={editingComment ? handleEditSave : handleCommentSubmit}>
                                             <textarea value={newComment} onChange={handleCommentChange} />
-                                            <button type="submit">댓글 작성</button>
+                                            <button type="submit">{editingComment ? '수정 저장' : '댓글 작성'}</button>
                                         </form>
                                         <h2>댓글</h2>
                                         <ul>
-                                        {CommentState.map(comment => (
-                                                <li key={comment.commCode}>
-                                                    {comment.commCon}
+                                            {CommentState.map(comment => (
+                                                <li key={comment.comm_code}>
+                                                    {comment.comm_con}
                                                     {employees.length > 0 ? (
                                                         employees.map(employee => (
                                                             employee.emp_code === comment.emp_code && (
                                                                 <div key={employee.emp_code}>
-                                                                    <button onClick={() => handleEditClick(comment.commCode)}>수정</button>
-                                                                    <button onClick={() => handleDeleteClick(comment.commCode)}>삭제</button>
+                                                                    <button onClick={() => handleEditClick(comment.comm_code)}>수정</button>
+                                                                    <button onClick={() => handleDeleteClick(comment.comm_code)}>삭제</button>
                                                                 </div>
                                                             )
                                                         ))
@@ -168,21 +223,21 @@ function PostDetailView() {
                                 )}
                                 {DetailData.postCommSet === 'ALLOW_ANONYMOUS' && (
                                     <>
-                                        <form onSubmit={handleCommentSubmit}>
+                                        <form onSubmit={editingComment ? handleEditSave : handleCommentSubmit}>
                                             <textarea value={newComment} onChange={handleCommentChange} />
-                                            <button type="submit">익명 댓글 작성</button>
+                                            <button type="submit">{editingComment ? '수정 저장' : '익명 댓글 작성'}</button>
                                         </form>
                                         <h2>익명 댓글</h2>
                                         <ul>
-                                        {CommentState.map(comment => (
-                                                <li key={comment.commCode}>
-                                                    {comment.commCon}
+                                            {CommentState.map(comment => (
+                                                <li key={comment.comm_code}>
+                                                    {comment.comm_con}
                                                     {employees.length > 0 ? (
                                                         employees.map(employee => (
                                                             employee.emp_code === comment.emp_code && (
                                                                 <div key={employee.emp_code}>
-                                                                    <button onClick={() => handleEditClick(comment.commCode)}>수정</button>
-                                                                    <button onClick={() => handleDeleteClick(comment.commCode)}>삭제</button>
+                                                                    <button onClick={() => handleEditClick(comment.comm_code)}>수정</button>
+                                                                    <button onClick={() => handleDeleteClick(comment.comm_code)}>삭제</button>
                                                                 </div>
                                                             )
                                                         ))
@@ -194,7 +249,7 @@ function PostDetailView() {
                                 )}
                                 {DetailData.postCommSet === 'ALLOW_BOTH' && (
                                     <>
-                                        <form onSubmit={handleCommentSubmit}>
+                                        <form onSubmit={editingComment ? handleEditSave : handleCommentSubmit}>
                                             <textarea value={newComment} onChange={handleCommentChange} />
                                             <label>
                                                 <input
@@ -205,19 +260,22 @@ function PostDetailView() {
                                                 익명으로 작성
                                             </label>
                                             <br />
-                                            <button type="submit">댓글 작성</button>
+                                            <button type="submit">{editingComment ? '수정 저장' : '댓글 작성'}</button>
                                         </form>
                                         <h2> 댓글</h2>
                                         <ul>
-                                        {CommentState.map(comment => (
-                                                <li key={comment.commCode}>
-                                                    {comment.commCon}
+                                            {CommentState.map(comment => (
+                                                <li key={comment.comm_code}>
+                                                    {comment.comm_status === 'N' && (
+                                                        <h2>{comment.emp_name}</h2>
+                                                    )}
+                                                    {comment.comm_con}
                                                     {employees.length > 0 ? (
                                                         employees.map(employee => (
                                                             employee.emp_code === comment.emp_code && (
                                                                 <div key={employee.emp_code}>
-                                                                    <button onClick={() => handleEditClick(comment.commCode)}>수정</button>
-                                                                    <button onClick={() => handleDeleteClick(comment.commCode)}>삭제</button>
+                                                                    <button onClick={() => handleEditClick(comment.comm_code)}>수정</button>
+                                                                    <button onClick={() => handleDeleteClick(comment.comm_code)}>삭제</button>
                                                                 </div>
                                                             )
                                                         ))
@@ -234,14 +292,6 @@ function PostDetailView() {
                 </table>
             </div>
         );
-    };
-
-    const handleEditClick = (commCode) => {
-        // Edit comment logic here
-    };
-
-    const handleDeleteClick = (commCode) => {
-        // Delete comment logic here
     };
 
     return (
