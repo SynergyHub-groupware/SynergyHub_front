@@ -48,7 +48,6 @@ const AttendanceButton = () => {
             }
         } catch (error) {
             console.error('출근 상태 확인 실패:', error);
-            alert('출근 상태를 확인하는 중 오류가 발생했습니다.');
         }
     };
 

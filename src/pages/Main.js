@@ -32,7 +32,7 @@ function Main() {
                             <a className="bl_mainProfile__img hp_mb15"
                                style={{}} href=""></a>
                             <ul className="hp_alignC">
-                                <li className="hp_fs20 hp_fw700">홍길동</li>
+                                <li className="hp_fs20 hp_fw700">{employee.emp_name}</li>
                                 <li className="hp_mt20">
                                     <a className="hp_fs16" href="">쪽지함 <b className="bl_mainProfile__alarm">0</b></a>
                                     <span className="hp_ml20 hp_mr20 hp_fw700 hp_7Color">|</span>
@@ -42,12 +42,10 @@ function Main() {
                         </section>
                         <AttendanceSummary attendancesToday={attendancesToday}/>
                         <section className="bl_sect hp_padding30 el_shadowD4" style={{width: '370px'}}>
-                            <div className="hp_fw700">연차 사용 현황</div>
+                            <div className="hp_fw700">공지사항</div>
                             <div className="hp_fw700 hp_fs28 hp_mt5">1 / 15 <span className="hp_fs16">일</span></div>
                             <div className="hp_mt15">막대그래프 자리</div>
                             <ul className="hp_mt15">
-                                <li className=""><b className="hp_fw700 hp_mr15">총 부여 연차</b> 15일</li>
-                                <li className=""><b className="hp_fw700 hp_mr15">총 잔여 연차</b> 13일</li>
                             </ul>
                         </section>
                     </div>
