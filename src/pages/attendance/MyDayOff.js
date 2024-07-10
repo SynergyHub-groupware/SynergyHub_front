@@ -5,7 +5,7 @@ import MonthWeekComponent from './util/MonthWeekComponent';
 import TodayDate2Component from './util/TodayDate2Component';
 import {
     callAttendanceTodayAPI,
-    callDayOffBalanceAPI,
+    callDayOffBalanceAPI, callDocDOAPI, callDocMonthDOAPI,
     callMyAttendanceForWeekAPI,
     callMyInfoAPI
 } from '../../apis/AttendancelAPICalls'; // 출퇴근 시간 등록 API import 추가
@@ -14,17 +14,23 @@ import MoveButton from "./button/MoveButton";
 import AttendanceSummary from "./component/AttendanceSummary";
 import DefaultSchedule from "./component/DefaultSchedule";
 import TodayDateComponent from "./util/TodayDateComponent";
+import CurrentStatus from "./component/CurrentStatus";
 
 function MyDayOff() {
     const dispatch = useDispatch();
     const employee = useSelector((state) => state.attendanceReducer.employee);
     const attendancesToday = useSelector((state) => state.attendanceReducer.attendanceToday);
     const dayOffBalance = useSelector((state) => state.attendanceReducer.dayOffBalance);
+    const docMonthDo = useSelector((state) => state.attendanceReducer.documentMonthDo);
+    const documentDo = useSelector((state) => state.attendanceReducer.documentDo);
+
 
     useEffect(() => {
         dispatch(callMyInfoAPI());
         dispatch(callAttendanceTodayAPI());
         dispatch(callDayOffBalanceAPI());
+        dispatch(callDocMonthDOAPI());
+        dispatch(callDocDOAPI());
     }, [dispatch]);
 
     const [showDiv1, setShowDiv1] = useState(true);
@@ -56,12 +62,13 @@ function MyDayOff() {
                         className="bl_sect hp_padding40 el_shadowD4 hp_mb20"
                         style={{position: 'relative', width: '900px', zIndex: '2'}}
                     >
-                        <div className="hp_fs22 hp_mb50">
+                        <div className="hp_fs22 hp_mb30 ly_flex" style={{marginLeft: '230px'}}>
                             <TodayDateComponent/>
+                            <div>의 연차 현황입니다.</div>
                         </div>
                         <div className="">
                             <div className="hp_mt30" style={{width: '300px'}}>
-                                <table className="ly_fitemC">
+                                <table className="ly_fitemC" style={{marginLeft: '190px'}}>
                                     <colgroup>
                                         <col style={{width: "20px"}}/>
                                         <col style={{width: "20px"}}/>
@@ -71,18 +78,23 @@ function MyDayOff() {
                                     <thead className="">
                                     <tr>
                                         <th>
-                                            <div className="bl_tna__label hp_lh2-5 hp_mr15 hp_mb15">발생연차
+                                            <div className="bl_tna__label4 hp_lh2-5 hp_mr15 hp_mb15">
+                                                <p style={{color: "white"}}>발생연차</p>
                                             </div>
                                         </th>
                                         <th>
-                                            <div className="bl_tna__label hp_lh2-5 hp_mr15 hp_mb15">사용연차</div>
+                                            <div className="bl_tna__label4 hp_lh2-5 hp_mr15 hp_mb15">
+                                                <p style={{color: "white"}}>사용연차</p>
+                                            </div>
                                         </th>
                                         <th>
-                                            <div className="bl_tna__label hp_lh2-5 hp_mr15 hp_mb15">잔여연차</div>
+                                            <div className="bl_tna__label4 hp_lh2-5 hp_mr15 hp_mb15">
+                                                <p style={{color: "white"}}>잔여연차</p>
+                                            </div>
                                         </th>
                                         <th>
-                                            <div
-                                                className="bl_tna__label bl_tna__label2 hp_lh2-5 hp_mb15">승인대기
+                                            <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15">
+                                                <p style={{color: "#006CD0FF"}}>승인대기</p>
                                             </div>
                                         </th>
                                     </tr>
@@ -90,16 +102,19 @@ function MyDayOff() {
                                     <tbody>
                                     <tr className="">
                                         <td>
-                                            <div className="hp_fw700 hp_fs28 ly_flexC hp_mr15">{dayOffBalance != null ? dayOffBalance.granted : 0}</div>
+                                            <div
+                                                className="hp_fw700 hp_fs28 ly_flexC hp_mr15">{dayOffBalance ? dayOffBalance.granted : "0"}</div>
                                         </td>
                                         <td>
-                                            <div className="hp_fw700 hp_fs28 ly_flexC hp_mr20">{dayOffBalance != null ? dayOffBalance.dbUsed : 0}</div>
+                                            <div
+                                                className="hp_fw700 hp_fs28 ly_flexC hp_mr20">{dayOffBalance ? dayOffBalance.dbUsed : 0}</div>
                                         </td>
                                         <td>
-                                            <div className="hp_fw700 hp_fs28 ly_flexC hp_mr20">{dayOffBalance != null ? dayOffBalance.remaining : 0}</div>
+                                            <div
+                                                className="hp_fw700 hp_fs28 ly_flexC hp_mr20">{dayOffBalance != null ? dayOffBalance.remaining : 0}</div>
                                         </td>
                                         <td>
-                                            <div className="hp_fw700 hp_fs28 ly_flexC hp_mr10">1</div>
+                                            <div className="hp_fw700 hp_fs28 ly_flexC hp_mr20">1</div>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -118,7 +133,7 @@ function MyDayOff() {
                                 </h4>
                             </div>
                         </section>
-                        <WeekAttendance weekData={null} isOpen={isOpenFirst} toggle={toggleFirst}/>
+                        <CurrentStatus document={docMonthDo} isOpen={isOpenFirst} toggle={toggleFirst}/>
                     </section>
                     <section>
                         <section
@@ -131,7 +146,7 @@ function MyDayOff() {
                                 </h4>
                             </div>
                         </section>
-                        <WeekAttendance weekData={null} isOpen={isOpenSecond} toggle={toggleSecond}/>
+                        <CurrentStatus document={documentDo} isOpen={isOpenSecond} toggle={toggleSecond}/>
 
                     </section>
                 </div>

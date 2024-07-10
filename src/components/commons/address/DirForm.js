@@ -42,7 +42,7 @@ function DirForm({ closeModal, onConfirm, onClear }) {
 
             // 전체 혹은 해당하는 부서, 이름, 직급 전부 가져오기
             case '전체':
-                employeeFilter = originEmp.filter(emp => (emp.dept_title.includes(searchKeyword) || emp.emp_name.includes(searchKeyword) || emp.position_name.includes(searchKeyword)) && !selectEmp.some(selected => selected.emp_code === emp.emp_code));
+                employeeFilter = originEmp.filter(emp => (emp.dept_title.includes(searchKeyword) || emp.emp_name.includes(searchKeyword) || emp.position_name.includes(searchKeyword) || emp.title_name.includes(searchKeyword)) && !selectEmp.some(selected => selected.emp_code === emp.emp_code));
                 break;
 
             // 부서에 맞는 값 가져오기    
@@ -55,9 +55,14 @@ function DirForm({ closeModal, onConfirm, onClear }) {
                 employeeFilter = originEmp.filter(emp => emp.emp_name.includes(searchKeyword) && !selectEmp.some(selected => selected.emp_code === emp.emp_code));
                 break;
 
-            // 직급에 맞는 값 가져오기    
+            // 직급에 맞는 값 가져오기
             case '직급':
                 employeeFilter = originEmp.filter(emp => emp.position_name.includes(searchKeyword) && !selectEmp.some(selected => selected.emp_code === emp.emp_code));
+                break;
+
+            // 직위에 맞는 값 가져오기
+            case '직위':
+                employeeFilter = originEmp.filter(emp => emp.title_name.includes(searchKeyword) && !selectEmp.some(selected => selected.emp_code === emp.emp_code));
                 break;
 
             // 페이지 로딩 시 기본 값
@@ -125,7 +130,7 @@ function DirForm({ closeModal, onConfirm, onClear }) {
     return (
         <>
             <div className="ly_body hp_bordDE hp_margin15 ly_flexC hp_f9Back ly_fdirecCol ly_fitemC"
-                style={{ height: 'calc(100% - 20px)', width: '40%' }}>
+                style={{ height: 'calc(100% - 20px)', width: '50%' }}>
                 <div className="hp_w90 hp_mt20 hp_alignC" style={{ height: '10%' }}>
                     <h4 className="el_lv1Head">주소록</h4>
                     <select className="hp_w100" onChange={handleSearchTypeChange}>
@@ -133,8 +138,9 @@ function DirForm({ closeModal, onConfirm, onClear }) {
                         <option>부서</option>
                         <option>이름</option>
                         <option>직급</option>
+                        <option>직위</option>
                     </select>
-                    <div style={{ display: 'flex' }}>
+                    <div style={{display: 'flex' }}>
                         <input type="text" className="hp_mt15 hp_floatL" onChange={handleKeywordChange} style={{ width: '60%' }} />
                         <input type="submit" className="el_btnS el_btnblueBord hp_ml5 hp_mt15 hp_floatR" value="검색" onClick={handleSearch} style={{ width: '20%' }} />
                         <button type="button" className="el_btnS el_btn8Bord hp_mt15" onClick={receiverAdd} style={{ marginLeft: '10px', width: '20%' }}>추가</button>
@@ -148,6 +154,7 @@ function DirForm({ closeModal, onConfirm, onClear }) {
                                 <th style={{ width: '30px' }}>부서</th>
                                 <th>이름</th>
                                 <th>직급</th>
+                                <th>직위</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -158,6 +165,7 @@ function DirForm({ closeModal, onConfirm, onClear }) {
                                     <td onClick={(e) => { e.stopPropagation(); checkboxChange(employee); }}>{employee.dept_title}</td>
                                     <td onClick={(e) => { e.stopPropagation(); checkboxChange(employee); }}>{employee.emp_name}</td>
                                     <td onClick={(e) => { e.stopPropagation(); checkboxChange(employee); }}>{employee.position_name}</td>
+                                    <td onClick={(e) => { e.stopPropagation(); checkboxChange(employee); }}>{employee.title_name}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -165,7 +173,7 @@ function DirForm({ closeModal, onConfirm, onClear }) {
                 </div>
             </div>
             <div className="ly_body hp_bordDE hp_margin15 hp_f9Back ly_flexC hp_f9Back ly_fdirecCol ly_fitemC"
-                style={{ height: '473px', width: '60%' }}>
+                style={{ height: '473px', width: '50%' }}>
                 <div className="hp_w95 hp_h100 hp_alignC hp_bordDE hp_br5 hp_fBack hp_mt30 hp_mb30">
                     <table className="bl_tb3" style={{ height: '400px' }}>
                         <colgroup>
@@ -182,10 +190,10 @@ function DirForm({ closeModal, onConfirm, onClear }) {
                                         <button type="button" className="el_btnS el_btn8Bord hp_mb10" onClick={receiverClear}>삭제</button>
                                     </div>
                                     <div style={{width: '250px', height:'88%', overflowY:'auto', overflowX:'auto'}}>
-                                        <ul>
+                                        <ul className="bl_listDash">
                                             {receiver.map(emp => (
-                                                <li key={emp.emp_code}>
-                                                    - {emp.emp_name} {'<'}{emp.dept_title} {emp.position_name}{'>'}
+                                                <li key={emp.emp_code} className="hp_alignL">
+                                                    {emp.emp_name} {'['}{emp.dept_title} / {emp.position_name} / {emp.title_name}{']'}
                                                 </li>
                                             ))}
                                         </ul>

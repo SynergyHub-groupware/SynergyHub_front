@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {callLineEmpListAPI, callviewLineListAPI} from "../../apis/ApprovalAPICalls";
-import {string as matchingDeptCode} from "i/lib/util";
-import line from "./Line";
 
 function LineApprover({lsCode, lines, employee, handleTrueLineList, docInfo = {}, onedoc = {}, selectEmps}){
     const deptCode = employee.dept_code;

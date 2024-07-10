@@ -1,21 +1,15 @@
 import BinTable from "./table/BinTable";
+import { useState } from "react";
 
 function Bin() {
+
+    const [currentPage, setCurrentPage] = useState(1);
+    
     return (
         <div className="ly_cont">
             <h4 className="el_lv1Head hp_mb30">휴지통</h4>
-            <BinTable/>
-            <section className="bl_sect hp_mt10 hp_padding5 hp_alignC">
-                <div className="bl_paging">
-                    {/* <a className="bl_paging__btn bl_paging__first" href="" title="첫 페이지로 이동"></a> */}
-                    {/* <a className="bl_paging__btn bl_paging__prev" href="" title="이전 페이지로 이동"></a> */}
-                    {/* <a className="bl_paging__btn bl_paging__num" href="">1</a> */}
-                    {/* <a className="bl_paging__btn bl_paging__next" href="" title="다음 페이지로 이동"></a> */}
-                    {/* <a className="bl_paging__btn bl_paging__last" href="" title="마지막 페이지로 이동"></a> */}
-                </div>
-            </section>
+            <BinTable currentPage={currentPage} setCurrentPage={setCurrentPage} />
         </div>
-        // 커밋용
     );
 }
 

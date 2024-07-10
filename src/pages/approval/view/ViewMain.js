@@ -41,7 +41,7 @@ function ViewMain({}){
     }
 
     const handleModify = () => {
-        if (window.confirm("해당 결재를 상신취소 및 수정 하시겠습니까?\n해당 문서는 으로 이동됩니다.")) {
+        if (window.confirm("해당 결재를 상신취소 및 수정 하시겠습니까?\n해당 문서는 임시저장으로 이동됩니다.")) {
             dispatch(callmodifyStatusAPI(adCode))
                 .then(() => {navigate(`/approval/form/${document.afCode}`, {state: {parentAdCode: adCode, afName: document.afName}});})
                 .catch((error) => {console.log("문서 수정 실패: ", error);});
@@ -66,21 +66,21 @@ function ViewMain({}){
     return(
         <div className="ly_cont">
             <h4 className="el_lv1Head hp_mb30">{document.afName}</h4>
-            {document.talReason && 
-            <section className="bl_sect hp_padding15 hp_mb30">
-                <table className="bl_tb3">
-                    <colgroup>
-                        <col style={{width:'200px'}}/>
-                        <col style={{width:'*'}}/>
-                    </colgroup>
-                    <tbody>
+            {document.talReason &&
+                <section className="bl_sect hp_padding15 hp_mb30">
+                    <table className="bl_tb3">
+                        <colgroup>
+                            <col style={{width:'200px'}}/>
+                            <col style={{width:'*'}}/>
+                        </colgroup>
+                        <tbody>
                         <tr>
                             <th scope="col" className="hp_dBack">반려사유</th>
                             <td>{document.talReason}</td>
                         </tr>
-                    </tbody>
-                </table>
-            </section>}
+                        </tbody>
+                    </table>
+                </section>}
             <section className="bl_sect hp_padding15">
                 <ViewLine document={document} viewlines={filteredViewlines} referlines={filteredRefers} showBtn={showBtn}/>
                 <h5 className="hp_fw700 hp_fs18 hp_mb10 hp_mt30">결재정보</h5>

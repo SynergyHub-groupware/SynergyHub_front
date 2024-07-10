@@ -9,6 +9,9 @@ function Calendarnav(){
                 <li>
                     <h3 className="bl_nav__ttlSub">캘린더</h3>
                     <ul className="bl_nav__menuSub">
+                        <li>
+                            <NavLink to="/calendar/myCalendar">일정/업무 캘린더</NavLink>
+                        </li>
                         {/* 여기에 라벨 체크 박스가 들어가야 함 */}
                         <li>
                             <label className="hp_ml50">
@@ -39,7 +42,7 @@ function Calendarnav(){
                 <li>
                     <h3 className="bl_nav__ttlSub">업무</h3>
                     <ul className="bl_nav__menuSub">
-                        <li><NavLink to="/approval/setting/sign">업무 일정</NavLink></li>
+                        <li><NavLink to="/calendar/TaskMain">업무 일정</NavLink></li>
                         <li><NavLink to="/approval/setting/sign">업무 보관함(완료)</NavLink></li>
                     </ul>
                 </li>

@@ -13,6 +13,7 @@ import {
     callMyInfoAPI
 } from "../../apis/AttendancelAPICalls";
 import DropdownComponent from "./component/DropdownComponent";
+import OverWorkHoursCalculator from "./util/OverWorkHoursCalculator";
 
 function AttendanceList() {
     const dispatch = useDispatch();
@@ -305,17 +306,28 @@ function AttendanceList() {
                                                    value="checkOne" /></td>
                                         <td>{attendance.atdDate}</td>
                                         <td className="" style={{ textAlign: 'center' }}>{attendance.empCode}</td>
-                                        <td>{attendance.parTitle}</td>
-                                        <td>{attendance.subTitle}</td>
-                                        <td>{attendance.deptTitle}</td>
+                                        <td>{attendance.parTitle ? attendance.parTitle : "-"}</td>
+                                        <td>{attendance.subTitle ? attendance.subTitle : "-"}</td>
+                                        <td>{attendance.deptTitle ? attendance.deptTitle : "-"}</td>
                                         <td>{attendance.empName}</td>
                                         <td>{attendance.atdStartTime}</td>
                                         <td>{attendance.atdEndTime}</td>
                                         <td>{attendance.startTime || '-'}</td>
                                         <td>{attendance.endTime || '-'}</td>
-                                        <td><WorkHoursCalculator startTime={attendance.startTime}
-                                                                 endTime={attendance.endTime} /></td>
-                                        <td>-</td>
+                                        <td><WorkHoursCalculator date={attendance.atdDate}
+                                                                 startTime={attendance.startTime}
+                                                                 endTime={attendance.endTime}
+                                                                 owStartTime={attendance.owStartTime}
+                                                                 owEndTime={attendance.owEndTime}/></td>
+                                        <td>{attendance.startTime !== null && attendance.endTime !== null ? (
+                                            <OverWorkHoursCalculator date={attendance.atdDate}
+                                                                     startTime={attendance.startTime}
+                                                                     endTime={attendance.endTime}
+                                                                     owStartTime={attendance.owStartTime}
+                                                                     owEndTime={attendance.owEndTime}/>
+                                        ) : (
+                                            "00:00:00"
+                                        )}</td>
                                     </tr>
                                 ))
                             ) : (

@@ -1,7 +1,8 @@
 import SendTable from "./table/SendTable";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState, useRef } from "react";
 import { callDelSendMsgAPI } from "../../../apis/MessageAPICalls";
+import Pagination from "./paging/Pagination";
 
 function SendMsg() {
 
@@ -9,6 +10,8 @@ function SendMsg() {
     const [selectMsgCode, setSelectMsgCode] = useState([]);
     const [search, setSearch] = useState("");   // 검색어 상태
     const searchRef = useRef(null); // 검색 입력 필드
+    const [currentPage, setCurrentPage] = useState(1);  // 현재 페이지 상태
+    const messages = useSelector((state) => state.messageReducer.sendMessage.message);
 
 
     const delMsgHandler = () => {
@@ -48,7 +51,6 @@ function SendMsg() {
                     <div className="ly_spaceBetween">
                         <div className="">
                             <button type="button" className="el_btnS el_btn8Back" onClick={delMsgHandler}>삭제</button>
-                            <button type="button" className="el_btnS el_btn8Bord">이동</button>
                         </div>
                         <div>
                             <form onSubmit={searchHandler}>
@@ -57,15 +59,15 @@ function SendMsg() {
                             </form>
                         </div>
                     </div>
-                    <SendTable selectMsgCode={selectMsgCode} setSelectMsgCode={setSelectMsgCode} search={search} />
+                    <SendTable 
+                        selectMsgCode={selectMsgCode} 
+                        setSelectMsgCode={setSelectMsgCode} 
+                        search={search} 
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                    />
                     <section className="bl_sect hp_mt10 hp_padding5 hp_alignC">
-                        <div className="bl_paging">
-                            {/* <a href="#" className="bl_paging__btn bl_paging__first" title="첫 페이지로 이동"></a> */}
-                            {/* <a href="#" className="bl_paging__btn bl_paging__prev" title="이전 페이지로 이동"></a> */}
-                            {/* <a href="#" className="bl_paging__btn bl_paging__num">1</a> */}
-                            {/* <a href="#" className="bl_paging__btn bl_paging__next" title="다음 페이지로 이동"></a> */}
-                            {/* <a href="#" className="bl_paging__btn bl_paging__last" title="마지막 페이지로 이동"></a> */}
-                        </div>
+                        <Pagination messages={messages} currentPage={currentPage} setCurrentPage={setCurrentPage}/>
                     </section>
                 </div>
             </div>

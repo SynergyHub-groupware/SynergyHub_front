@@ -1,7 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import WorkHoursCalculator from "../util/WorkHoursCalculator";
 import OverWorkHoursCalculator from "../util/OverWorkHoursCalculator";
+import WeekWorkHoursCalculator from "../util/WeekWorkHoursCalculator";
 
 const WeekAttendance = ({ weekData, isOpen, toggle }) => {
 
@@ -25,7 +25,8 @@ const WeekAttendance = ({ weekData, isOpen, toggle }) => {
                                             </li>
                                             <li style={{ margin: '0 10px' }}><b className="hp_fw700">초과근무시간</b> &nbsp;
                                                 {dayData.startTime !== null && dayData.endTime !== null ? (
-                                                    <OverWorkHoursCalculator startTime={dayData.startTime}
+                                                    <OverWorkHoursCalculator date={dayData.atdDate}
+                                                                             startTime={dayData.startTime}
                                                                              endTime={dayData.endTime}
                                                                              owStartTime={dayData.owStartTime}
                                                                              owEndTime={dayData.owEndTime}/>
@@ -33,10 +34,13 @@ const WeekAttendance = ({ weekData, isOpen, toggle }) => {
                                                     "00:00:00"
                                                 )}
                                             </li>
-                                            <li style={{ margin: '0 10px' }}><b className="hp_fw700">총 근무시간</b> &nbsp;
+                                            <li style={{ margin: '0 10px' }}><b className="hp_fw700">정규근무시간</b> &nbsp;
                                                 {dayData.startTime !== null && dayData.endTime !== null ? (
-                                                    <WorkHoursCalculator startTime={dayData.startTime}
-                                                                         endTime={dayData.endTime}/>
+                                                    <WeekWorkHoursCalculator date={dayData.atdDate}
+                                                                             startTime={dayData.startTime}
+                                                                             endTime={dayData.endTime}
+                                                                             owStartTime={dayData.owStartTime}
+                                                                             owEndTime={dayData.owEndTime}/>
                                                 ) : (
                                                     "00:00:00"
                                                 )}

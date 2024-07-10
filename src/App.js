@@ -58,6 +58,9 @@ import DayOffList from "./pages/attendance/DayOffList";
 import Preferences from "./pages/attendance/Preferences";
 import CreateMsg from './pages/message/storage/CreateMsg';
 import TempDetail from './pages/message/storage/detail/TempDetail';
+import TaskMain from './pages/calendar/TaskMain';
+import SettingStor from './pages/message/storage/SettingStor';
+import BlockEmp from './pages/message/storage/BlockEmp';
 
 function App() {
   return (
@@ -90,13 +93,14 @@ function App() {
           </Route>
           <Route path="calendar" element={<CalendarLayout/>}>
             <Route path="myCalendar" element={<MyCalendar/>} />
+            <Route path="taskMain" element={<TaskMain/>} />
             {/* 내용추가 */}
           </Route>
           <Route path="employee" element={<EmployeeLayout/>}>
             <Route path="organization" element={<Organization />} />
             <Route path="personalList" element={<PersonalList />} />
             <Route path="personalRegist" element={<PersonalRegist />} />
-            <Route path="personalView" element={<PersonalView />} />
+            <Route path="personalView/:erdNum" element={<PersonalView />} />
             <Route path='employeeList' element={<EmployeeList />} />
             <Route path='appointList' element={<AppointList />} />
             <Route path='appointRegist' element={<AppointRegist />} />
@@ -123,6 +127,8 @@ function App() {
               <Route path='work/detail/:msgCode' element={<WorkDetail/>}/>
               <Route path='bin' element={<Bin/>}/>
               <Route path='bin/detail/:msgCode' element={<BinDetail/>}/>
+              <Route path='setting' element={<SettingStor/>}/>
+              <Route path='block' element={<BlockEmp/>}/>
             </Route>
           </Route>
           <Route path="post" element={<PostLayout/>}>
