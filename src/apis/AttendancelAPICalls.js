@@ -8,8 +8,19 @@ import {
     getDayOffBalance,
     getDefaultSchedule,
     getAllAttendanceToday,
-    getDocBT, getDocBt, getDocOw, getDocDo, getDocMonthDo, getEmployeeInfo
+    getDocBT,
+    getDocBt,
+    getDocOw,
+    getDocDo,
+    getDocMonthDo,
+    getEmployeeInfo,
+    getAbsentee,
+    getBirthEmp,
+    getNotice,
+    getTask,
+    getMsg
 } from "../modules/AttendanceModules";
+import axios from "axios";
 
 export const callMyInfoAPI = () => {
     return async (dispatch, getState) => {
@@ -277,6 +288,109 @@ export const callDocMonthDOAPI = () => {
                 dispatch(getDocMonthDo(result.data.results.document));
             } else {
                 console.error('월간 휴가 승인현황 조회 실패 result : ', result);
+            }
+        } catch (error) {
+            console.error('error : ', error);
+        }
+    };
+};
+
+export const callAbsenteeAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/api/attendance/absentee', {
+                'Content-Type': 'application/json'
+            });
+
+            console.log('callMonthDoAPI result : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(getAbsentee(result.data.results.absentee));
+            } else {
+                console.error('부재자 조회 실패 result : ', result);
+            }
+        } catch (error) {
+            console.error('error : ', error);
+        }
+    };
+};
+
+export const callBirthEmpAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/api/attendance/birth', {
+                'Content-Type': 'application/json'
+            });
+
+            console.log('callBirthEmpAPI result : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(getBirthEmp(result.data.employees));
+                console.log("디스패치 완료")
+            } else {
+                console.error('생일자 조회 실패 result : ', result);
+            }
+        } catch (error) {
+            console.error('error : ', error);
+        }
+    };
+};
+
+export const callNoticeAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/api/attendance/notice', {
+                'Content-Type': 'application/json'
+            });
+
+            console.log('공지사항 result : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(getNotice(result.post));
+            } else {
+                console.error('업무 조회 실패 result : ', result);
+            }
+        } catch (error) {
+            console.error('error : ', error);
+        }
+    };
+};
+
+export const callTaskAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/api/attendance/tasks-b', {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            });
+
+            console.log('callTaskAPI result : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(getTask(result.data));
+            } else {
+                console.error('업무 조회 실패 result : ', result);
+            }
+        } catch (error) {
+            console.error('error : ', error);
+        }
+    };
+};
+
+export const callMsgAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/api/attendance/message-n', {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            });
+
+            console.log('callTaskAPI result : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(getMsg(result.data));
+            } else {
+                console.error('쪽지 조회 실패 result : ', result);
             }
         } catch (error) {
             console.error('error : ', error);
