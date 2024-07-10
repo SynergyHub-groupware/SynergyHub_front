@@ -142,16 +142,16 @@ function PostEditView() {
     return (
         <div className="main">
             <form onSubmit={handleSubmit}>
-                <table>
-                    <thead className='tableHead'>
+                <table style={{backgroundColor:"lightgray"}}>
+                    <thead className='tableHead' >
                         <tr>
                             <th colSpan="4">게시판</th>
                         </tr>
-                        <tr>
+                        <tr style={{ border: "1px solid grey" }}>
                             <td>대분류</td>
-                            <td>
+                            <td >
                                 <select onChange={onChangeHandler}>
-                                    <option>선택하세요</option>
+                                    <option >선택하세요</option>
                                     {Array.isArray(BoardState) && BoardState.length > 0 ? (
                                         BoardState.map(item => (
                                             <option key={item.boardCode} value={item.boardCode}>
@@ -164,7 +164,7 @@ function PostEditView() {
                                 </select>
                             </td>
                             <td>소분류</td>
-                            <td>
+                            <td >
                                 <select onChange={onChangeHandlerLow}>
                                     <option>선택하세요</option>
                                     {Array.isArray(LowBoardState) && LowBoardState.length > 0 ? (
@@ -194,10 +194,10 @@ function PostEditView() {
                                     </select>
                             </td>
                         </tr>
-                        <tr>
-                        <td>작성자</td>
+                        <tr style={{ border: "1px solid grey" }}>
+                        <td >작성자</td>
                             <td>{employees.emp_name}</td>
-                            <td>작성일</td>
+                            <td >작성일</td>
                             <td>{getCurrentDate()}</td>
                         </tr>
                         <tr>
@@ -207,15 +207,15 @@ function PostEditView() {
                                 <label><input type="checkbox" value="sendMsg" />쪽지 발송</label>
                             </td> */}
                         </tr>
-                        <tr>
+                        <tr style={{ border: "1px solid grey" }}>
                             <td>첨부파일</td>
                             <td colSpan="3"><input name="attachFile" type="file" multiple  onChange={handleInputChange} /></td>
                         </tr>
-                        <tr>
-                            <td>제목</td>
+                        <tr style={{ border: "1px solid grey" }}>
+                            <td >제목</td>
                             <td colSpan="3"><input name="postName" type="text" placeholder="100자 이내 입력" data={DetailData.postName} onChange={handleInputChangename} /></td>
                         </tr>
-                        <tr>
+                        <tr style={{ border: "1px solid grey" }}>
                             <td>내용</td>
                             <td colSpan="3">
                                 <CKEditor
@@ -231,7 +231,7 @@ function PostEditView() {
                                 />
                             </td>
                         </tr>
-                        <tr>
+                        <tr style={{ border: "1px solid grey" }}>
                             <td>설정</td>
                             <td colSpan="3">
                                 <label><input type="checkbox" value="ALLOW_NORMAL" name="postCommSet" onChange={handleCheckboxChange} />댓글 허용</label>
@@ -239,10 +239,10 @@ function PostEditView() {
                             </td>
                         </tr>
                         <tr>
-                            <td colSpan="4">
-                                <button type="button">취소</button>
-                                <button type="button">임시저장</button>
-                                <button type="submit">저장</button>
+                            <td colSpan="4" className='el_btnS'>
+                                <button className='el_btnredBack' type="button">취소</button>
+                                <button className='el_btn8Back' type="button">임시저장</button>
+                                <button className='el_btn0Bord' type="submit">저장</button>
                             </td>
                         </tr>
                     </thead>

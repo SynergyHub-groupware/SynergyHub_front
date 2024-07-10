@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { callGETInboardList, callGETInboardPinList } from './postApi/PostAPI';
 import { callGETPostList, callGETpostSearch } from './postApi/PostAPI';
-import  {  useState } from 'react';
+import { useState } from 'react';
 
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -58,7 +58,6 @@ function PostListViewInBoard() {
       return (
         <tr key={item.postCode}>
           <td>{item.postCode}</td>
-          <td>{lowBoardName}</td>
           <td>{item.postName}</td>
           <td>{item.empCode}</td>
           <td>{item.postDate}</td>
@@ -68,8 +67,8 @@ function PostListViewInBoard() {
     });
   };
   const board = () => {
-    if (!Array.isArray(PostdataInBoardState) || PostdataInBoardState.length === 0 && !Array.isArray(displayData) || displayData.length === 0) {
-      
+    if (!Array.isArray(PostdataInBoardState) || PostdataInBoardState.length === 0 ) {
+      console.log("PostdataInBoardState",PostdataInBoardState)
       return <tr><td colSpan="6">글이 없습니다</td></tr>;
     }
 
@@ -93,15 +92,15 @@ function PostListViewInBoard() {
 
   return (
     <>
-      <div className="main">
+      <div className="main" style={{width: "900px"}}>
         <h1 style={{ fontSize: '50px' }}>하위 게시판</h1>
         <br /><br /><br />
         <div className="searchZone">
-          <input             type="text"
+          <input type="text"
             value={postsearch}
             onChange={onChangeHandler}
-/>
-          <button type='button' className='button button'             onClick={onSearchHandler}
+          />
+          <button type='button' className='button button' onClick={onSearchHandler}
           >검색</button>
         </div>
         <table className='bl_tb1'>
@@ -119,7 +118,7 @@ function PostListViewInBoard() {
             {board()}
           </tbody>
         </table>
-        <div className="bl_paging" style={{ display: 'flex' }}>
+        <div className="bl_paging" style={{ display: 'flex',right: "100px" }}>
           <button className='bl_paging__btn bl_paging__prev'>  </button>
           <h4>1</h4>
           <button className='bl_paging__btn '>  </button>

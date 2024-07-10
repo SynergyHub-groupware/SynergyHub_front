@@ -100,7 +100,7 @@ const prevPage = () => {
               <th>열람</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className='tableBody'>
             {renderRows()}
           </tbody>
         </table>

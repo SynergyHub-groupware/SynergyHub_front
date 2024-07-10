@@ -4,6 +4,7 @@ import { callGETReadyPost } from './postApi/PostAPI'; // PostAPI 경로는 프�
 import { callDepartmentEmployeesAPI } from '../../apis/EmployeeAPICalls'; // EmployeeAPICalls 경로는 프로젝트에 맞게 수정 필요
 import { callMyInfoAPI } from '../../apis/EmployeeAPICalls'; // EmployeeAPICalls 경로는 프로젝트에 맞게 수정 필요
 import { useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function PostReadyList() {
   const dispatch = useDispatch();
@@ -44,8 +45,9 @@ function PostReadyList() {
       return (
         <tr key={item.postCode}>
           <td>{item.postCode}</td>
-          <td>{lowBoardName}</td>
-          <td>{item.postName}</td>
+          <Link to={`/post/PostEditView/${item.postCode}`}>
+            {item.postName}
+          </Link>
           <td>{item.empCode}</td>
           <td>{item.postDate}</td>
           <td>{item.postViewCnt}</td>
@@ -55,14 +57,13 @@ function PostReadyList() {
   };
 
   return (
-    <div className="main">
+    <div className="main" style={{width: "900px"}}>
       <h1 style={{ fontSize: '50px' }}>임시 저장</h1>
       <br /><br /><br />
-      <table className="bl_tb1">
+      <table className="bl_tb1" style={{backgroundColor:"whitesmoke",boxSizing: "border-box"}}>
         <thead>
           <tr className="tableHead">
             <th>No</th>
-            <th>분류</th>
             <th>제목</th>
             <th>작성자</th>
             <th>작성일</th>
