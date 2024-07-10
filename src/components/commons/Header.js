@@ -45,7 +45,7 @@ function Header(){
             <ul className="bl_header__menuR">
                 <AfterLogin/>
                 <li><NavLink to="/employee/organization" className="bl_header__icon bl_header__structure"><span className="WA">조직도</span></NavLink></li>
-                <li><NavLink to="" className="bl_header__icon bl_header__alarm"><span className="WA">알림</span></NavLink></li>
+                {/*<li><NavLink to="" className="bl_header__icon bl_header__alarm"><span className="WA">알림</span></NavLink></li>*/}
                 <li><NavLink to="/myInfo/myInfo" className="bl_header__icon bl_header__myinfo"><span className="WA">내정보</span></NavLink></li>
             </ul>
         </header>
