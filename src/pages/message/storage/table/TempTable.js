@@ -4,12 +4,20 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { callTempMsgListAPI } from "../../../../apis/MessageAPICalls";
 
-function TempTable({ selectMsgCode, setSelectMsgCode, search }) {
+function TempTable({ selectMsgCode, setSelectMsgCode, search, currentPage, setCurrentPage }) {
 
     const dispatch = useDispatch();
     const [allCheck, setAllCheck] = useState(false);
     const messages = useSelector(state => state.messageReducer.messages.message);
     const [sort, setSort] = useState("desc");   // 쪽지 정렬 상태
+    const itemsPerPage = 10; // 페이지당 항목 수 10개로 설정
+
+    /* 날짜 포맷 함수 */
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        
+        return date.toISOString().split('T')[0];
+    }
 
     /* 쪽지 배열 정렬 */
     const sortMsg = (messages, sort) => {
@@ -51,8 +59,10 @@ function TempTable({ selectMsgCode, setSelectMsgCode, search }) {
 
     const sortedMessages = sortMsg(filterMsg(messages, search), sort);
 
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const currentMessages = sortedMessages.slice(startIndex, startIndex + itemsPerPage);
+
     useEffect(() => {
-        console.log("api 작동");
         dispatch(callTempMsgListAPI());
     }, [dispatch]);
 
@@ -89,7 +99,6 @@ function TempTable({ selectMsgCode, setSelectMsgCode, search }) {
                         <col style={{ width: "120px" }} />
                         <col style={{ width: "*" }} />
                         <col style={{ width: "*" }} />
-                        <col style={{ width: "120px" }} />
                     </colgroup>
                     <thead>
                         <tr>
@@ -98,32 +107,35 @@ function TempTable({ selectMsgCode, setSelectMsgCode, search }) {
                             <th scope="col">받은사람</th>
                             <th scope="col">제목</th>
                             <th scope="col">긴급</th>
-                            <th scope="col">첨부파일</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {sortedMessages && sortedMessages.length > 0 ? (sortedMessages.map(msg => (
+                        {currentMessages && currentMessages.length > 0 ? (currentMessages.map(msg => (
                             <tr key={msg.msgCode}>
                                 <td><input type="checkbox" onChange={() => checkboxChange(msg.msgCode)} checked={selectMsgCode.includes(msg.msgCode)} /></td>
-                                <td>{msg.sendDate}</td>
+                                <td>{formatDate(msg.sendDate)}</td>
                                 <td>{msg.revName} {msg.revPosition}</td>
                                 <td className="hp_alighL">
                                     <Link to={`/message/storage/create/temp/${msg.msgCode}`}>{msg.msgTitle}</Link>
                                 </td>
-                                <td>{msg.emerStatus}</td>
-                                <td>{msg.storCode}</td>
+                                <td>
+                                        {msg.emerStatus === 'Y' ? (
+                                            <div>🚨</div>
+                                        ) : (
+                                            <div></div>
+                                        )}</td>
                             </tr>
                         ))
                         ) : (
                             <tr>
-                                <td colSpan={6} className="hp_pt50 hp_pb50 hp_7Color">목록이 없습니다.</td>
+                                <td colSpan={5} className="hp_pt50 hp_pb50 hp_7Color">목록이 없습니다.</td>
                             </tr>
                         )}
                     </tbody>
                 </table>
             </section>
             <div className="ly_spaceBetween ly_fitemC hp_mt10">
-                <div className="hp_ml10 hp_7Color">총 {messages ? messages.length : 0} / <b className="hp_0Color hp_fw700">1</b> 페이지</div>
+                <div className="hp_ml10 hp_7Color">총 {currentMessages.length} / <b className="hp_0Color hp_fw700">1</b> 페이지</div>
                 <select value={sort} onChange={sortChangeHandler}>
                     <option value="desc">정렬방식</option>
                     <option value="asc">날짜 오름차순</option>

@@ -7,7 +7,6 @@ const DEFAULT_URL = `http://${SERVER_IP}:${SERVER_PORT}`;
 
 /* 토큰 전달이 필요없는 기능 호출 시 사용하는 함수 */
 export const request = async (method, url, headers, data) => {
-    console.log("DEFAULT_URL",DEFAULT_URL);
     return await axios({
         method,
         url : `${DEFAULT_URL}${url}`,
@@ -20,9 +19,7 @@ export const request = async (method, url, headers, data) => {
 
 
 /* 토큰 전달이 필요한 기능 호출 시 사용하는 함수 */
-export const authRequest = axios.create({
-    baseURL : DEFAULT_URL
-});
+export const authRequest = axios.create({baseURL : DEFAULT_URL});
 
 authRequest.interceptors.request.use((config) => {
     config.headers['Access-Token'] = getAccessTokenHeader();
@@ -39,8 +36,6 @@ authRequest.interceptors.response.use(
     /* 두 번째 인자로 사용되는 콜백 함수는 오류 발생 시 동작 -> 로직 작성 */
     async (error) => {
 
-        console.log("error : ", error);
-
         const {
             config,
             response : { status }
@@ -52,8 +47,6 @@ authRequest.interceptors.response.use(
 
             // refresh token 전달해서 토큰 재발급 요청
             const response = await postRefreshToken();
-
-            console.log("response : ", response);
 
             if(response.status === 200) {
                 // 토큰 재발급 성공

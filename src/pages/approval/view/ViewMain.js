@@ -66,21 +66,21 @@ function ViewMain({}){
     return(
         <div className="ly_cont">
             <h4 className="el_lv1Head hp_mb30">{document.afName}</h4>
-            {document.talReason && 
-            <section className="bl_sect hp_padding15 hp_mb30">
-                <table className="bl_tb3">
-                    <colgroup>
-                        <col style={{width:'200px'}}/>
-                        <col style={{width:'*'}}/>
-                    </colgroup>
-                    <tbody>
+            {document.talReason &&
+                <section className="bl_sect hp_padding15 hp_mb30">
+                    <table className="bl_tb3">
+                        <colgroup>
+                            <col style={{width:'200px'}}/>
+                            <col style={{width:'*'}}/>
+                        </colgroup>
+                        <tbody>
                         <tr>
                             <th scope="col" className="hp_dBack">반려사유</th>
                             <td>{document.talReason}</td>
                         </tr>
-                    </tbody>
-                </table>
-            </section>}
+                        </tbody>
+                    </table>
+                </section>}
             <section className="bl_sect hp_padding15">
                 <ViewLine document={document} viewlines={filteredViewlines} referlines={filteredRefers} showBtn={showBtn}/>
                 <h5 className="hp_fw700 hp_fs18 hp_mb10 hp_mt30">결재정보</h5>
