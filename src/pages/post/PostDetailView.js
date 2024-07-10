@@ -146,26 +146,26 @@ function PostDetailView() {
         if (!DetailData) return null; // DetailData가 없으면 아무것도 렌더링하지 않음
 
         return (
-            <div className="main">
-                <table>
+            <div className="main" style={{width: "900px",height:"500px"}}>
+                <table >
                     <thead>
                         <tr>
-                            <th colSpan="4">게시판</th>
+                            <th colSpan="4" >게시판</th>
                             <Link to={`/post/PostEditView/${DetailData.postCode}`}>수정</Link>
                         </tr>
                         <tr>
-                            <td>게시글 번호</td>
+                            <td style={{backgroundColor:"lightgray"}}>게시글 번호</td>
                             <td>{DetailData.postCode}</td>
                         </tr>
                         <tr>
-                            <td>작성자</td>
+                            <td style={{backgroundColor:"lightgray"}}>작성자</td>
                             <td>{DetailData.empName}</td>
-                            <td>작성일</td>
+                            <td style={{backgroundColor:"lightgray"}}>작성일</td>
                             <td>{DetailData.postDate}</td>
                         </tr>
                         <tr>
-                            <td>첨부파일</td>
-                            <td colSpan="3">
+                            <td style={{backgroundColor:"lightgray"}}>첨부파일</td>
+                            <td colSpan="3" >
                                 {FileData && FileData.length > 0 ? (
                                     FileData.map((file, index) => (
                                         <a
@@ -183,13 +183,13 @@ function PostDetailView() {
                             </td>
                         </tr>
                         <tr>
-                            <td>제목</td>
+                            <td style={{backgroundColor:"lightgray"}}>제목</td>
                             <td colSpan="3">{DetailData.postName}</td>
                         </tr>
                         <tr>
-                            <td>내용</td>
+                            <td style={{backgroundColor:"lightgray",border: "1px solid grey"}}>내용</td>
                             <td colSpan="3">
-                                <div dangerouslySetInnerHTML={{ __html: generateHtmlContent() }} />
+                                <div dangerouslySetInnerHTML={{ __html: generateHtmlContent() }} style={{ border: "1px solid grey" }}/>
                             </td>
                         </tr>
                         <tr>

@@ -2,6 +2,7 @@ import { getAllLowBoard } from '../../pages/post/postApi/PostAPI';
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { callMyInfoAPI } from '../../apis/EmployeeAPICalls';
 
 function PostNav() {
     const dispatch = useDispatch();
@@ -10,6 +11,10 @@ function PostNav() {
     useEffect(() => {
         dispatch(getAllLowBoard());
     }, [dispatch]);
+    useEffect(() => {
+        dispatch(callMyInfoAPI());
+    }, []);
+    const employees = useSelector(state => state.employeeReducer.employee);
 
     useEffect(() => {
         if (AllLowState.length > 0) {
@@ -32,6 +37,12 @@ function PostNav() {
         <>
             <div className="bl_nav">
                 <h1 className="bl_nav__ttl">게시판</h1>
+                <td className='bl_nav__ttlSub'>
+                    <Link to={`/post/PostReadyList/${employees.emp_code}`}>
+                        임시 저장
+                    </Link>
+                </td>
+
                 {Object.keys(boards).map(boardName => (
                     <React.Fragment key={boardName}>
                         <li className="parent-board">
