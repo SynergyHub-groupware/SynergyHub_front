@@ -140,14 +140,14 @@ function PostEditView() {
         }
     };
     return (
-        <div className="main">
+        <div className="main" style={{width: "900px",height:"500px",marginLeft:"10px"}}>
             <form onSubmit={handleSubmit}>
-                <table style={{backgroundColor:"lightgray"}}>
+                <table style={{boxShadow:"1px 1px 10px black"}}>
                     <thead className='tableHead' >
                         <tr>
                             <th colSpan="4">게시판</th>
                         </tr>
-                        <tr style={{ border: "1px solid grey" }}>
+                        <tr style={{ border: "1px solid grey"}}>
                             <td>대분류</td>
                             <td >
                                 <select onChange={onChangeHandler}>

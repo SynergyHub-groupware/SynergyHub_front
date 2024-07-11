@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { callGETInboardList, callGETInboardPinList } from './postApi/PostAPI';
 import { callGETPostList, callGETpostSearch } from './postApi/PostAPI';
 import { useState } from 'react';
-
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
@@ -14,80 +13,73 @@ function PostListViewInBoard() {
 
   const PostdataInBoardState = useSelector(state => state.post.PostdataInBoard); // Redux store에서 PostdataInBoard 상태 가져오기
   const PostdataInBoardPinState = useSelector(state => state.post.PostdataInBoardPin); // Redux store에서 PostdataInBoardPin 상태 가져오기
-  console.log(PostdataInBoardPinState);
-  console.log(PostdataInBoardState);
+
   const [postsearch, setpostSearch] = useState('');
   const { Postdata, PostSearch } = postState;
 
   const { lowBoardCode } = useParams(); // URL의 파라미터로부터 lowBoardCode 가져오기
+
   const onSearchHandler = () => {
     const search = postsearch;
     const encodingsearch = encodeURIComponent(search);
     dispatch(callGETpostSearch(encodingsearch));
   };
+
   const onChangeHandler = (e) => {
     setpostSearch(e.target.value);
   };
+
   useEffect(() => {
     if (postsearch) {
+      // 검색 결과가 있을 경우 PostSearch를 사용하여 displayData를 설정
       setDisplayData(PostSearch);
     } else {
-      setDisplayData(Postdata);
+      // 검색 결과가 없을 경우 PostdataInBoardState를 사용하여 displayData를 설정
+      setDisplayData(PostdataInBoardState);
     }
-  }, [PostSearch, postsearch, Postdata]);
+  }, [PostSearch, postsearch, PostdataInBoardState]);
 
-  console.log(lowBoardCode);
   useEffect(() => {
+    // lowBoardCode가 변경될 때마다 게시글 목록과 고정글 목록을 불러옴
     dispatch(callGETInboardList(lowBoardCode));
-  }, [dispatch, lowBoardCode]);
-
-  useEffect(() => {
     dispatch(callGETInboardPinList(lowBoardCode));
   }, [dispatch, lowBoardCode]);
 
-  console.log("Current posts data:", PostdataInBoardState);
-
   const pinBoard = () => {
     if (!Array.isArray(PostdataInBoardPinState) || PostdataInBoardPinState.length === 0) {
-      return <tr><td colSpan="6">고정글이 없습니다</td></tr>;
+      return <tr><td colSpan="5">고정글이 없습니다</td></tr>;
     }
 
-    return PostdataInBoardPinState.map(item => {
-      const lowBoardName = item.lowBoardCode ? item.lowBoardCode.lowBoardName : 'N/A';
-      console.log(PostdataInBoardPinState)
-      return (
-        <tr key={item.postCode}>
-          <td>{item.postCode}</td>
-          <td>{item.postName}</td>
-          <td>{item.empCode}</td>
-          <td>{item.postDate}</td>
-          <td>{item.postViewCnt}</td>
-        </tr>
-      );
-    });
+    return PostdataInBoardPinState.map(item => (
+      <tr key={item.postCode}>
+        <td>{item.postCode}</td>
+        <td>{item.postName}</td>
+        <td>{item.empCode}</td>
+        <td>{item.postDate}</td>
+        <td>{item.postViewCnt}</td>
+      </tr>
+    ));
   };
+
   const board = () => {
-    if (!Array.isArray(PostdataInBoardState) || PostdataInBoardState.length === 0 ) {
-      console.log("PostdataInBoardState",PostdataInBoardState)
-      return <tr><td colSpan="6">글이 없습니다</td></tr>;
+    if (!Array.isArray(displayData) || displayData.length === 0) {
+      console.log("displayData",displayData);
+      return <tr><td colSpan="5">글이 없습니다</td></tr>;
     }
 
-    return PostdataInBoardState.map(item => {
-      const lowBoardName = item.lowBoardCode ? item.lowBoardCode.lowBoardName : 'N/A';
-
-      return (
-        <tr key={item.postCode}>
-          <td>{item.postCode}</td>
+    return displayData.map(item => (
+      <tr key={item.postCode}>
+        <td>{item.postCode}</td>
+        <td>
           <Link to={`/post/PostDetail/${item.postCode}`}>
             {item.postName}
           </Link>
-
-          <td>{item.empCode}</td>
-          <td>{item.postDate}</td>
-          <td>{item.postViewCnt}</td>
-        </tr>
-      );
-    });
+        </td>
+        <td>{item.empName}</td>
+        <td>{item.postDate}</td>
+        <td>{item.postViewCnt}</td>
+      </tr>
+    ));
   };
 
   return (
@@ -100,8 +92,9 @@ function PostListViewInBoard() {
             value={postsearch}
             onChange={onChangeHandler}
           />
-          <button type='button' className='button button' onClick={onSearchHandler}
-          >검색</button>
+          <button type='button' className='button button' onClick={onSearchHandler}>
+            검색
+          </button>
         </div>
         <table className='bl_tb1'>
           <thead>
@@ -118,7 +111,7 @@ function PostListViewInBoard() {
             {board()}
           </tbody>
         </table>
-        <div className="bl_paging" style={{ display: 'flex',right: "100px" }}>
+        <div className="bl_paging" style={{ display: 'flex', right: "100px" }}>
           <button className='bl_paging__btn bl_paging__prev'>  </button>
           <h4>1</h4>
           <button className='bl_paging__btn '>  </button>
