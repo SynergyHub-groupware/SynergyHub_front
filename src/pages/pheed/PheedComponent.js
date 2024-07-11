@@ -137,7 +137,7 @@ const PheedComponent = () => {
                                         <li className="hp_fs16 hp_fw400">
                                             <b className="hp_fw700">{pheed.empName || 'Unknown'}</b>님,  <b className="hp_fw700">{pheed.pheedCon}</b>
                                         </li>
-                                        <li className="hp_7Color hp_fs13 hp_mt5">{pheed.pheedSort} <span className="hp_ml10 hp_mr10">/</span></li>
+                                        <li className="hp_7Color hp_fs13 hp_mt5">{pheed.pheedSort} <span className="hp_ml10 hp_mr10">/{pheed.creStatus}</span></li>
                                     </ul>
                                 </div>
                                 <div className="ly_flex ly_fitemC">
