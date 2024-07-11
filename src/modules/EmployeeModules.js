@@ -22,6 +22,8 @@ const initialState = {
     registAppoints: [],
     registAppList: [],
     registAppListDetail: [],
+    uploadProfileImg: {},
+    profileImg: null,
 };
 
 /* 액션 타입 */
@@ -45,9 +47,11 @@ const GET_ORG_CHART = 'employee/GET_ORG_CHART';
 const REGIST_APPOINTS = 'employee/REGIST_APPOINTS';
 const GET_REGIST_APP_LIST = 'employee/GET_REGIST_APP_LIST';
 const GET_REGIST_APP_LIST_DETAIL = 'employee/GET_REGIST_APP_LIST_DETAIL';
+const UPLOAD_PROFILE_IMG = 'employee/UPLOAD_PROFILE_IMG';
+const GET_PROFILE_IMG = 'employee/GET_PROFILE_IMG';
 
 /* 액션 함수 */
-export const { employee : { getDeptEmployees, getMyInfo, updateMyInfo, getEmployeeAll, getRecordcard, registMyRecordcard, updateMyRecordcard, getDepartments, getTitles, getPositions, getDeptDetail, success, getTeamRecordcard, registEmployees, getRegistEmpList, getRegistEmpListDetail, getOrgChart, registAppoints, getRegistAppList, getRegistAppListDetail } } = createActions ({
+export const { employee : { getDeptEmployees, getMyInfo, updateMyInfo, getEmployeeAll, getRecordcard, registMyRecordcard, updateMyRecordcard, getDepartments, getTitles, getPositions, getDeptDetail, success, getTeamRecordcard, registEmployees, getRegistEmpList, getRegistEmpListDetail, getOrgChart, registAppoints, getRegistAppList, getRegistAppListDetail, uploadProfileImg, getProfileImg } } = createActions ({
 
     [GET_DEPT_EMPLOYEES] : result => {
 
@@ -94,7 +98,7 @@ export const { employee : { getDeptEmployees, getMyInfo, updateMyInfo, getEmploy
     },
     [GET_DEPARTMENTS] : result => {
 
-        // console.log('GET_DEPARTMENTS Action payload:', result);
+        console.log('GET_DEPARTMENTS Action payload:', result);
 
         return {departments: result};
 
@@ -165,6 +169,18 @@ export const { employee : { getDeptEmployees, getMyInfo, updateMyInfo, getEmploy
         console.log('GET_REGIST_APP_LIST_DETAIL Action payload : ', result);
 
         return { registAppListDetail : result };
+    },
+    [UPLOAD_PROFILE_IMG] : result => {
+
+        console.log('UPLOAD_PROFILE_IMG Action payload : ', result);
+
+        return { uploadProfileImg : result };
+    },
+    [GET_PROFILE_IMG] : result => {
+
+        console.log('GET_PROFILE_IMG Action payload : ', result);
+
+        return { profileImg : result };
     },
 
 });
@@ -348,6 +364,24 @@ const employeeReducer = handleActions({
         return {
             ...state,
             registAppListDetail: payload.registAppListDetail,
+        };
+    },
+    [UPLOAD_PROFILE_IMG] : ( state, { payload }) => {
+
+        console.log('Reducer UPLOAD_PROFILE_IMG payload : ', payload);
+
+        return {
+            ...state,
+            uploadProfileImg: payload.uploadProfileImg,
+        };
+    },
+    [GET_PROFILE_IMG] : ( state, { payload }) => {
+
+        console.log('Reducer GET_PROFILE_IMG payload : ', payload);
+
+        return {
+            ...state,
+            profileImg: payload.profileImg,
         };
     },
 
