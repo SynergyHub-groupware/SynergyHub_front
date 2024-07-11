@@ -346,7 +346,7 @@ export const callNoticeAPI = () => {
             console.log('공지사항 result : ', result);
 
             if (result && result.status === 200) {
-                dispatch(getNotice(result.post));
+                dispatch(getNotice(result.data.results.posts));
             } else {
                 console.error('업무 조회 실패 result : ', result);
             }

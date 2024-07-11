@@ -12,7 +12,6 @@ const PheedComponent = () => {
     const sseURL = "http://localhost:8080/api/pheed/subscribe";
 
     useEffect(() => {
-        // 읽지 않은 피드의 수 계산 및 설정
         const unreadCount = countUnreadPosts();
         setUnreadPostCount(unreadCount);
     }, [pheeds]);
@@ -77,7 +76,7 @@ const PheedComponent = () => {
 
     useEffect(() => {
         fetchPheeds();
-    }, []);
+    }, [fetchPheeds]);
 
     const handleDetailClick = async (url, pheedCode, e) => {
         e.preventDefault();
@@ -121,10 +120,33 @@ const PheedComponent = () => {
         }, 0);
     };
 
+    const getDisplayText = (pheedSort) => {
+        if (pheedSort.includes('AD')) {
+            return '결재';
+        } else if (pheedSort.includes('PO')) {
+            return '게시판';
+        } else if (pheedSort.includes('MS')) {
+            return '쪽지';
+        } else {
+            return pheedSort;
+        }
+    };
+
+    const shouldDisplayEmpName = (pheed) => {
+        if (pheed.pheedSort.includes('AD') && pheed.pheedCon.includes('님이')) {
+            return false;
+        }
+        return true;
+    };
+
+    const isPOorMS = (pheedSort) => {
+        return pheedSort.includes('PO') || pheedSort.includes('MS');
+    };
+
     return (
         <>
             <h4 className="el_lv1Head hp_mb10">실시간 알림<b className="bl_mainBoard__alarm hp_ml10">{unreadPostCount}</b></h4>
-            <div className="bl_mainBoard">
+            <div className="bl_mainBoard" style={{height: '720px'}}>
                 {loading ? (
                     <div>Loading...</div>
                 ) : (
@@ -135,13 +157,26 @@ const PheedComponent = () => {
                                     <div className="bl_miniProfile__img"></div>
                                     <ul className="hp_ml20">
                                         <li className="hp_fs16 hp_fw400">
-                                            <b className="hp_fw700">{pheed.empName || 'Unknown'}</b>님,  <b className="hp_fw700">{pheed.pheedCon}</b>
+                                            {isPOorMS(pheed.pheedSort) ? (
+                                                <b className="hp_fw700">{pheed.pheedCon}</b>
+                                            ) : (
+                                                <>
+                                                    {shouldDisplayEmpName(pheed) && (
+                                                        <>
+                                                            <b className="hp_fw700">{pheed.empName || 'Unknown'}</b>님이 상신한&nbsp;&nbsp;
+                                                        </>
+                                                    )}
+                                                    <b className="hp_fw700">{pheed.pheedCon}</b>
+                                                </>
+                                            )}
                                         </li>
-                                        <li className="hp_7Color hp_fs13 hp_mt5">{pheed.pheedSort} <span className="hp_ml10 hp_mr10">/{pheed.creStatus}</span></li>
+                                        <li className="hp_7Color hp_fs13 hp_mt5">{getDisplayText(pheed.pheedSort)}
+                                            <span className="hp_ml10 hp_mr10">/ &nbsp;&nbsp;{pheed.creStatus}</span>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div className="ly_flex ly_fitemC">
-                                    <a className="el_btnS el_btn8Back hp_ml30" href={pheed.url} onClick={(e) => handleDetailClick(pheed.url, pheed.pheedCode, e)}>
+                                    <a className="el_btnS el_btnblueBack hp_ml30" href={pheed.url} onClick={(e) => handleDetailClick(pheed.url, pheed.pheedCode, e)}>
                                         상세보기
                                     </a>
                                     <button
