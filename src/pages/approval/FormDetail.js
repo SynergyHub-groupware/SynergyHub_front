@@ -285,7 +285,6 @@ function FormDetail(){
         }
     }, [attaches]);
 
-    const handleCancelClick = () => {navigate(-1);};
 
     return(
         <div className="ly_cont">
@@ -337,7 +336,7 @@ function FormDetail(){
             <div className="hp_mt10 hp_alignR">
             <button type="button" className="el_btnS el_btnblueBord" onClick={() => onClickApprovalDocRegist(true)}>임시저장</button>
                 <button type="button" className="el_btnS el_btnblueBack hp_ml5" onClick={() => onClickApprovalDocRegist(false)}>결재상신</button>
-                <button type="button" className="el_btnS el_btn8Back hp_ml5" onClick={handleCancelClick}>취소</button>
+                <button type="button" className="el_btnS el_btn8Back hp_ml5" onClick={() => navigate("/approval/temporary")}>목록</button>
             </div>
         </div>
     )

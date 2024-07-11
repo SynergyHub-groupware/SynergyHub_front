@@ -13,7 +13,7 @@ function Login() {
 
     useEffect(() => {
         if(success === true) {
-            navigate('/');
+            navigate('/main');
             dispatch(reset());
         }
     }, [success]);
