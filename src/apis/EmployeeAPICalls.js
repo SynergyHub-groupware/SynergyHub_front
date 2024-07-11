@@ -1,6 +1,5 @@
 import { request } from './api';
-import { getDepartments, getDeptEmployees, getMyInfo, getRecordcard, getDeptDetail, success, getTeamRecordcard, registEmployees, getTitles, getPositions, getRegistEmpList, getRegistEmpListDetail, getOrgChart, registAppoint, registAppoints, getEmployeeAll, getRegistAppList, getRegistAppListDetail, updateMyInfo, registMyRecordcard, updateMyRecordcard } from '../modules/EmployeeModules';
-
+import { getDepartments, getDeptEmployees, getMyInfo, getRecordcard, getDeptDetail, success, getTeamRecordcard, registEmployees, getTitles, getPositions, getRegistEmpList, getRegistEmpListDetail, getOrgChart, registAppoints, getEmployeeAll, getRegistAppList, getRegistAppListDetail, updateMyInfo, registMyRecordcard, updateMyRecordcard, uploadProfileImg, getProfileImg } from '../modules/EmployeeModules';
 
 
 export const callDepartmentEmployeesAPI = () => {
@@ -689,6 +688,54 @@ export const callRegistAppListDetailAPI = (aappNo) => {
             }
         } catch (error) {
             console.error('발령등록 리스트 상세조회 실패 error', error);
+        }
+    };
+};
+
+export const callUploadProfileImgAPI = (formData) => {
+    return async (dispatch, getState) => {
+        try {
+            const response = await fetch('/employee/uploadProfileImg', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access-token')}`
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                dispatch(uploadProfileImg(result.data));
+            } else {
+                console.error('프로필 이미지 업로드 실패 : ', response);
+            }
+        } catch (error) {
+            console.error('프로필 이미지 업로드 실패 : ', error);
+        }
+    };
+};
+
+export const callGetProfileImgAPI = (empCode) => {
+    return async (dispatch, getState) => {
+        try {
+            const accessToken = localStorage.getItem('access-token');
+            const headers = {
+                'Authorization': `Bearer ${accessToken}`
+            };
+
+            const response = await fetch(`http://localhost:8080/employee/profileImg?empCode=${empCode}`, {
+                headers: headers
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const imageUrl = URL.createObjectURL(blob);
+                dispatch(getProfileImg(imageUrl));
+            } else {
+                console.error('프로필이미지 조회 실패:', response.status);
+            }
+        } catch (error) {
+            console.error('프로필 이미지 조회 실패:', error);
         }
     };
 };

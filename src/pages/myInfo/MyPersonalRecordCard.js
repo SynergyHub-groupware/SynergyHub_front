@@ -8,68 +8,39 @@ function MyPersonalRecordCard() {
 
     const dispatch = useDispatch();
 
+    // Redux state에서 recordCard 데이터 가져오기
     const recordCard = useSelector(state => state.employeeReducer.recordCard);
-    const registRecordCard = useSelector(state => state.employeeReducer.registRecordCard);
-    const updateRecordCard = useSelector(state => state.employeeReducer.updateRecordCard);
 
-    // console.log('recordCard in component: ', recordCard);
+    // 로컬 상태 설정
+    const [schoolInfos, setSchoolInfos] = useState([]);
+    const [certificates, setCertificates] = useState([]);
 
+    // useEffect를 이용해 인사기록카드 정보 불러오기
     useEffect(() => {
         dispatch(callRecordCardAPI());
     }, [dispatch]);
 
-    const [schoolInfos, setSchoolInfos] = useState(recordCard.schoolInfos || []);
-    const [certificates, setCertificates] = useState(recordCard.certificates || []);
-    const [registStatus, setRegistStatus] = useState(null);
-
-
-
-    const handleAddSchoolInfo = () => {
-        const newSchoolInfo = {
-            sch_name: '',
-            grad_status: '',
-            enrole_date: '',
-            grad_date: '',
-            major: '',
-            day_n_night: '',
-            location: ''
-        };
-        setSchoolInfos([...schoolInfos, newSchoolInfo]);
-    }
-
-    const handleAddCertificate = () => {
-        const newCertificate = {
-            cer_name: '',
-            cer_score: '',
-            cer_date: '',
-            cer_num: '',
-            iss_organ: ''
+    // recordCard 데이터가 변경될 때 로컬 상태 업데이트
+    useEffect(() => {
+        if (recordCard && recordCard.schoolInfos) {
+            setSchoolInfos(recordCard.schoolInfos);
         }
-        setCertificates([...certificates, newCertificate]);
-    }
-
-    const handleSubmit = async e => {
-        e.preventDefault();
-        try {
-            const newRecordCard = {
-                schoolInfos: [...recordCard.schoolInfos, ...schoolInfos],
-                certificates: [...recordCard.certificates, ...certificates]
-            };
-
-            if (recordCard && recordCard.id) {
-
-                await dispatch(callRegistRecordCardAPI(newRecordCard));
-            }
-
-            setRegistStatus('success');
-            alert('저장이 완료 되었습니다.');
-        } catch (error) {
-            setRegistStatus('fail');
-            alert('저장에 실패하였습니다.');
+        if (recordCard && recordCard.certificates) {
+            setCertificates(recordCard.certificates);
         }
+    }, [recordCard]);
+
+    // 학력사항 행 추가
+    const addSchoolInfoRow = () => {
+        setSchoolInfos([...schoolInfos, { sch_name: '', grad_status: '', enrole_date: '', grad_date: '', major: '', day_n_night: '', location: '' }]);
     };
 
+    // 자격증 행 추가
+    const addCertificateRow = () => {
+        setCertificates([...certificates, { cer_name: '', cer_score: '', cer_date: '', cer_num: '', iss_organ: '' }]);
+    };
 
+    // 입력 필드 변경 핸들러
     const handleSchoolInfoChange = (index, field, value) => {
         const updatedSchoolInfos = [...schoolInfos];
         updatedSchoolInfos[index][field] = value;
@@ -82,12 +53,23 @@ function MyPersonalRecordCard() {
         setCertificates(updatedCertificates);
     };
 
+    // 저장 버튼 클릭 핸들러
+    const handleSave = () => {
+        // 서버에 데이터 저장 API 호출
+        const dataToSave = {
+            schoolInfos,
+            certificates
+            // 다른 필요한 데이터 추가 가능
+        };
+        dispatch(callRegistRecordCardAPI(dataToSave));
+    };
+
     return (
         <div class="ly_cont">
             <div class="ly_spaceBetween ly_fitemEnd hp_mb30">
                 <h4 class="el_lv1Head">인사기록카드</h4>
                 <div>
-                    <button type="button" class="el_btnS el_btnblueBack" onClick={handleSubmit}>저장</button>
+                    <button type="button" class="el_btnS el_btnblueBack" onClick={handleSave} >저장</button>
                     <button type="button" class="el_btnS el_btn0Bord">출력하기</button>
                 </div>
             </div>
@@ -190,7 +172,7 @@ function MyPersonalRecordCard() {
                 <div class="ly_spaceBetween ly_fitemC hp_mt30 hp_mb10">
                     <h5 class="hp_fw700 hp_fs18 hp_mb10 hp_mt30">학력사항</h5>
                     <div class="">
-                        <button type="button" class="el_btnS el_btn8Bord" onClick={handleAddSchoolInfo}>추가</button>
+                        <button type="button" class="el_btnS el_btn8Bord" onClick={addSchoolInfoRow} >추가</button>
                     </div>
                 </div>
                 <table class="bl_tb3">
@@ -215,26 +197,26 @@ function MyPersonalRecordCard() {
                         </tr>
                     </thead>
                     <tbody>
-                    {recordCard.schoolInfos?.map((schoolInfo, index) => (
+                        {recordCard && recordCard.schoolInfos.map((schoolInfo, index) => (
                             <tr key={index}>
-                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={schoolInfo.sch_name} /></td>
-                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={schoolInfo.grad_status}  /></td>
-                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={schoolInfo.enrole_date}  /></td>
-                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={schoolInfo.grad_date}  /></td>
-                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={schoolInfo.major}  /></td>
-                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={schoolInfo.day_n_night}  /></td>
-                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={schoolInfo.location}  /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={schoolInfo.sch_name} onChange={(e) => handleSchoolInfoChange(index, 'sch_name', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={schoolInfo.grad_status} onChange={(e) => handleSchoolInfoChange(index, 'grad_status', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={schoolInfo.enrole_date} onChange={(e) => handleSchoolInfoChange(index, 'enrole_date', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={schoolInfo.grad_date} onChange={(e) => handleSchoolInfoChange(index, 'grad_date', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={schoolInfo.major} onChange={(e) => handleSchoolInfoChange(index, 'major', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={schoolInfo.day_n_night} onChange={(e) => handleSchoolInfoChange(index, 'day_n_night', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={schoolInfo.location} onChange={(e) => handleSchoolInfoChange(index, 'location', e.target.value)} /></td>
                             </tr>
                         ))}
-                        {schoolInfos.map((school, index) => (
+                        {schoolInfos.map((schoolInfo, index) => (
                             <tr key={index}>
-                                <td><input style={{ textAlign: 'center' }} value={school.sch_name} onChange={(e) => handleSchoolInfoChange(index, 'sch_name', e.target.value)} /></td>
-                                <td><input style={{ textAlign: 'center' }} value={school.grad_status} onChange={(e) => handleSchoolInfoChange(index, 'grad_status', e.target.value)} /></td>
-                                <td><input style={{ textAlign: 'center' }} value={school.enrole_date} onChange={(e) => handleSchoolInfoChange(index, 'enrole_date', e.target.value)} /></td>
-                                <td><input style={{ textAlign: 'center' }} value={school.grad_date} onChange={(e) => handleSchoolInfoChange(index, 'grad_date', e.target.value)} /></td>
-                                <td><input style={{ textAlign: 'center' }} value={school.major} onChange={(e) => handleSchoolInfoChange(index, 'major', e.target.value)} /></td>
-                                <td><input style={{ textAlign: 'center' }} value={school.day_n_night} onChange={(e) => handleSchoolInfoChange(index, 'day_n_night', e.target.value)} /></td>
-                                <td><input style={{ textAlign: 'center' }} value={school.location} onChange={(e) => handleSchoolInfoChange(index, 'location', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={schoolInfo.sch_name} onChange={(e) => handleSchoolInfoChange(index, 'sch_name', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={schoolInfo.grad_status} onChange={(e) => handleSchoolInfoChange(index, 'grad_status', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={schoolInfo.enrole_date} onChange={(e) => handleSchoolInfoChange(index, 'enrole_date', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={schoolInfo.grad_date} onChange={(e) => handleSchoolInfoChange(index, 'grad_date', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={schoolInfo.major} onChange={(e) => handleSchoolInfoChange(index, 'major', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={schoolInfo.day_n_night} onChange={(e) => handleSchoolInfoChange(index, 'day_n_night', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={schoolInfo.location} onChange={(e) => handleSchoolInfoChange(index, 'location', e.target.value)} /></td>
                             </tr>
                         ))}
                     </tbody>
@@ -242,7 +224,7 @@ function MyPersonalRecordCard() {
                 <div class="ly_spaceBetween ly_fitemC hp_mt30 hp_mb10">
                     <h5 class="hp_fw700 hp_fs18">자격증</h5>
                     <div class="">
-                        <button type="button" class="el_btnS el_btn8Bord" onClick={handleAddCertificate}>추가</button>
+                        <button type="button" class="el_btnS el_btn8Bord" onClick={addCertificateRow} >추가</button>
                     </div>
                 </div>
                 <table class="bl_tb3">
@@ -263,22 +245,13 @@ function MyPersonalRecordCard() {
                         </tr>
                     </thead>
                     <tbody>
-                    {recordCard.certificates?.map((certificate, index) => (
+                        {certificates.map((certificate, index) => (
                             <tr key={index}>
-                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={certificate.cer_name}  /></td>
-                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={certificate.cer_score}  /></td>
-                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={certificate.cer_date}  /></td>
-                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={certificate.cer_num}  /></td>
-                                <td><input type="text" style={{ textAlign: 'center' }} defaultValue={certificate.iss_organ}  /></td>
-                            </tr>
-                        ))}
-                        {certificates.map((cer, index) => (
-                            <tr key={index}>
-                                <td><input style={{ textAlign: 'center' }} type="text" class="hp_w100" value={cer.cer_name} onChange={(e) => handleCertificateChange(index, 'cer_name', e.target.value)} /></td>
-                                <td><input style={{ textAlign: 'center' }} type="number" class="hp_w100" value={cer.cer_score} onChange={(e) => handleCertificateChange(index, 'cer_score', e.target.value)} /></td>
-                                <td><input style={{ textAlign: 'center' }} type="date" class="hp_w100" value={cer.cer_date} onChange={(e) => handleCertificateChange(index, 'cer_date', e.target.value)} /></td>
-                                <td><input style={{ textAlign: 'center' }} type="text" class="hp_w100" value={cer.cer_num} onChange={(e) => handleCertificateChange(index, 'cer_num', e.target.value)} /></td>
-                                <td><input style={{ textAlign: 'center' }} type="text" class="hp_w100" value={cer.iss_organ} onChange={(e) => handleCertificateChange(index, 'iss_organ', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={certificate.cer_name} onChange={(e) => handleCertificateChange(index, 'cer_name', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={certificate.cer_score} onChange={(e) => handleCertificateChange(index, 'cer_score', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={certificate.cer_date} onChange={(e) => handleCertificateChange(index, 'cer_date', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={certificate.cer_num} onChange={(e) => handleCertificateChange(index, 'cer_num', e.target.value)} /></td>
+                                <td><input style={{ textAlign: 'center' }} type="text" value={certificate.iss_organ} onChange={(e) => handleCertificateChange(index, 'iss_organ', e.target.value)} /></td>
                             </tr>
                         ))}
                     </tbody>
