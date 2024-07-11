@@ -390,7 +390,7 @@ function BoardCreateView() {
         <>
             <div className="button-container">
                 <h1>게시판 관리</h1>
-                <table className="">
+                <table className="" style={{ border: "1px solid grey" }}>
                     <thead>
                         <tr>
                             <th>분류</th>
@@ -480,6 +480,8 @@ function BoardCreateView() {
 
                                                         />
                                                     </div>
+                                                    <ColoredLine color="black" />
+
                                                 </tr>
                                             ));
                                         })}

@@ -114,6 +114,39 @@ function PostCreateView() {
             psCode: value 
         }));
     };
+    const ReadySubmit = async () => {
+
+        const { postName, postCon, attachFile, postCommSet,lowBoardCode,psCode } = formData;
+    
+        const formDataToSend = new FormData();
+        formDataToSend.append('postName', postName);
+        formDataToSend.append('postCon', postCon);
+        formDataToSend.append('attachFile', attachFile);
+        formDataToSend.append('postCommSet', postCommSet);
+        formDataToSend.append('lowBoardCode', 0);
+        formDataToSend.append("psCode",psCode);
+        formDataToSend.append('empCode',employees.emp_code);
+        
+        if (attachFile) {
+            for (let i = 0; i < attachFile.length; i++) {
+                formDataToSend.append('attachFile', attachFile[i]);
+            }
+        }
+
+
+        try {
+            const response = await fetch('http://localhost:8080/post/addReady', {
+                method: 'POST',
+                body: formDataToSend,
+                mode: "cors"
+            });
+            console.log("post",formData)
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+    };
 
 
     const handleSubmit = async (event) => {
@@ -253,7 +286,7 @@ function PostCreateView() {
                         <tr>
                         <td colSpan="4" className='el_btnS'>
                                 <button className='el_btnredBack' type="button">취소</button>
-                                <button className='el_btn8Back' type="button">임시저장</button>
+                                <button className='el_btn8Back' type="button" onClick={ReadySubmit}>임시저장</button>
                                 <button className='el_btn0Bord' type="submit">저장</button>
                             </td>
                         </tr>
