@@ -1,26 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { callGETDetail, callGETFile, callGETComment } from './postApi/PostAPI';
-import { callDepartmentEmployeesAPI } from '../../apis/EmployeeAPICalls';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import { Link } from 'react-router-dom';
+import { callGETDetail, callGETFile, callGETComment } from './postApi/PostAPI';
+import { callMyInfoAPI } from '../../apis/EmployeeAPICalls';
 
 function PostDetailView() {
     const dispatch = useDispatch();
-    const { postCode } = useParams(); // URL의 파라미터로부터 postCode 가져오기
+    const { postCode } = useParams();
     const [newComment, setNewComment] = useState('');
     const [comments, setComments] = useState([]);
     const [isAnonymous, setIsAnonymous] = useState(false);
-    const [editingComment, setEditingComment] = useState(null); // 수정할 댓글 정보를 저장할 상태
+    const [editingComment, setEditingComment] = useState(null);
 
-    const employees = useSelector(state => state.employeeReducer.employees?.employees || []);
+    const employee = useSelector(state => state.employeeReducer.employee);
 
     useEffect(() => {
-        dispatch(callDepartmentEmployeesAPI());
-    }, [dispatch]);
+        dispatch(callMyInfoAPI());
+    }, []);
 
     useEffect(() => {
         dispatch(callGETDetail(postCode));
@@ -63,7 +60,7 @@ function PostDetailView() {
             commCon: newComment,
             commStatus: isAnonymous ? 'Y' : 'N',
             postCode: DetailData.postCode,
-            commDate: new Date().toISOString() // ISO 8601 형식으로 변환
+            commDate: new Date().toISOString()
         };
 
         try {
@@ -75,7 +72,7 @@ function PostDetailView() {
                 }
             });
 
-            setComments([...comments, response.data]); // 새 댓글을 comments 상태에 추가
+            setComments([...comments, response.data]);
             setNewComment('');
         } catch (error) {
             console.error('Failed to add comment:', error);
@@ -83,11 +80,10 @@ function PostDetailView() {
     };
 
     const handleEditClick = (commentId) => {
-        // 클릭한 댓글의 정보를 editingComment 상태에 저장
         const commentToEdit = CommentState.find(comment => comment.comm_code === commentId);
         if (commentToEdit) {
             setEditingComment(commentToEdit);
-            setNewComment(commentToEdit.comm_con); // 댓글 입력칸에 수정할 댓글 내용을 반영
+            setNewComment(commentToEdit.comm_con);
         }
     };
 
@@ -98,7 +94,7 @@ function PostDetailView() {
             commCon: newComment,
             commStatus: isAnonymous ? 'Y' : 'N',
             postCode: DetailData.postCode,
-            commDate: new Date().toISOString() // ISO 8601 형식으로 변환
+            commDate: new Date().toISOString()
         };
 
         try {
@@ -110,15 +106,13 @@ function PostDetailView() {
                 }
             });
 
-            // 수정된 댓글을 CommentState에서 업데이트
             const updatedComments = CommentState.map(comment =>
                 comment.comm_code === editingComment.comm_code ? response.data : comment
             );
 
-            // 업데이트된 댓글 목록을 상태에 반영
             setComments(updatedComments);
-            setEditingComment(null); // 수정 상태 초기화
-            setNewComment(''); // 입력 칸 초기화
+            setEditingComment(null);
+            setNewComment('');
         } catch (error) {
             console.error('Failed to edit comment:', error);
         }
@@ -134,7 +128,6 @@ function PostDetailView() {
                 }
             });
 
-            // 삭제된 댓글을 comments 상태에서 제거
             const updatedComments = CommentState.filter(comment => comment.comm_code !== commCode);
             setComments(updatedComments);
         } catch (error) {
@@ -143,29 +136,31 @@ function PostDetailView() {
     };
 
     const renderDetail = () => {
-        if (!DetailData) return null; // DetailData가 없으면 아무것도 렌더링하지 않음
+        if (!DetailData) return null;
 
         return (
-            <div className="main" style={{width: "900px",height:"500px"}}>
-                <table >
+            <div className="main" style={{ width: "900px", height: "auto", marginLeft: "10px", marginBottom: "20px", padding: "20px", boxShadow: "1px 1px 10px black", backgroundColor: "white", borderRadius: "8px" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
                     <thead>
                         <tr>
-                            <th colSpan="4" >게시판</th>
-                            <Link to={`/post/PostEditView/${DetailData.postCode}`}>수정</Link>
+                            <th colSpan="4" style={{ textAlign: "left", fontSize: "24px", padding: "10px 0", borderBottom: "2px solid #ccc" }}>
+                                게시판
+                                <Link to={`/post/PostEditView/${DetailData.postCode}`} style={{ float: "right", textDecoration: "none", color: "#007bff" }}>수정</Link>
+                            </th>
                         </tr>
-                        <tr>
-                            <td style={{backgroundColor:"lightgray",border: "1px solid grey"}}>게시글 번호</td>
-                            <td>{DetailData.postCode}</td>
+                        <tr style={{ borderBottom: "1px solid #ccc" }}>
+                            <td style={{ backgroundColor: "lightgray", border: "1px solid grey", padding: "10px" }}>게시글 번호</td>
+                            <td style={{ padding: "10px" }}>{DetailData.postCode}</td>
                         </tr>
-                        <tr>
-                            <td style={{backgroundColor:"lightgray",border: "1px solid grey"}}>작성자</td>
-                            <td>{DetailData.empName}</td>
-                            <td style={{backgroundColor:"lightgray",border: "1px solid grey"}}>작성일</td>
-                            <td>{DetailData.postDate}</td>
+                        <tr style={{ borderBottom: "1px solid #ccc" }}>
+                            <td style={{ backgroundColor: "lightgray", border: "1px solid grey", padding: "10px" }}>작성자</td>
+                            <td style={{ padding: "10px" }}>{DetailData.empCode}</td>
+                            <td style={{ backgroundColor: "lightgray", border: "1px solid grey", padding: "10px" }}>작성일</td>
+                            <td style={{ padding: "10px" }}>{DetailData.postDate}</td>
                         </tr>
-                        <tr>
-                            <td style={{backgroundColor:"lightgray",border: "1px solid grey"}}>첨부파일</td>
-                            <td colSpan="3" >
+                        <tr style={{ borderBottom: "1px solid #ccc" }}>
+                            <td style={{ backgroundColor: "lightgray", border: "1px solid grey", padding: "10px" }}>첨부파일</td>
+                            <td colSpan="3" style={{ padding: "10px" }}>
                                 {FileData && FileData.length > 0 ? (
                                     FileData.map((file, index) => (
                                         <a
@@ -173,6 +168,7 @@ function PostDetailView() {
                                             href={`http://localhost:8080/post/downloadFile/${file.attachSave}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
+                                            style={{ display: "block", color: "#007bff", textDecoration: "none", margin: "5px 0" }}
                                         >
                                             {file.attachOriginal}
                                         </a>
@@ -182,109 +178,21 @@ function PostDetailView() {
                                 )}
                             </td>
                         </tr>
-                        <tr>
-                            <td style={{backgroundColor:"lightgray",border: "1px solid grey"}}>제목</td>
-                            <td colSpan="3">{DetailData.postName}</td>
+                        <tr style={{ borderBottom: "1px solid #ccc" }}>
+                            <td style={{ backgroundColor: "lightgray", border: "1px solid grey", padding: "10px" }}>제목</td>
+                            <td colSpan="3" style={{ padding: "10px" }}>{DetailData.postName}</td>
                         </tr>
                         <tr>
-                            <td style={{backgroundColor:"lightgray",border: "1px solid grey"}}>내용</td>
-                            <td colSpan="3">
-                                <div dangerouslySetInnerHTML={{ __html: generateHtmlContent() }} style={{ border: "1px solid grey" }}/>
+                            <td style={{ backgroundColor: "lightgray", border: "1px solid grey", padding: "10px" }}>내용</td>
+                            <td colSpan="3" style={{ padding: "10px" }}>
+                                <div dangerouslySetInnerHTML={{ __html: generateHtmlContent() }} style={{ border: "1px solid grey", padding: "10px", borderRadius: "4px" }} />
                             </td>
                         </tr>
                         <tr>
-                            <td colSpan="4">
-                                <h1>댓글 구현위치</h1>
-                                {DetailData.postCommSet === 'ALLOW_NORMAL' && (
-                                    <>
-                                        <form onSubmit={editingComment ? handleEditSave : handleCommentSubmit}>
-                                            <textarea value={newComment} onChange={handleCommentChange} />
-                                            <button type="submit">{editingComment ? '수정 저장' : '댓글 작성'}</button>
-                                        </form>
-                                        <h2>댓글</h2>
-                                        <ul>
-                                            {CommentState.map(comment => (
-                                                <li key={comment.comm_code}>
-                                                    {comment.comm_con}
-                                                    {employees.length > 0 ? (
-                                                        employees.map(employee => (
-                                                            employee.emp_code === comment.emp_code && (
-                                                                <div key={employee.emp_code}>
-                                                                    <button onClick={() => handleEditClick(comment.comm_code)}>수정</button>
-                                                                    <button onClick={() => handleDeleteClick(comment.comm_code)}>삭제</button>
-                                                                </div>
-                                                            )
-                                                        ))
-                                                    ) : null}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </>
-                                )}
-                                {DetailData.postCommSet === 'ALLOW_ANONYMOUS' && (
-                                    <>
-                                        <form onSubmit={editingComment ? handleEditSave : handleCommentSubmit}>
-                                            <textarea value={newComment} onChange={handleCommentChange} />
-                                            <button type="submit">{editingComment ? '수정 저장' : '익명 댓글 작성'}</button>
-                                        </form>
-                                        <h2>익명 댓글</h2>
-                                        <ul>
-                                            {CommentState.map(comment => (
-                                                <li key={comment.comm_code}>
-                                                    {comment.comm_con}
-                                                    {employees.length > 0 ? (
-                                                        employees.map(employee => (
-                                                            employee.emp_code === comment.emp_code && (
-                                                                <div key={employee.emp_code}>
-                                                                    <button onClick={() => handleEditClick(comment.comm_code)}>수정</button>
-                                                                    <button onClick={() => handleDeleteClick(comment.comm_code)}>삭제</button>
-                                                                </div>
-                                                            )
-                                                        ))
-                                                    ) : null}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </>
-                                )}
-                                {DetailData.postCommSet === 'ALLOW_BOTH' && (
-                                    <>
-                                        <form onSubmit={editingComment ? handleEditSave : handleCommentSubmit}>
-                                            <textarea value={newComment} onChange={handleCommentChange} />
-                                            <label>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={isAnonymous}
-                                                    onChange={() => setIsAnonymous(!isAnonymous)}
-                                                />{' '}
-                                                익명으로 작성
-                                            </label>
-                                            <br />
-                                            <button type="submit">{editingComment ? '수정 저장' : '댓글 작성'}</button>
-                                        </form>
-                                        <h2> 댓글</h2>
-                                        <ul>
-                                            {CommentState.map(comment => (
-                                                <li key={comment.comm_code}>
-                                                    {comment.comm_status === 'N' && (
-                                                        <h2>{comment.emp_name}</h2>
-                                                    )}
-                                                    {comment.comm_con}
-                                                    {employees.length > 0 ? (
-                                                        employees.map(employee => (
-                                                            employee.emp_code === comment.emp_code && (
-                                                                <div key={employee.emp_code}>
-                                                                    <button onClick={() => handleEditClick(comment.comm_code)}>수정</button>
-                                                                    <button onClick={() => handleDeleteClick(comment.comm_code)}>삭제</button>
-                                                                </div>
-                                                            )
-                                                        ))
-                                                    ) : null}
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </>
-                                )}
+                            <td colSpan="4" style={{ padding: "20px" }}>
+                                {DetailData.postCommSet === 'ALLOW_NORMAL' && renderCommentSection('댓글 작성')}
+                                {DetailData.postCommSet === 'ALLOW_ANONYMOUS' && renderCommentSection('익명 댓글 작성')}
+                                {DetailData.postCommSet === 'ALLOW_BOTH' && renderCommentSection('댓글 작성', true)}
                                 {DetailData.postCommSet === 'ALLOW_NONE' && <p>댓글이 비허용되었습니다.</p>}
                             </td>
                         </tr>
@@ -294,11 +202,100 @@ function PostDetailView() {
         );
     };
 
-    return (
-        <>
-            {renderDetail()}
-        </>
+    const renderCommentSection = (buttonText, allowAnonymous = false) => (
+        <div style={{ marginTop: "20px" }}>
+            <form onSubmit={editingComment ? handleEditSave : handleCommentSubmit} style={{ display: "flex", flexDirection: "column", marginBottom: "20px" }}>
+                <textarea
+                    value={newComment}
+                    onChange={handleCommentChange}
+                    style={{
+                        width: "100%",
+                        height: "100px",
+                        padding: "10px",
+                        marginBottom: "10px",
+                        borderRadius: "4px",
+                        border: "1px solid #ccc",
+                        resize: "none"
+                    }}
+                    placeholder="댓글을 입력하세요."
+                />
+                {allowAnonymous && (
+                    <label style={{ marginBottom: "10px", fontSize: "14px" }}>
+                        <input
+                            type="checkbox"
+                            checked={isAnonymous}
+                            onChange={() => setIsAnonymous(!isAnonymous)}
+                            style={{ marginRight: "5px" }}
+                        />
+                        익명으로 작성
+                    </label>
+                )}
+                <button
+                    type="submit"
+                    style={{
+                        padding: "10px 20px",
+                        border: "none",
+                        borderRadius: "4px",
+                        backgroundColor: "#007bff",
+                        color: "white",
+                        cursor: "pointer",
+                        alignSelf: "flex-end",
+                        transition: "background-color 0.3s"
+                    }}
+                    onMouseOver={(e) => e.target.style.backgroundColor = "#0056b3"}
+                    onMouseOut={(e) => e.target.style.backgroundColor = "#007bff"}
+                >
+                    {buttonText}
+                </button>
+            </form>
+            <ul style={{ listStyle: "none", padding: "0" }}>
+                {CommentState.map((comment) => (
+                    <li key={comment.comm_code} style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
+                        {comment.comm_con}
+                        {employee.emp_code === comment.emp_code && (
+                        <div style={{ marginTop: "10px" }}>
+                            <button
+                                onClick={() => handleEditClick(comment.comm_code)}
+                                style={{
+                                    marginRight: "10px",
+                                    padding: "5px 10px",
+                                    border: "none",
+                                    backgroundColor: "#ffc107",
+                                    color: "white",
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                    transition: "background-color 0.3s"
+                                }}
+                                onMouseOver={(e) => e.target.style.backgroundColor = "#e0a800"}
+                                onMouseOut={(e) => e.target.style.backgroundColor = "#ffc107"}
+                            >
+                                수정
+                            </button>
+                            <button
+                                onClick={() => handleDeleteClick(comment.comm_code)}
+                                style={{
+                                    padding: "5px 10px",
+                                    border: "none",
+                                    backgroundColor: "#dc3545",
+                                    color: "white",
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                    transition: "background-color 0.3s"
+                                }}
+                                onMouseOver={(e) => e.target.style.backgroundColor = "#c82333"}
+                                onMouseOut={(e) => e.target.style.backgroundColor = "#dc3545"}
+                            >
+                                삭제
+                            </button>
+                        </div>
+                        )}
+                    </li>
+                ))}
+            </ul>
+        </div>
     );
+
+    return <div>{renderDetail()}</div>;
 }
 
 export default PostDetailView;
