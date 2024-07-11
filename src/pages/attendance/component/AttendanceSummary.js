@@ -8,7 +8,7 @@ function AttendanceSummary() {
     const attendancesToday = useSelector((state) => state.attendanceReducer.attendanceToday);
 
     return (
-        <section className="bl_sect hp_padding30 el_shadowD4 hp_mb30 section1">
+        <section className="bl_sect hp_padding30 el_shadowD4 hp_mb20 section1">
             <div className="hp_fw700"><TodayDateComponent /></div>
             <div className="ly_spaceBetween ly_fitemC hp_mt5">
                 <div className="hp_fw700 hp_fs28"><TimeComponent /></div>

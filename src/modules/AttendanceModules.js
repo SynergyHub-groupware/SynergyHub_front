@@ -15,12 +15,18 @@ const initialState = {
     documentDo: [],
     documentMonthDo: [],
     employeeInfo: [],
+    absentee: [],
+    birth: [],
+    notice: [],
+    task: [],
+    msg: [],
 };
 
 // 액션 타입 정의
 const SUCCESS = 'attendance/SUCCESS';
 const GET_MY_INFO = 'employee/GET_MY_INFO';
 const GET_EMPLOYEE_INFO = 'employee/GET_EMPLOYEE_INFO';
+const GET_BIRTH_EMP = 'employee/GET_BIRTH_EMP';
 const GET_ATTENDANCE_FOR_WEEK = 'attendance/GET_ATTENDANCE_FOR_WEEK';
 const GET_ATTENDANCE_TODAY = 'attendance/GET_ATTENDANCE_TODAY';
 const GET_ATTENDANCE_ALL = 'attendance/GET_ATTENDANCE_ALL';
@@ -32,17 +38,23 @@ const GET_DOC_BT = 'documents/GET_DOC_BT';
 const GET_DOC_OW = 'documents/GET_DOC_OW';
 const GET_DOC_DO = 'documents/GET_DOC_DO';
 const GET_DOC_MONTH_DO = 'documents/GET_DOC_MONTH_DO';
+const GET_ABSENTEE = 'main/GET_ABSENTEE';
+const GET_NOTICE = 'main/GET_NOTICE';
+const GET_TASK = 'main/GET_TASK';
+const GET_MSG = 'main/GET_MSG';
 
 // 액션 함수 생성
 export const {
-    employee: { getMyInfo, getEmployeeInfo },
+    employee: { getMyInfo, getEmployeeInfo, getBirthEmp },
     attendance: { getAttendanceForWeek, getAttendanceToday, getAttendanceAll, getDefaultSchedule, getAllAttendanceToday },
     dayOffs: { getDayOffAll, getDayOffBalance },
     documents: { getDocBt, getDocOw, getDocDo, getDocMonthDo },
+    main: { getAbsentee, getNotice, getTask, getMsg }
 } = createActions({
     [SUCCESS]: () => ({ success: true }),
     [GET_MY_INFO]: (employee) => ({ employee }),
     [GET_EMPLOYEE_INFO]: (employeeInfo) => ({ employeeInfo }),
+    [GET_BIRTH_EMP]: (birth) => ({ birth }),
     [GET_ATTENDANCE_FOR_WEEK]: (attendances) => ({ attendances }),
     [GET_ATTENDANCE_TODAY]: (attendanceToday) => ({ attendanceToday }),
     [GET_ATTENDANCE_ALL]: (attendanceAll) => ({ attendanceAll }),
@@ -54,6 +66,10 @@ export const {
     [GET_DOC_OW]: (documentOw) => ({ documentOw }),
     [GET_DOC_DO]: (documentDo) => ({ documentDo }),
     [GET_DOC_MONTH_DO]: (documentMonthDo) => ({ documentMonthDo }),
+    [GET_ABSENTEE]: (absentee) => ({ absentee }),
+    [GET_NOTICE]: (notice) => ({ notice }),
+    [GET_TASK]: (task) => ({ task }),
+    [GET_MSG]: (msg) => ({ msg }),
 });
 
 // 리듀서 정의
@@ -113,6 +129,26 @@ const attendanceReducer = handleActions({
     [GET_DOC_MONTH_DO]: (state, action) => ({
         ...state,
         documentMonthDo: action.payload.documentMonthDo
+    }),
+    [GET_ABSENTEE]: (state, action) => ({
+        ...state,
+        absentee: action.payload.absentee
+    }),
+    [GET_BIRTH_EMP]: (state, action) => ({
+        ...state,
+        birth: action.payload.birth
+    }),
+    [GET_NOTICE]: (state, action) => ({
+        ...state,
+        notice: action.payload.notice
+    }),
+    [GET_TASK]: (state, action) => ({
+        ...state,
+        task: action.payload.task
+    }),
+    [GET_MSG]: (state, action) => ({
+        ...state,
+        msg: action.payload.msg
     }),
 }, initialState);
 
