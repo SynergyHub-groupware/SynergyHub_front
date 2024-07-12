@@ -40,17 +40,28 @@ function PostNav() {
         <>
             <div className="bl_nav">
                 <h1 className="bl_nav__ttl">게시판</h1>
-                <td className='bl_nav__ttlSub'>
-                    <Link to={`/post/PostCreateView`}>
-                        게시글 작성
-                    </Link>
-                </td>
+                <li>
+                    <li className='bl_nav__ttlSub'>
+                        <Link to={`/post/PostCreateView`}>
+                            게시글 작성
+                        </Link>
+                    </li>
 
-                <td className='bl_nav__ttlSub'>
-                    <Link to={`/post/PostReadyList/${employees.emp_code}`}>
-                        임시 저장
-                    </Link>
-                </td>
+                    <li className='bl_nav__ttlSub'>
+                        <Link to={`/post/PostListView`}>
+                            전체 게시판
+                        </Link>
+                    </li>
+
+                    <li className='bl_nav__ttlSub'>
+                        <Link to={`/post/PostReadyList/${employees.emp_code}`}>
+                            임시 저장
+                        </Link>
+                    </li>
+
+                </li>
+
+
 
                 {Object.keys(boards).map(boardName => {
                     // Filter out boards with all lowBoards having boardCode 0
