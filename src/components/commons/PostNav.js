@@ -19,6 +19,7 @@ function PostNav() {
     useEffect(() => {
         if (AllLowState.length > 0) {
             const groupedBoards = AllLowState.reduce((acc, lowBoard) => {
+                console.log(lowBoard.boardCode.boardName)
                 const boardName = lowBoard.boardCode.boardName;
                 if (!acc[boardName]) {
                     acc[boardName] = {
@@ -69,9 +70,11 @@ function PostNav() {
                                             lowBoard.boardCode !== 0 && ( // Exclude low boards with boardCode 0
                                                 <tr key={lowBoard.lowBoardCode} className="button-wrapper">
                                                     <li>
-                                                        <Link to={`/post/PostListViewInBoard/${lowBoard.lowBoardCode}`}>
-                                                            {lowBoard.lowBoardName}
-                                                        </Link>
+                                                        {lowBoard.lowBoardName !== 'Deleted' && (
+                                                            <Link to={`/post/PostListViewInBoard/${lowBoard.lowBoardCode}`}>
+                                                                {lowBoard.lowBoardName}
+                                                            </Link>
+                                                        )}
                                                     </li>
                                                 </tr>
                                             )

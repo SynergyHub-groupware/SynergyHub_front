@@ -145,7 +145,10 @@ function PostDetailView() {
                         <tr>
                             <th colSpan="4" style={{ textAlign: "left", fontSize: "24px", padding: "10px 0", borderBottom: "2px solid #ccc" }}>
                                 게시판
-                                <Link to={`/post/PostEditView/${DetailData.postCode}`} style={{ float: "right", textDecoration: "none", color: "#007bff" }}>수정</Link>
+                                {employee.emp_code === DetailData.empCode && (
+                                    <Link to={`/post/PostEditView/${DetailData.postCode}`} style={{ float: "right", textDecoration: "none", color: "#007bff" }}>수정</Link>
+
+                                )}
                             </th>
                         </tr>
                         <tr style={{ borderBottom: "1px solid #ccc" }}>
@@ -251,43 +254,50 @@ function PostDetailView() {
             <ul style={{ listStyle: "none", padding: "0" }}>
                 {CommentState.map((comment) => (
                     <li key={comment.comm_code} style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
+                        {comment.comm_status !== 'Y' && (
+                            <div>
+                                {comment.emp_name} || {comment.commDate}
+                            </div>
+
+                        )}
+                        <h1></h1>
                         {comment.comm_con}
                         {employee.emp_code === comment.emp_code && (
-                        <div style={{ marginTop: "10px" }}>
-                            <button
-                                onClick={() => handleEditClick(comment.comm_code)}
-                                style={{
-                                    marginRight: "10px",
-                                    padding: "5px 10px",
-                                    border: "none",
-                                    backgroundColor: "#ffc107",
-                                    color: "white",
-                                    borderRadius: "4px",
-                                    cursor: "pointer",
-                                    transition: "background-color 0.3s"
-                                }}
-                                onMouseOver={(e) => e.target.style.backgroundColor = "#e0a800"}
-                                onMouseOut={(e) => e.target.style.backgroundColor = "#ffc107"}
-                            >
-                                수정
-                            </button>
-                            <button
-                                onClick={() => handleDeleteClick(comment.comm_code)}
-                                style={{
-                                    padding: "5px 10px",
-                                    border: "none",
-                                    backgroundColor: "#dc3545",
-                                    color: "white",
-                                    borderRadius: "4px",
-                                    cursor: "pointer",
-                                    transition: "background-color 0.3s"
-                                }}
-                                onMouseOver={(e) => e.target.style.backgroundColor = "#c82333"}
-                                onMouseOut={(e) => e.target.style.backgroundColor = "#dc3545"}
-                            >
-                                삭제
-                            </button>
-                        </div>
+                            <div style={{ marginTop: "10px" }}>
+                                <button
+                                    onClick={() => handleEditClick(comment.comm_code)}
+                                    style={{
+                                        marginRight: "10px",
+                                        padding: "5px 10px",
+                                        border: "none",
+                                        backgroundColor: "#ffc107",
+                                        color: "white",
+                                        borderRadius: "4px",
+                                        cursor: "pointer",
+                                        transition: "background-color 0.3s"
+                                    }}
+                                    onMouseOver={(e) => e.target.style.backgroundColor = "#e0a800"}
+                                    onMouseOut={(e) => e.target.style.backgroundColor = "#ffc107"}
+                                >
+                                    수정
+                                </button>
+                                <button
+                                    onClick={() => handleDeleteClick(comment.comm_code)}
+                                    style={{
+                                        padding: "5px 10px",
+                                        border: "none",
+                                        backgroundColor: "#dc3545",
+                                        color: "white",
+                                        borderRadius: "4px",
+                                        cursor: "pointer",
+                                        transition: "background-color 0.3s"
+                                    }}
+                                    onMouseOver={(e) => e.target.style.backgroundColor = "#c82333"}
+                                    onMouseOut={(e) => e.target.style.backgroundColor = "#dc3545"}
+                                >
+                                    삭제
+                                </button>
+                            </div>
                         )}
                     </li>
                 ))}

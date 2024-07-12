@@ -123,7 +123,7 @@ function PostCreateView() {
         formDataToSend.append('postCon', postCon);
         formDataToSend.append('attachFile', attachFile);
         formDataToSend.append('postCommSet', postCommSet);
-        formDataToSend.append('lowBoardCode', 0);
+        formDataToSend.append('lowBoardCode', 7);
         formDataToSend.append("psCode",psCode);
         formDataToSend.append('empCode',employees.emp_code);
         
