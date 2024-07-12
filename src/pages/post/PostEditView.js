@@ -182,10 +182,10 @@ function PostEditView() {
                             </td>
                             <td>소분류</td>
                             <td >
-                                <select onChange={onChangeHandlerLow}>
+                            <select onChange={onChangeHandlerLow}>
                                     <option>선택하세요</option>
                                     {Array.isArray(LowBoardState) && LowBoardState.length > 0 ? (
-                                        LowBoardState.map(item => (
+                                        LowBoardState.filter(item => item.lowBoardName !== "Deleted").map(item => (
                                             <option key={item.lowBoardCode} value={item.lowBoardCode}>
                                                 {item.lowBoardName}
                                             </option>
