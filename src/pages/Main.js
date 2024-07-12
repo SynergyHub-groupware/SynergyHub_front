@@ -53,7 +53,7 @@ function Main() {
                     <div className="ly_flex ly_fdirecCol hp_w400px ly_fshirnk">
                         <section className="bl_sect hp_padding30 el_shadowD4 hp_mb20  bl_mainProfile"
                                  style={{width: '370px', height: '320px'}}>
-                            <img className="bl_mainProfile__img" src={profileImg}/>
+                            <div className="bl_mainProfile__img"><img className="" src={profileImg}/></div>
                             <ul className="hp_alignC">
                                 <li className="hp_fs20 hp_fw700">{employee?.emp_name}</li>
                                 <li className="hp_mt20">

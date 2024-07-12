@@ -9,7 +9,9 @@
     background-position: center;
     background-color: #363636; /* 배경색 유지 */
     border-radius: 50%;
+    overflow:hidden;
 }
+.bl_mainProfile__img img{margin-top:-37px;}
 
 .bl_mainProfile__alarm{display:inline-block;width:22px;height:22px;background:#000;color:#fff;border-radius:50%;text-align:center;margin-left:10px;vertical-align:1px;font-size:13px;line-height:20px;}
 
