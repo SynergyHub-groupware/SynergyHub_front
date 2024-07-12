@@ -302,7 +302,7 @@ export const callAbsenteeAPI = () => {
                 'Content-Type': 'application/json'
             });
 
-            console.log('callMonthDoAPI result : ', result);
+            console.log('부재자 result : ', result);
 
             if (result && result.status === 200) {
                 dispatch(getAbsentee(result.data.results.absentee));

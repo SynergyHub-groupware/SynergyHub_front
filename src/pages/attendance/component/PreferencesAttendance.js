@@ -25,6 +25,7 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
     const [dayOff, setDayOff] = useState(0);
     const [fieldWork, setFieldWork] = useState(0);
     const [business, setBusiness] = useState(0);
+    const [etc, setEtc] = useState(0);
 
     useEffect(() => {
         const { empTitle, deptCode } = userRoleData;
@@ -92,6 +93,48 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                 setBusiness(sortedData.filter(data => data.attendanceStatus.atsName === '출장').length);
                 setAll(checkIn + lateCount1 + lateCount2 + NoCheckIn + dayOff + fieldWork + business);
             }
+        } else if (empTitle === 'T6' && deptCode === 'D5') {
+
+            // '채용팀'에 속한 사람들만 필터링
+            let filteredData = todayData.filter(data => data.deptTitle === '채용팀');
+
+            // titleCode에 따라 empTitle 변경
+            filteredData = filteredData.map(data => {
+                if (data.empTitle === 'T2') {
+                    return { ...data, empTitle: '책임자' };
+                } else if (data.empTitle === 'T4') {
+                    return { ...data, empTitle: '부서장' };
+                }
+                return data;
+            });
+
+            // 팀장이 맨 위로 오게 정렬
+            const sortedData = filteredData.sort((a, b) => {
+                if (a.empTitle === '팀장') return -1;
+                if (b.empTitle === '팀장') return 1;
+                return 0;
+            });
+
+            // 필요한 상태 업데이트 수행
+            const checkInCount = sortedData.filter(data => data.attendanceStatus.atsName === '출근').length;
+            const lateCount1 = sortedData.filter(data => data.attendanceStatus.atsName === '지각').length;
+            const lateCount2 = sortedData.filter(data => data.attendanceStatus.atsName === '미출근').length;
+            const noCheckInCount = sortedData.filter(data => data.attendanceStatus.atsName === '결근').length;
+            const dayOffCount = sortedData.filter(data => data.attendanceStatus.atsName === '휴가').length;
+            const fieldWorkCount = sortedData.filter(data => data.attendanceStatus.atsName === '외근').length;
+            const businessCount = sortedData.filter(data => data.attendanceStatus.atsName === '출장').length;
+            const etcCount = sortedData.filter(data => data.attendanceStatus.atsName === '출장' || '훈련' || '재택').length;
+            const allCount = checkInCount + lateCount1 + lateCount2 + noCheckInCount + dayOffCount + fieldWorkCount + businessCount + etcCount;
+
+            setFilteredTodayData(sortedData);
+            setCheckIn(checkInCount);
+            setLate(lateCount1 + lateCount2);
+            setNoCheckIn(noCheckInCount);
+            setDayOff(dayOffCount);
+            setFieldWork(fieldWorkCount);
+            setBusiness(businessCount);
+            setEtc(etcCount);
+            setAll(allCount);
         }
     }, [todayData, departmentsData, userRoleData]);
 
@@ -109,7 +152,7 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                 </div>
                 <div className="">
                     <div className="hp_mt30" style={{ width: '300px' }}>
-                        <table className="ly_fitemC hp_ml40">
+                        <table className="ly_fitemC">
                         <colgroup>
                                 <col style={{width: "20px"}}/>
                                 <col style={{width: "20px"}}/>
@@ -121,38 +164,43 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                             <thead className="">
                             <tr>
                                 <th>
-                                    <div className="bl_tna__label4 hp_lh2-5 hp_mr15 hp_mb15">
-                                        <p style={{color: "white"}}>전체인원</p>
+                                    <div className="bl_tna__label4 hp_lh2-5 hp_mr15 hp_mb15 hp_ml30" style={{ width: '80px' }}>
+                                        <p style={{color: "white"}}>전체</p>
                                     </div>
                                 </th>
                                 <th>
-                                    <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15">
-                                        <p style={{color: "#006CD0FF"}}>출근인원</p>
+                                    <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15" style={{ width: '80px' }}>
+                                        <p style={{color: "#006CD0FF"}}>출근</p>
                                     </div>
                                 </th>
                                 <th>
-                                    <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15">
-                                        <p style={{color: "#006CD0FF"}}>지각인원</p>
+                                    <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15" style={{ width: '80px' }}>
+                                        <p style={{color: "#006CD0FF"}}>지각</p>
                                     </div>
                                 </th>
                                 <th>
-                                    <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15">
-                                        <p style={{color: "#006CD0FF"}}>결근인원</p>
+                                    <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15" style={{ width: '80px' }}>
+                                        <p style={{color: "#006CD0FF"}}>결근</p>
                                     </div>
                                 </th>
                                 <th>
-                                    <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15">
-                                        <p style={{color: "#006CD0FF"}}>휴가인원</p>
+                                    <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15" style={{ width: '80px' }}>
+                                        <p style={{color: "#006CD0FF"}}>휴가</p>
                                     </div>
                                 </th>
                                 <th>
-                                    <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15">
-                                        <p style={{color: "#006CD0FF"}}>외근인원</p>
+                                    <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15" style={{ width: '80px' }}>
+                                        <p style={{color: "#006CD0FF"}}>외근</p>
                                     </div>
                                 </th>
                                 <th>
-                                    <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15">
-                                        <p style={{color: "#006CD0FF"}}>출장인원</p>
+                                    <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15" style={{ width: '80px' }}>
+                                        <p style={{color: "#006CD0FF"}}>출장</p>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15" style={{ width: '80px' }}>
+                                        <p style={{color: "#006CD0FF"}}>기타</p>
                                     </div>
                                 </th>
                             </tr>
@@ -161,7 +209,7 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                             <tr className="">
                                 <td>
                                     <div
-                                        className="hp_fw700 hp_fs28 ly_flexC hp_mr15">{all}
+                                        className="hp_fw700 hp_fs28 ly_flexC hp_mr15 hp_ml30">{all}
                                     </div>
                                 </td>
                                 <td>
@@ -184,6 +232,9 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                                 </td>
                                 <td>
                                     <div className="hp_fw700 hp_fs28 ly_flexC hp_mr20">{fieldWork}</div>
+                                </td>
+                                <td>
+                                    <div className="hp_fw700 hp_fs28 ly_flexC hp_mr20">{business}</div>
                                 </td>
                                 <td>
                                     <div className="hp_fw700 hp_fs28 ly_flexC hp_mr20">{business}</div>
@@ -214,7 +265,7 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                         <th scope="col">근태현황</th>
                         <th scope="col">출근시간</th>
                         <th scope="col">퇴근시간</th>
-                        <th scope="col">초과근무</th>
+                        <th scope="col">초과근무 여부</th>
                         <th scope="col">비고</th>
                     </tr>
                     </thead>
@@ -237,7 +288,7 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                                 <td>{employee.startTime ? employee.startTime : "-"}</td>
                                 <td>{employee.endTime ? employee.endTime : "-"}</td>
                                 <td>{employee.owStartTime ? employee.owStartTime : "-"}</td>
-                                <td>{employee.owEndTime ? employee.owEndTime : "-"}</td>
+                                <td>-</td>
                             </tr>
                         ))
                     ) : (

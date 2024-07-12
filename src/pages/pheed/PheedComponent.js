@@ -143,6 +143,18 @@ const PheedComponent = () => {
         return pheedSort.includes('PO') || pheedSort.includes('MS');
     };
 
+    const getSortClass = (pheedSort) => {
+        if (pheedSort.includes('AD')) {
+            return 'bl_sort_approval';
+        } else if (pheedSort.includes('MS')) {
+            return 'bl_sort_msg';
+        } else if (pheedSort.includes('PO')) {
+            return 'bl_sort_po';
+        }
+        // 기본적으로 추가할 클래스가 없는 경우
+        return '';
+    };
+
     return (
         <>
             <h4 className="el_lv1Head hp_mb10">실시간 알림<b className="bl_mainBoard__alarm hp_ml10">{unreadPostCount}</b></h4>
@@ -154,7 +166,7 @@ const PheedComponent = () => {
                         {pheeds.map(pheed => (
                             <section key={pheed.pheedCode} className={`bl_sect el_shadowD4 ly_spaceBetween ly_fitemC hp_p20-30 hp_mt15 ${pheed.readStatus === 'Y' ? 'bl_mainBoard__read' : ''}`}>
                                 <div className="ly_flex ly_fitemC">
-                                    <div className="bl_miniProfile__img"></div>
+                                    <div className={getSortClass(pheed.pheedSort)}></div>
                                     <ul className="hp_ml20">
                                         <li className="hp_fs16 hp_fw400">
                                             {isPOorMS(pheed.pheedSort) ? (

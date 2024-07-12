@@ -13,4 +13,3 @@ export const request = async (method, url, headers, data, responseType ) => {
         responseType
     }).catch(error => console.log(error));
 }
-

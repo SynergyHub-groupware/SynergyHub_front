@@ -2,21 +2,30 @@
 
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { callMyInfoAPI, callUpdateMyInfoAPI } from '../../apis/EmployeeAPICalls';
+import { callGetProfileImgAPI, callMyInfoAPI, callUpdateMyInfoAPI, callUploadProfileImgAPI } from '../../apis/EmployeeAPICalls';
 import DaumPostcode from 'react-daum-postcode';
 
 // npm install react-daum-postcode
 
 function MyInfo() {
 
-
     const dispatch = useDispatch();
 
     const employee = useSelector(state => state.employeeReducer.employee);
     const updateEmployee = useSelector(state => state.employeeReducer.updateEmployee);
+    const profileImg = useSelector(state => state.employeeReducer.profileImg);
 
-    // console.log('employee in component: ', employee);
-    // console.log('updateEmployee in component: ', updateEmployee);
+    console.log('Profile Image URL:', profileImg);
+
+    useEffect(() => {
+        dispatch(callMyInfoAPI());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if(employee) {
+            dispatch(callGetProfileImgAPI(employee.emp_code));
+        }
+    }, [dispatch, employee]);
 
     const initialFormData = {
         email: '',
@@ -25,6 +34,7 @@ function MyInfo() {
         bank_name: '',
         account_num: '',
         new_emp_pass: '',
+        emp_img: null,
     };
 
     const [formData, setFormData] = useState(initialFormData);
@@ -38,10 +48,8 @@ function MyInfo() {
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [changePasswordStatus, setChangePasswordStatus] = useState(null); // 성공, 실패 여부 상태
-
-    useEffect(() => {
-        dispatch(callMyInfoAPI());
-    }, [dispatch]);
+    const [profileImgUrl, setProfileImgUrl] = useState('');
+    const [defaultProfileImgUrl, setDefaultProfileImgUrl] = useState(''); // 기본 프로필 이미지 URL 설정
 
     useEffect(() => {
         if (employee) {
@@ -57,6 +65,7 @@ function MyInfo() {
             setPostcode(postalCode);
             setMainAddress(mainAddress);
             setDetailAddress(detailAddress);
+            setDefaultProfileImgUrl(employee.profile_img_url); // 기본 프로필 이미지 URL 설정
         }
     }, [employee]);
 
@@ -103,6 +112,21 @@ function MyInfo() {
         }
     };
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setProfileImgUrl(reader.result); // 이미지 미리보기를 위해 URL을 상태에 저장
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+        setFormData({
+            ...formData,
+            emp_img: file
+        });
+    };
+
     const handleChangePassword = async () => {
         if (newPassword !== confirmNewPassword) {
             alert('새 비밀번호가 일치하지 않습니다.');
@@ -127,25 +151,38 @@ function MyInfo() {
         }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const updatedFormData = {
-                ...formData,
-                address: `${postcode} ${mainAddr} ${detailAddr}`,
-            };
+    const handleProfileImgUpload = async () => {
+        const formDataToSend = new FormData();
+        formDataToSend.append('empCode', employee.emp_code);
+        formDataToSend.append('profileImg', formData.emp_img);
     
-            await dispatch(callUpdateMyInfoAPI(updatedFormData));
-            await dispatch(callMyInfoAPI());
-            setSaveStatus("success");
-            alert("내 정보 변경에 성공하였습니다");
+        try {
+            await dispatch(callUploadProfileImgAPI(formDataToSend));
+            await dispatch(callGetProfileImgAPI(employee.emp_code)); // 업로드 후 프로필 이미지 다시 가져오기
+            alert("프로필 이미지 업로드에 성공하였습니다");
         } catch (error) {
-            console.error("내 정보 업데이트에 실패하였습니다:", error);
-            setSaveStatus("fail");
-            alert("내 정보 변경에 실패하였습니다");
+            console.error("프로필 이미지 업로드에 실패하였습니다:", error);
+            alert("프로필 이미지 업로드에 실패하였습니다");
         }
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const updatedFormData = {
+            ...formData,
+            address: `${postcode} ${mainAddr} ${detailAddr}`,
+        };
+
+        try {
+            await dispatch(callUpdateMyInfoAPI(updatedFormData));
+            await dispatch(callMyInfoAPI());
+            alert("내 정보 변경에 성공하였습니다");
+        } catch (error) {
+            console.error("내 정보 업데이트에 실패하였습니다:", error);
+            alert("내 정보 변경에 실패하였습니다");
+        }
+    };
 
     // 주소 분리 함수
     const splitAddress = (address) => {
@@ -169,8 +206,8 @@ function MyInfo() {
         return { postalCode, mainAddress, detailAddress };
     };
 
-    /* 기본 프로필 이미지 경로 설정 */
-    const profileImgUrl = employee?.emp_img ? `${process.env.PUBLIC_URL}/${employee.emp_img}` : `${process.env.PUBLIC_URL}/images/profileImg/profileImg.png`;
+    // /* 기본 프로필 이미지 경로 설정 */
+    // const profileImgUrl = employee?.emp_img ? `${process.env.PUBLIC_URL}/${employee.emp_img}` : `${process.env.PUBLIC_URL}/images/profileImg/profileImg.png`;
 
     return (
         <div className="ly_cont">
@@ -185,10 +222,17 @@ function MyInfo() {
                         <col style={{ width: "150px" }} />
                         <col style={{ width: "*" }} />
                     </colgroup>
-                    <tbody key={employee?.emp_code}>
+                    <tbody key={employee.emp_code}>
                         <tr>
                             <th rowspan="3" className="hp_padding0">
-                                <div className="el_profile__img" style={{ backgroundImage: `url(${profileImgUrl})`, height: "180px", width: "150px" }}></div>
+                                {/* <div className="el_profile__img" style={{ backgroundImage: `url(${profileImgUrl})`, height: "180px", width: "150px" }}></div> */}
+                                {/* style={{ backgroundImage: `url(${profileImgUrl || defaultProfileImgUrl})`, height: "180px", width: "150px", backgroundSize: 'cover', backgroundPosition: 'center' }} */}
+                                <div className="el_profile__img">
+                                    <img src={profileImg} alt="프로필 사진" style={{height: "200px", width: "150px"}} />
+                                </div>
+                                {/* <div>
+                                    <button type="button" className="el_btnS el_btnblueBack" onClick={handleProfileImgUpload} >저장</button>
+                                </div> */}
                             </th>
                             <th >이름</th>
                             <td>{employee.emp_name}</td>
@@ -228,6 +272,12 @@ function MyInfo() {
                                 </div>
                                 <input type="text" className="hp_w100 hp_mt10" value={mainAddr} onChange={(e) => setMainAddress(e.target.value)} />
                                 <input type="text" className="hp_w100 hp_mt10" value={detailAddr} onChange={(e) => setDetailAddress(e.target.value)} />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>프로필 이미지</th>
+                            <td colSpan="4">
+                                <input type="file" className="hp_w100" name='emp_img' onChange={handleFileChange} />
                             </td>
                         </tr>
                     </tbody>
