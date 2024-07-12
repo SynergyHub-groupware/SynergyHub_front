@@ -107,7 +107,7 @@ function PostListViewInBoard() {
             </tr>
           </thead>
           <tbody>
-            {pinBoard()}
+            {/* {pinBoard()} */}
             {board()}
           </tbody>
         </table>
