@@ -19,6 +19,7 @@ function PostNav() {
     useEffect(() => {
         if (AllLowState.length > 0) {
             const groupedBoards = AllLowState.reduce((acc, lowBoard) => {
+                console.log(lowBoard.boardCode.boardName)
                 const boardName = lowBoard.boardCode.boardName;
                 if (!acc[boardName]) {
                     acc[boardName] = {
