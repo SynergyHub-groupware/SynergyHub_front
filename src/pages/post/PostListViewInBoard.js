@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { callGETInboardList, callGETInboardPinList } from './postApi/PostAPI';
-import { callGETPostList, callGETpostSearch } from './postApi/PostAPI';
+import { callGETInboardList, callGETInboardPinList, callGETLowBoardList } from './postApi/PostAPI';
+import { callGETLowBoardListToCode,callGETPostList, callGETpostSearch } from './postApi/PostAPI';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
@@ -13,6 +13,7 @@ function PostListViewInBoard() {
 
   const PostdataInBoardState = useSelector(state => state.post.PostdataInBoard); // Redux store에서 PostdataInBoard 상태 가져오기
   const PostdataInBoardPinState = useSelector(state => state.post.PostdataInBoardPin); // Redux store에서 PostdataInBoardPin 상태 가져오기
+  const LowCodeList = useSelector(state => state.post.LowCodeList); // Redux store에서 PostdataInBoardPin 상태 가져오기
 
   const [postsearch, setpostSearch] = useState('');
   const { Postdata, PostSearch } = postState;
@@ -43,6 +44,7 @@ function PostListViewInBoard() {
     // lowBoardCode가 변경될 때마다 게시글 목록과 고정글 목록을 불러옴
     dispatch(callGETInboardList(lowBoardCode));
     dispatch(callGETInboardPinList(lowBoardCode));
+    dispatch(callGETLowBoardListToCode(lowBoardCode))
   }, [dispatch, lowBoardCode]);
 
   const pinBoard = () => {
@@ -85,7 +87,7 @@ function PostListViewInBoard() {
   return (
     <>
       <div className="main" style={{width: "900px"}}>
-        <h1 style={{ fontSize: '50px' }}>하위 게시판</h1>
+        <h1 style={{ fontSize: '50px' }}>{LowCodeList.lowBoardName}</h1>
         <br /><br /><br />
         <div className="searchZone">
           <input type="text"

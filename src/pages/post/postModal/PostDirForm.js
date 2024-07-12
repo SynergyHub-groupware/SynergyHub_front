@@ -226,7 +226,7 @@ function PostDirForm({ Roll, LowBoardCode, closeModal, onConfirm, onClear, defau
                                                 <ul>
                                                     {receiver.map(emp => (
                                                         <li key={emp.emp_code || emp.empCode}>
-                                                            - {emp.emp_name || emp.empName} {'<'}{emp.dept_title || emp.deptTitle} {emp.position_name || emp.positionName}{'>'}
+                                                            - {emp.emp_name || emp.emp_Name} {'<'}{emp.dept_title || emp.deptTitle} {emp.position_name || emp.positionName}{'>'}
                                                         </li>
                                                     ))}
                                                 </ul>

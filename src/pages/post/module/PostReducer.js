@@ -16,7 +16,8 @@ const initialState = {
   PostEditState:[],
   PostReadyState:[],
   RollState:[],
-  PostRoleState:[]
+  PostRoleState:[],
+  LowCodeList:[]
 };
 
 const GET_POSTLIST = 'post/GET_POSTLIST';
@@ -34,9 +35,9 @@ const GET_POSTEDIT='post/GET_POSTEDIT'
 const GET_POSTREADY='post/GET_POSTREADY'
 const GET_ROLL='post/GET_ROLL'
 const GET_POSTROLE='post/GET_POSTROLE'
-
+const GET_LOWDATATOCODE='post/GET_LOWDATATOCODE'
 // 액션 생성자 함수 생성
-export const { post: {getPostrole,getRoll,getPostready,getPostedit,getPostsearch,getAlllow,getComment,getFile,getPostlist, getAllboard, getAlllowboard,getSortlist,getPostdatainboard,getPostdatainboardpin,getDetail } } = createActions({
+export const { post: {getLowdatatocode,getPostrole,getRoll,getPostready,getPostedit,getPostsearch,getAlllow,getComment,getFile,getPostlist, getAllboard, getAlllowboard,getSortlist,getPostdatainboard,getPostdatainboardpin,getDetail } } = createActions({
   [GET_POSTLIST]: postlist => ({ postlist }),
   [GET_ALLBOARD]: boardlist => ({ boardlist }),
   [GET_ALLLOWBOARD]: lowboardlist => ({ lowboardlist }),
@@ -51,7 +52,8 @@ export const { post: {getPostrole,getRoll,getPostready,getPostedit,getPostsearch
   [GET_POSTEDIT]:posteditdata=>({posteditdata}),
   [GET_POSTREADY]:postreadydata=>({postreadydata}),
   [GET_ROLL]:rolldata=>({rolldata}),
-  [GET_POSTROLE]:postrole=>({postrole})
+  [GET_POSTROLE]:postrole=>({postrole}),
+  [GET_LOWDATATOCODE]:lowcodelist=>({lowcodelist})
 });
 
 // 확인용 로그 : 이다정 주석처리
@@ -126,6 +128,10 @@ const postReducer = handleActions(
     [GET_POSTROLE]:(state,{payload})=>({
       ...state,
       PostRoleState:payload.postrole
+    }),
+    [GET_LOWDATATOCODE]:(state,{payload})=>({
+      ...state,
+      LowCodeList:payload.lowcodelist
     })
 
   },

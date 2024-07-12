@@ -70,9 +70,11 @@ function PostNav() {
                                             lowBoard.boardCode !== 0 && ( // Exclude low boards with boardCode 0
                                                 <tr key={lowBoard.lowBoardCode} className="button-wrapper">
                                                     <li>
-                                                        <Link to={`/post/PostListViewInBoard/${lowBoard.lowBoardCode}`}>
-                                                            {lowBoard.lowBoardName}
-                                                        </Link>
+                                                        {lowBoard.lowBoardName !== 'Deleted' && (
+                                                            <Link to={`/post/PostListViewInBoard/${lowBoard.lowBoardCode}`}>
+                                                                {lowBoard.lowBoardName}
+                                                            </Link>
+                                                        )}
                                                     </li>
                                                 </tr>
                                             )
