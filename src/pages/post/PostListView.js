@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { callGETPostList, callGETpostSearch } from './postApi/PostAPI';
+import { Link } from 'react-router-dom';
 
 function PostListView() {
   const dispatch = useDispatch();
@@ -15,15 +16,14 @@ function PostListView() {
 
   const nextPage = () => {
     setCurrentPage(currentPage + 1);
-};
+  };
 
-const prevPage = () => {
+  const prevPage = () => {
     setCurrentPage(currentPage - 1);
-};
-
+  };
 
   useEffect(() => {
-    dispatch(callGETPostList(currentPage,pageSize)); // 첫 번째 페이지, 페이지당 10개의 데이터 요청
+    dispatch(callGETPostList(currentPage, pageSize)); // 첫 번째 페이지, 페이지당 10개의 데이터 요청
   }, [dispatch, currentPage, pageSize]);
 
   useEffect(() => {
@@ -50,9 +50,12 @@ const prevPage = () => {
       return (
         <tr key={item.postCode}>
           <td>{item.postCode}</td>
-          <td>{lowBoardName}</td>
-          <td>{item.postName}</td>
-          <td>{item.empCode}</td>
+          <td>
+            <Link to={`/post/PostDetail/${item.postCode}`}>
+              {item.postName}
+            </Link>
+          </td>
+          <td>{item.empName}</td>
           <td>{item.postDate}</td>
           <td>{item.postViewCnt}</td>
         </tr>
@@ -72,7 +75,7 @@ const prevPage = () => {
 
   return (
     <>      
-      <div className="main">
+      <div className="main" style={{ width: "900px" }}>
         <h1 style={{ fontSize: '50px' }}>전체 게시판</h1>
         <br /><br /><br />
         <div className="searchZone">
@@ -93,7 +96,6 @@ const prevPage = () => {
           <thead>
             <tr className="tableHead">
               <th>No</th>
-              <th>분류</th>
               <th>제목</th>
               <th>작성자</th>
               <th>작성일</th>
@@ -104,9 +106,9 @@ const prevPage = () => {
             {renderRows()}
           </tbody>
         </table>
-        <div className="bl_paging" style={{ display: 'flex' }}>
+        <div className="bl_paging" style={{ display: 'flex', justifyContent: 'center' }}>
           <button onClick={prevPage} disabled={currentPage === 0} className="bl_paging__btn bl_paging__prev">  </button>
-          <span>{currentPage}</span>
+          <span>{currentPage + 1}</span>
           <button onClick={nextPage} className="bl_paging__btn">  </button>
         </div>
       </div>

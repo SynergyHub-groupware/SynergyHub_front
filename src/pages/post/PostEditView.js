@@ -1,7 +1,7 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { callGETBoardList, callGETLowBoardList,callGETSoftList,callGETDetail } from './postApi/PostAPI';
 import { callMyInfoAPI } from '../../apis/EmployeeAPICalls';
@@ -25,6 +25,7 @@ function PostEditView() {
         dispatch(callMyInfoAPI());
     }, []);
     const employees = useSelector(state => state.employeeReducer.employee);
+    const navigate = useNavigate();
 
 
     useEffect(()=>{
@@ -139,6 +140,22 @@ function PostEditView() {
             console.error('Error submitting form:', error);
         }
     };
+    const handleDelete = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/post/postDelete/${postCode}`, {
+                method: 'PUT',
+                mode: 'cors'
+            });
+            if (response.ok) {
+                navigate('/post/PostListView'); // 삭제 후 목록 페이지로 이동
+            } else {
+                console.error('Failed to delete post');
+            }
+        } catch (error) {
+            console.error('Error deleting post:', error);
+        }
+    };
+
     return (
         <div className="main" style={{width: "900px",height:"500px",marginLeft:"10px"}}>
             <form onSubmit={handleSubmit}>
@@ -165,10 +182,10 @@ function PostEditView() {
                             </td>
                             <td>소분류</td>
                             <td >
-                                <select onChange={onChangeHandlerLow}>
+                            <select onChange={onChangeHandlerLow}>
                                     <option>선택하세요</option>
                                     {Array.isArray(LowBoardState) && LowBoardState.length > 0 ? (
-                                        LowBoardState.map(item => (
+                                        LowBoardState.filter(item => item.lowBoardName !== "Deleted").map(item => (
                                             <option key={item.lowBoardCode} value={item.lowBoardCode}>
                                                 {item.lowBoardName}
                                             </option>
@@ -243,6 +260,7 @@ function PostEditView() {
                                 <button className='el_btnredBack' type="button">취소</button>
                                 <button className='el_btn8Back' type="button">임시저장</button>
                                 <button className='el_btn0Bord' type="submit">저장</button>
+                                <button className='el_btnredBack' type="button" onClick={handleDelete}>삭제</button>
                             </td>
                         </tr>
                     </thead>

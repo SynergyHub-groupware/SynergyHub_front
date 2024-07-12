@@ -55,14 +55,21 @@ function PostDetailView() {
 
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
-
+    
+        let commStatus = 'N';
+        if (DetailData.postCommSet === 'ALLOW_ANONYMOUS') {
+            commStatus = 'Y';
+        } else if (DetailData.postCommSet === 'ALLOW_BOTH' && isAnonymous) {
+            commStatus = 'Y';
+        }
+    
         const commentData = {
             commCon: newComment,
-            commStatus: isAnonymous ? 'Y' : 'N',
+            commStatus: commStatus,
             postCode: DetailData.postCode,
             commDate: new Date().toISOString()
         };
-
+    
         try {
             const token = localStorage.getItem('access-token');
             const response = await axios.post('http://localhost:8080/post/commentAdd', commentData, {
@@ -71,14 +78,14 @@ function PostDetailView() {
                     'Content-Type': 'application/json'
                 }
             });
-
+    
             setComments([...comments, response.data]);
             setNewComment('');
         } catch (error) {
             console.error('Failed to add comment:', error);
         }
     };
-
+    
     const handleEditClick = (commentId) => {
         const commentToEdit = CommentState.find(comment => comment.comm_code === commentId);
         if (commentToEdit) {
@@ -89,14 +96,21 @@ function PostDetailView() {
 
     const handleEditSave = async () => {
         if (!editingComment) return;
-
+    
+        let commStatus = 'N';
+        if (DetailData.postCommSet === 'ALLOW_ANONYMOUS') {
+            commStatus = 'Y';
+        } else if (DetailData.postCommSet === 'ALLOW_BOTH' && isAnonymous) {
+            commStatus = 'Y';
+        }
+    
         const editedCommentData = {
             commCon: newComment,
-            commStatus: isAnonymous ? 'Y' : 'N',
+            commStatus: commStatus,
             postCode: DetailData.postCode,
             commDate: new Date().toISOString()
         };
-
+    
         try {
             const token = localStorage.getItem('access-token');
             const response = await axios.put(`http://localhost:8080/post/commentEdit/${editingComment.comm_code}`, editedCommentData, {
@@ -105,11 +119,11 @@ function PostDetailView() {
                     'Content-Type': 'application/json'
                 }
             });
-
+    
             const updatedComments = CommentState.map(comment =>
                 comment.comm_code === editingComment.comm_code ? response.data : comment
             );
-
+    
             setComments(updatedComments);
             setEditingComment(null);
             setNewComment('');
@@ -117,7 +131,7 @@ function PostDetailView() {
             console.error('Failed to edit comment:', error);
         }
     };
-
+    
     const handleDeleteClick = async (commCode) => {
         try {
             const token = localStorage.getItem('access-token');
@@ -205,105 +219,104 @@ function PostDetailView() {
         );
     };
 
-    const renderCommentSection = (buttonText, allowAnonymous = false) => (
-        <div style={{ marginTop: "20px" }}>
-            <form onSubmit={editingComment ? handleEditSave : handleCommentSubmit} style={{ display: "flex", flexDirection: "column", marginBottom: "20px" }}>
-                <textarea
-                    value={newComment}
-                    onChange={handleCommentChange}
-                    style={{
-                        width: "100%",
-                        height: "100px",
-                        padding: "10px",
-                        marginBottom: "10px",
-                        borderRadius: "4px",
-                        border: "1px solid #ccc",
-                        resize: "none"
-                    }}
-                    placeholder="댓글을 입력하세요."
-                />
-                {allowAnonymous && (
-                    <label style={{ marginBottom: "10px", fontSize: "14px" }}>
-                        <input
-                            type="checkbox"
-                            checked={isAnonymous}
-                            onChange={() => setIsAnonymous(!isAnonymous)}
-                            style={{ marginRight: "5px" }}
-                        />
-                        익명으로 작성
-                    </label>
-                )}
-                <button
-                    type="submit"
-                    style={{
-                        padding: "10px 20px",
-                        border: "none",
-                        borderRadius: "4px",
-                        backgroundColor: "#007bff",
-                        color: "white",
-                        cursor: "pointer",
-                        alignSelf: "flex-end",
-                        transition: "background-color 0.3s"
-                    }}
-                    onMouseOver={(e) => e.target.style.backgroundColor = "#0056b3"}
-                    onMouseOut={(e) => e.target.style.backgroundColor = "#007bff"}
-                >
-                    {buttonText}
-                </button>
-            </form>
-            <ul style={{ listStyle: "none", padding: "0" }}>
-                {CommentState.map((comment) => (
-                    <li key={comment.comm_code} style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
-                        {comment.comm_status !== 'Y' && (
-                            <div>
-                                {comment.emp_name} || {comment.commDate}
-                            </div>
-
-                        )}
-                        <h1></h1>
-                        {comment.comm_con}
-                        {employee.emp_code === comment.emp_code && (
-                            <div style={{ marginTop: "10px" }}>
-                                <button
-                                    onClick={() => handleEditClick(comment.comm_code)}
-                                    style={{
-                                        marginRight: "10px",
-                                        padding: "5px 10px",
-                                        border: "none",
-                                        backgroundColor: "#ffc107",
-                                        color: "white",
-                                        borderRadius: "4px",
-                                        cursor: "pointer",
-                                        transition: "background-color 0.3s"
-                                    }}
-                                    onMouseOver={(e) => e.target.style.backgroundColor = "#e0a800"}
-                                    onMouseOut={(e) => e.target.style.backgroundColor = "#ffc107"}
-                                >
-                                    수정
-                                </button>
-                                <button
-                                    onClick={() => handleDeleteClick(comment.comm_code)}
-                                    style={{
-                                        padding: "5px 10px",
-                                        border: "none",
-                                        backgroundColor: "#dc3545",
-                                        color: "white",
-                                        borderRadius: "4px",
-                                        cursor: "pointer",
-                                        transition: "background-color 0.3s"
-                                    }}
-                                    onMouseOver={(e) => e.target.style.backgroundColor = "#c82333"}
-                                    onMouseOut={(e) => e.target.style.backgroundColor = "#dc3545"}
-                                >
-                                    삭제
-                                </button>
-                            </div>
-                        )}
-                    </li>
-                ))}
-            </ul>
-        </div>
-    );
+const renderCommentSection = (buttonText, allowAnonymous = false) => (
+    <div style={{ marginTop: "20px" }}>
+        <form onSubmit={editingComment ? handleEditSave : handleCommentSubmit} style={{ display: "flex", flexDirection: "column", marginBottom: "20px" }}>
+            <textarea
+                value={newComment}
+                onChange={handleCommentChange}
+                style={{
+                    width: "100%",
+                    height: "100px",
+                    padding: "10px",
+                    marginBottom: "10px",
+                    borderRadius: "4px",
+                    border: "1px solid #ccc",
+                    resize: "none"
+                }}
+                placeholder="댓글을 입력하세요."
+            />
+            {allowAnonymous && (
+                <label style={{ marginBottom: "10px", fontSize: "14px" }}>
+                    <input
+                        type="checkbox"
+                        checked={isAnonymous}
+                        onChange={() => setIsAnonymous(!isAnonymous)}
+                        style={{ marginRight: "5px" }}
+                    />
+                    익명으로 작성
+                </label>
+            )}
+            <button
+                type="submit"
+                style={{
+                    padding: "10px 20px",
+                    border: "none",
+                    borderRadius: "4px",
+                    backgroundColor: "#007bff",
+                    color: "white",
+                    cursor: "pointer",
+                    alignSelf: "flex-end",
+                    transition: "background-color 0.3s"
+                }}
+                onMouseOver={(e) => e.target.style.backgroundColor = "#0056b3"}
+                onMouseOut={(e) => e.target.style.backgroundColor = "#007bff"}
+            >
+                {buttonText}
+            </button>
+        </form>
+        <ul style={{ listStyle: "none", padding: "0" }}>
+            {CommentState.map((comment) => (
+                <li key={comment.comm_code} style={{ padding: "10px", borderBottom: "1px solid #ccc" }}>
+                    {comment.comm_status !== 'Y' && (
+                        <div>
+                            {comment.emp_name} || {comment.commDate}
+                        </div>
+                    )}
+                    <h1></h1>
+                    {comment.comm_con}
+                    {employee.emp_code === comment.emp_code && (
+                        <div style={{ marginTop: "10px" }}>
+                            <button
+                                onClick={() => handleEditClick(comment.comm_code)}
+                                style={{
+                                    marginRight: "10px",
+                                    padding: "5px 10px",
+                                    border: "none",
+                                    backgroundColor: "#ffc107",
+                                    color: "white",
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                    transition: "background-color 0.3s"
+                                }}
+                                onMouseOver={(e) => e.target.style.backgroundColor = "#e0a800"}
+                                onMouseOut={(e) => e.target.style.backgroundColor = "#ffc107"}
+                            >
+                                수정
+                            </button>
+                            <button
+                                onClick={() => handleDeleteClick(comment.comm_code)}
+                                style={{
+                                    padding: "5px 10px",
+                                    border: "none",
+                                    backgroundColor: "#dc3545",
+                                    color: "white",
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                    transition: "background-color 0.3s"
+                                }}
+                                onMouseOver={(e) => e.target.style.backgroundColor = "#c82333"}
+                                onMouseOut={(e) => e.target.style.backgroundColor = "#dc3545"}
+                            >
+                                삭제
+                            </button>
+                        </div>
+                    )}
+                </li>
+            ))}
+        </ul>
+    </div>
+);
 
     return <div>{renderDetail()}</div>;
 }
