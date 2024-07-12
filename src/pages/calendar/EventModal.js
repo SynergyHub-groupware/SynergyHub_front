@@ -127,7 +127,7 @@ function EventModal({ show, handleClose, handleSave: saveEvent }) {
                       </div>
                     </td>
                   </tr>
-                  <tr>
+                  {/* <tr>
                     <th scope="row">라벨 분류</th>
                     <td>
                       <select className="hp_w100" name="labelCode" value={formData.labelCode} onChange={handleChange}>
@@ -137,7 +137,7 @@ function EventModal({ show, handleClose, handleSave: saveEvent }) {
                         <option value="4">개인</option>
                       </select>
                     </td>
-                  </tr>
+                  </tr> */}
                   <tr>
                     <th scope="row">내용</th>
                     <td><textarea className="hp_w100" placeholder="내용을 입력해주세요" name='eventCon' value={formData.eventCon} onChange={handleChange}></textarea></td>

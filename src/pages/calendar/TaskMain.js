@@ -181,13 +181,20 @@ const TaskMain = () => {
         }
     };
 
+    const isTaskOwner = newTask.empCode === employee.emp_code;
+    const isLoginer = newTask.empCode && newTask.empCode === employee.emp_code;
+
+
+    console.log("로그인한 사용자", employee.emp_code)
+    console.log("업무 작성자", newTask.empCode)
+
     return (
         <div className="ly_cont" style={{ height: 'calc(100vh - 65px)' }}>
             <div className="ly_spaceBetween hp_mb30">
                 <h4 className="el_lv1Head">업무</h4>
-                <select>
+                {/* <select>
                     <option value="">정렬방식</option>
-                </select>
+                </select> */}
             </div>
             <div className="ly_flex bl_task">
                 <section className="bl_sect hp_dBack hp_padding15 ly_fgrow1">
@@ -279,35 +286,55 @@ const TaskMain = () => {
                                             <th scope="row">내용</th>
                                             <td colSpan="3"><textarea className="hp_w100" name="description" placeholder="내용을 입력해주세요" value={newTask.description} onChange={handleInputChange}></textarea></td>
                                         </tr>
-                                        <tr>
-                                            <th scope="row">담당자</th>
-                                            <td>
-                                                <button type="button" className="el_btnS el_btn8Bord hp_p3-5" onClick={openAddressModal}>담당자 추가 </button>
-                                                {selectEmps.map((emp, index) => (
-                                                    <span key={emp.emp_code}>
-                                                        {index > 0 && ", "}
-                                                        {emp.emp_name}
-                                                    </span>
-                                                ))}
-                                            </td>
-                                        </tr>
-                                        <tr>
+                                        {!newTask.empCode && (
+                                            <tr>
+                                                <th scope="row">담당자</th>
+                                                <td>
+                                                    <button type="button" className="el_btnS el_btn8Bord hp_p3-5" onClick={openAddressModal}>담당자 추가 </button>
+                                                    {selectEmps.map((emp, index) => (
+                                                        <span key={emp.emp_code}>
+                                                            {index > 0 && ", "}
+                                                            {emp.emp_name}
+                                                        </span>
+                                                    ))}
+                                                </td>
+                                            </tr>
+                                        )}
+                                        {isLoginer && (
+                                             <tr>
+                                             <th scope="row">담당자</th>
+                                             <td>
+                                                 <button type="button" className="el_btnS el_btn8Bord hp_p3-5" onClick={openAddressModal}>담당자 추가 </button>
+                                                 {selectEmps.map((emp, index) => (
+                                                     <span key={emp.emp_code}>
+                                                         {index > 0 && ", "}
+                                                         {emp.emp_name}
+                                                     </span>
+                                                 ))}
+                                             </td>
+                                         </tr>
+                                        )}
+                                        {/* <tr>
                                             <th scope="row">캘린더 표시</th>
                                             <td><input type="checkbox" className="hp_w100" name="display" checked={newTask.display} onChange={handleInputChange} /></td>
-                                        </tr>
+                                        </tr> */}
                                     </tbody>
                                 </table>
                             </div>
-                            <div className="hp_alignC hp_mb20 hp_mt10">
-                                {selectedTaskId ? (
-                                    <>
-                                        <button type="button" className="el_btnM el_btnblueBord" onClick={handleSubmit}>수정</button>
-                                        <button type="button" className="el_btnM el_btnredBack" onClick={handleDelete}>삭제</button>
-                                    </>
-                                ) : (
-                                    <button type="button" className="el_btnM el_btnblueBack" onClick={handleSubmit}>등록</button>
-                                )}
-                            </div>
+                            
+                                <div className="hp_alignC hp_mb20 hp_mt10">
+                                    {selectedTaskId ? (
+                                        isTaskOwner && (
+                                        <>
+                                            <button type="button" className="el_btnM el_btnblueBord" onClick={handleSubmit}>수정</button>
+                                            <button type="button" className="el_btnM el_btnredBack" onClick={handleDelete}>삭제</button>
+                                        </>
+                                        )
+                                    ) : (
+                                        <button type="button" className="el_btnM el_btnblueBack" onClick={handleSubmit}>등록</button>
+                                    )}
+                                </div>
+                            
                         </div>
                     </div>
                 </div>
