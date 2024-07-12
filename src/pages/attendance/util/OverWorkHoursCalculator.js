@@ -12,6 +12,11 @@ const OverWorkHoursCalculator = ({ date, startTime, endTime, owStartTime, owEndT
         const owStart = new Date(`${date}T${owStartTime}`);
         const owEnd = new Date(`${date}T${owEndTime}`);
 
+        // endTime이 owStartTime보다 빠른 경우에는 계산하지 않음
+        if (end <= owStart) {
+            return "00:00:00";
+        }
+
         // 주말 여부 확인
         if (start.getDay() === 6 || start.getDay() === 0) {
             // 주말 계산

@@ -4,6 +4,7 @@ import { createActions, handleActions } from 'redux-actions';
 const initialState = {
     employee: {},
     attendances: [],
+    monthAttendance: [],
     attendanceToday: null,
     attendanceAll: [],
     dayOffs: [],
@@ -21,6 +22,7 @@ const initialState = {
     task: [],
     msg: [],
     profileImg: {},
+    promotion: [],
 };
 
 // 액션 타입 정의
@@ -29,6 +31,7 @@ const GET_MY_INFO = 'employee/GET_MY_INFO';
 const GET_EMPLOYEE_INFO = 'employee/GET_EMPLOYEE_INFO';
 const GET_BIRTH_EMP = 'employee/GET_BIRTH_EMP';
 const GET_ATTENDANCE_FOR_WEEK = 'attendance/GET_ATTENDANCE_FOR_WEEK';
+const GET_ATTENDANCE_FOR_MONTH = 'attendance/GET_ATTENDANCE_FOR_MONTH';
 const GET_ATTENDANCE_TODAY = 'attendance/GET_ATTENDANCE_TODAY';
 const GET_ATTENDANCE_ALL = 'attendance/GET_ATTENDANCE_ALL';
 const GET_DAY_OFF_ALL = 'dayOffs/GET_DAY_OFF_ALL';
@@ -44,11 +47,12 @@ const GET_NOTICE = 'main/GET_NOTICE';
 const GET_TASK = 'main/GET_TASK';
 const GET_MSG = 'main/GET_MSG';
 const GET_PROFILE_IMG = 'employee/GET_PROFILE';
+const GET_PROMOTION = 'employee/GET_PROMOTION';
 
 // 액션 함수 생성
 export const {
-    employee: { getMyInfo, getEmployeeInfo, getBirthEmp, getAttendanceProfileImg },
-    attendance: { getAttendanceForWeek, getAttendanceToday, getAttendanceAll, getDefaultSchedule, getAllAttendanceToday },
+    employee: { getMyInfo, getEmployeeInfo, getBirthEmp, getAttendanceProfileImg, getPromotion },
+    attendance: { getAttendanceForWeek, getAttendanceForMonth, getAttendanceToday, getAttendanceAll, getDefaultSchedule, getAllAttendanceToday },
     dayOffs: { getDayOffAll, getDayOffBalance },
     documents: { getDocBt, getDocOw, getDocDo, getDocMonthDo },
     main: { getAbsentee, getNotice, getTask, getMsg }
@@ -58,6 +62,7 @@ export const {
     [GET_EMPLOYEE_INFO]: (employeeInfo) => ({ employeeInfo }),
     [GET_BIRTH_EMP]: (birth) => ({ birth }),
     [GET_ATTENDANCE_FOR_WEEK]: (attendances) => ({ attendances }),
+    [GET_ATTENDANCE_FOR_MONTH]: (monthAttendance) => ({ monthAttendance }),
     [GET_ATTENDANCE_TODAY]: (attendanceToday) => ({ attendanceToday }),
     [GET_ATTENDANCE_ALL]: (attendanceAll) => ({ attendanceAll }),
     [GET_DAY_OFF_ALL]: (dayOffs) => ({ dayOffs }),
@@ -73,6 +78,7 @@ export const {
     [GET_TASK]: (task) => ({ task }),
     [GET_MSG]: (msg) => ({ msg }),
     [GET_PROFILE_IMG]: (profileImg) => ({ profileImg }),
+    [GET_PROMOTION]: (promotion) => ({ promotion }),
 });
 
 // 리듀서 정의
@@ -92,6 +98,10 @@ const attendanceReducer = handleActions({
     [GET_ATTENDANCE_FOR_WEEK]: (state, action) => ({
         ...state,
         attendances: action.payload.attendances
+    }),
+    [GET_ATTENDANCE_FOR_MONTH]: (state, action) => ({
+        ...state,
+        monthAttendance: action.payload.monthAttendance
     }),
     [GET_ATTENDANCE_TODAY]: (state, action) => ({
         ...state,
@@ -156,6 +166,10 @@ const attendanceReducer = handleActions({
     [GET_PROFILE_IMG]: (state, action) => ({
         ...state,
         profileImg: action.payload.profileImg
+    }),
+    [GET_PROMOTION]: (state, action) => ({
+        ...state,
+        promotion: action.payload.promotion
     }),
 }, initialState);
 

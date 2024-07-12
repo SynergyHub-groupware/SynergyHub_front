@@ -18,7 +18,7 @@ import {
     getBirthEmp,
     getNotice,
     getTask,
-    getMsg
+    getMsg, getPromotion, getAttendanceForMonth
 } from "../modules/AttendanceModules";
 import axios from "axios";
 
@@ -394,6 +394,47 @@ export const callMsgAPI = () => {
             }
         } catch (error) {
             console.error('error : ', error);
+        }
+    };
+};
+
+export const callPromotionAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/api/attendance/promotionCandidates', {
+                'Content-Type': 'application/json'
+            });
+
+            console.log('연차 촉진 대상자 result : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(getPromotion(result.data.employees));
+            } else {
+                console.error('연차 촉진 대상자 result : ', result);
+            }
+        } catch (error) {
+            console.error('error : ', error);
+        }
+    };
+};
+
+export const callMyAttendanceForMonthAPI = () => {
+    return async (dispatch, getState) => {
+        try {
+            const result = await request('GET', '/api/attendance/my-current-month', {
+                'Authorization': `Bearer ${localStorage.getItem('access-token')}`,
+                'Content-Type': 'application/json'
+            });
+
+            console.log('callMyAttendanceForMonthAPI result : ', result);
+
+            if (result && result.status === 200) {
+                dispatch(getAttendanceForMonth(result.data.results.monthAttendance));
+            } else {
+                console.error('금주의 근태정보 조회 실패 result : ', result);
+            }
+        } catch (error) {
+            console.error('금주의 근태정보 조회 실패:', error);
         }
     };
 };

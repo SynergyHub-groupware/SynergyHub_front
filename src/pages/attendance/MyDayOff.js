@@ -62,13 +62,14 @@ function MyDayOff() {
                         className="bl_sect hp_padding40 el_shadowD4 hp_mb20"
                         style={{position: 'relative', width: '900px', zIndex: '2'}}
                     >
-                        <div className="hp_fs22 hp_mb30 ly_flex" style={{marginLeft: '230px'}}>
+                        <div className="hp_fs22 hp_mb30 ly_flex" style={{marginLeft: '170px'}}>
+                            <div>{employee.emp_name} {employee.position_name}님의 &nbsp;</div>
                             <TodayDateComponent/>
-                            <div>의 연차 현황입니다.</div>
+                            <div> 연차 현황입니다.</div>
                         </div>
                         <div className="">
                             <div className="hp_mt30" style={{width: '300px'}}>
-                                <table className="ly_fitemC" style={{marginLeft: '190px'}}>
+                                <table className="ly_fitemC" style={{marginLeft: '250px'}}>
                                     <colgroup>
                                         <col style={{width: "20px"}}/>
                                         <col style={{width: "20px"}}/>
@@ -78,8 +79,8 @@ function MyDayOff() {
                                     <thead className="">
                                     <tr>
                                         <th>
-                                            <div className="bl_tna__label4 hp_lh2-5 hp_mr15 hp_mb15">
-                                                <p style={{color: "white"}}>발생연차</p>
+                                            <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15">
+                                                <p style={{color: "#006CD0FF"}}>발생연차</p>
                                             </div>
                                         </th>
                                         <th>
@@ -90,11 +91,6 @@ function MyDayOff() {
                                         <th>
                                             <div className="bl_tna__label4 hp_lh2-5 hp_mr15 hp_mb15">
                                                 <p style={{color: "white"}}>잔여연차</p>
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div className="bl_tna__label3 hp_lh2-5 hp_mr15 hp_mb15">
-                                                <p style={{color: "#006CD0FF"}}>승인대기</p>
                                             </div>
                                         </th>
                                     </tr>
@@ -112,9 +108,6 @@ function MyDayOff() {
                                         <td>
                                             <div
                                                 className="hp_fw700 hp_fs28 ly_flexC hp_mr20">{dayOffBalance != null ? dayOffBalance.remaining : 0}</div>
-                                        </td>
-                                        <td>
-                                            <div className="hp_fw700 hp_fs28 ly_flexC hp_mr20">1</div>
                                         </td>
                                     </tr>
                                     </tbody>

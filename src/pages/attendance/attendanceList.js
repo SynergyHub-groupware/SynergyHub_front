@@ -10,10 +10,12 @@ import {
     callAttendanceAllAPI,
     callAttendanceTodayAPI,
     callMyAttendanceForWeekAPI,
-    callMyInfoAPI
+    callMyInfoAPI, callPromotionAPI
 } from "../../apis/AttendancelAPICalls";
 import DropdownComponent from "./component/DropdownComponent";
 import OverWorkHoursCalculator from "./util/OverWorkHoursCalculator";
+import {request} from "../../apis/api";
+import MonthBarChart from "./util/MonthBarChart";
 
 function AttendanceList() {
     const dispatch = useDispatch();
@@ -26,6 +28,7 @@ function AttendanceList() {
         dispatch(callMyAttendanceForWeekAPI());
         dispatch(callAttendanceTodayAPI());
         dispatch(callAttendanceAllAPI());
+        dispatch(callPromotionAPI());
     }, [dispatch]);
 
     // 검색 및 필터링 상태 변수
@@ -103,30 +106,25 @@ function AttendanceList() {
         filterAttendances();
     };
 
-    // 필터링 함수
+    // 필터링된 결과 배열 생성 함수
     const filterAttendances = () => {
-        let filteredResults = attendancesAll || [];
+        let filteredResults = [...attendancesAll];
 
         if (year) {
             filteredResults = filteredResults.filter(attendance => attendance.atdDate.startsWith(year));
         }
-
         if (month) {
             filteredResults = filteredResults.filter(attendance => attendance.atdDate.includes(`-${month.padStart(2, '0')}-`));
         }
-
         if (parentDept) {
             filteredResults = filteredResults.filter(attendance => attendance.parTitle === parentDept);
         }
-
         if (subDept) {
             filteredResults = filteredResults.filter(attendance => attendance.subTitle === subDept);
         }
-
         if (team) {
             filteredResults = filteredResults.filter(attendance => attendance.deptTitle === team);
         }
-
         if (searchTerm) {
             const lowercasedTerm = searchTerm.toLowerCase();
             filteredResults = filteredResults.filter(attendance =>
@@ -135,9 +133,11 @@ function AttendanceList() {
             );
         }
 
+        // Update searchResults state with filtered data
         setSearchResults(filteredResults);
-        setCurrentPage(1); // 필터링 시 첫 페이지로 초기화
+        setCurrentPage(1); // Reset to first page when filtering
     };
+
 
     // 최초 로드 시 자신의 데이터만 표시
     useEffect(() => {
@@ -213,10 +213,12 @@ function AttendanceList() {
     return (
         <div className="ly_cont ly_flex">
             <div className="hp_mr50">
-                <div style={{ position: "sticky" }}>
-                    <AttendanceSummary attendancesToday={attendancesToday} />
+                <div style={{position: "sticky"}}>
+                    <AttendanceSummary attendancesToday={attendancesToday}/>
                     <DefaultSchedule employee={employee} attendancesToday={attendancesToday}/>
-                    <WorkStatus />
+                    <section className="bl_sect hp_padding30 el_shadowD4 hp_mb30 section1">
+                        <MonthBarChart/>
+                    </section>
                 </div>
             </div>
             <div className="">

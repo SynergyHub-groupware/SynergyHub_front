@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import '../../../css/timeAndAttendance.css';
 import { useDispatch, useSelector } from "react-redux";
-import { callMyAttendanceForWeekAPI } from "../../../apis/AttendancelAPICalls";
+import {callMyAttendanceForMonthAPI} from "../../../apis/AttendancelAPICalls";
 import WeekWorkHoursCalculator from "./WeekWorkHoursCalculator";
 import OverWorkHoursCalculator from "./OverWorkHoursCalculator";
 
-const BarChart = () => {
+const MonthBarChart = () => {
     const [animate, setAnimate] = useState(false);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(callMyAttendanceForWeekAPI());
+        dispatch(callMyAttendanceForMonthAPI());
         const timeout = setTimeout(() => {
             setAnimate(true);
         }, 100);
@@ -18,11 +18,11 @@ const BarChart = () => {
         return () => clearTimeout(timeout);
     }, [dispatch]);
 
-    const calculateRegularWorkHours = (attendances) => {
+    const calculateRegularWorkHours = (monthAttendance) => {
         let regularWorkHoursInSeconds = 0;
 
-        attendances.forEach((attendance) => {
-            const { atdDate, atdStartTime, atdEndTime, owStartTime, owEndTime } = attendance;
+        monthAttendance.forEach((attendanceMonth) => {
+            const { atdDate, atdStartTime, atdEndTime, owStartTime, owEndTime } = attendanceMonth;
             const workHours = WeekWorkHoursCalculator({ date: atdDate, startTime: atdStartTime, endTime: atdEndTime, owStartTime, owEndTime }).props.children;
 
             if (workHours !== "-" && workHours !== "00:00:00") {
@@ -38,16 +38,11 @@ const BarChart = () => {
         return regularWorkHoursInSeconds;
     };
 
-    const calculateOverWorkHours = (attendances) => {
+    const calculateOverWorkHours = (monthAttendance) => {
         let regularWorkHoursInSeconds = 0;
 
-        // endTime이 owStartTime보다 빠른 경우에는 계산하지 않음
-        if (attendances.end <= attendances.owStart) {
-            return "00:00:00";
-        }
-
-        attendances.forEach((attendance) => {
-            const { atdDate, startTime, endTime, owStartTime, owEndTime } = attendance;
+        monthAttendance.forEach((monthAttendance) => {
+            const { atdDate, startTime, endTime, owStartTime, owEndTime } = monthAttendance;
             const workHours = OverWorkHoursCalculator({ date: atdDate, startTime, endTime, owStartTime, owEndTime }).props.children;
 
             if (workHours !== "-" && workHours !== "00:00:00") {
@@ -63,14 +58,14 @@ const BarChart = () => {
         return regularWorkHoursInSeconds;
     };
 
-    const attendances = useSelector((state) => state.attendanceReducer.attendances);
+    const monthAttendance = useSelector((state) => state.attendanceReducer.monthAttendance);
 
-    const totalHours = 52 * 3600;
+    const totalHours = 208 * 3600;
 
-    const regularWorkHoursInSeconds = calculateRegularWorkHours(attendances);
+    const regularWorkHoursInSeconds = calculateRegularWorkHours(monthAttendance);
     const regularPercent = (regularWorkHoursInSeconds / totalHours) * 100;
 
-    const overWorkHoursInSeconds = calculateOverWorkHours(attendances);
+    const overWorkHoursInSeconds = calculateOverWorkHours(monthAttendance);
     const overTimePercent = (overWorkHoursInSeconds / totalHours) * 100;
 
     const totalPercent = ((regularWorkHoursInSeconds + overWorkHoursInSeconds) / totalHours) * 100;
@@ -80,9 +75,10 @@ const BarChart = () => {
 
     return (
         <>
+            <div className="hp_fw700">월간 근무현황</div>
             <div className="hp_fw700 hp_fs32">{formatTime(regularWorkHoursInSeconds + overWorkHoursInSeconds)}</div>
             <div className="hp_mt15" style={{paddingBottom: '5px'}}>
-                <div className="stacked-bar-chart">
+                <div className="stacked-bar-chart2">
                     <div className={`cumulative ${animate ? 'animate' : ''}`}
                          style={{width: `${regularPercent}%`}}>
                         {/*<p className="barFont">{regularHours}</p>*/}
@@ -90,7 +86,7 @@ const BarChart = () => {
                     <div className={`regular ${animate ? 'animate' : ''}`} style={{width: `${totalPercent}%`}}>
                         {/*<p className="barFont">{overHours}</p>*/}
                     </div>
-                    <p className="barFont-background">52시간</p>
+                    <p className="barFont-background2">208시간</p>
                 </div>
             </div>
             <ul className="hp_mt15">
@@ -121,4 +117,4 @@ const formatHours = (seconds) => {
     return `${totalHours}`;
 };
 
-export default BarChart;
+export default MonthBarChart;

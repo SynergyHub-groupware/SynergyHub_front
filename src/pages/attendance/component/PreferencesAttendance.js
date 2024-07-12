@@ -237,7 +237,7 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                                     <div className="hp_fw700 hp_fs28 ly_flexC hp_mr20">{business}</div>
                                 </td>
                                 <td>
-                                    <div className="hp_fw700 hp_fs28 ly_flexC hp_mr20">{business}</div>
+                                    <div className="hp_fw700 hp_fs28 ly_flexC hp_mr20">{etc}</div>
                                 </td>
                             </tr>
                             </tbody>
@@ -245,50 +245,47 @@ const PreferencesAttendance = ({ todayData, isOpen, departmentsData, userRoleDat
                     </div>
                 </div>
             </section>
-            <section className="bl_sect hp_mt10  hp_mb20 el_shadowD4" style={{marginLeft: 'auto', marginRight: 'auto'}}>
-                <table className="bl_tb1" style={{width: '900px'}}>
+            <section className="bl_sect hp_mt10  hp_mb20 el_shadowD4">
+                <table className="bl_tb1" style={{ width: '900px'}}>
                     <colgroup>
+                        <col style={{width: "80px"}}/>
                         <col style={{width: "100px"}}/>
-                        <col style={{width: "50px"}}/>
-                        <col style={{width: "70px"}}/>
-                        <col style={{width: "85px"}}/>
-                        <col style={{width: "85px"}}/>
-                        <col style={{width: "90px"}}/>
-                        <col style={{width: "80px"}}/>
-                        <col style={{width: "80px"}}/>
+                        <col style={{width: "100px"}}/>
+                        <col style={{width: "100px"}}/>
+                        <col style={{width: "100px"}}/>
+                        <col style={{width: "100px"}}/>
+                        <col style={{width: "100px"}}/>
                     </colgroup>
                     <thead>
                     <tr style={{height: '55px'}}>
-                        <th scope="col">팀명</th>
+                        <th scope="col"><a className="hp_ml10">팀명</a></th>
                         <th scope="col">직책</th>
                         <th scope="col">사원명</th>
                         <th scope="col">근태현황</th>
                         <th scope="col">출근시간</th>
                         <th scope="col">퇴근시간</th>
-                        <th scope="col">초과근무 여부</th>
-                        <th scope="col">비고</th>
+                        <th scope="col"><a className="hp_mr10">초과근무 여부</a></th>
                     </tr>
                     </thead>
                     <tbody>
                     {currentResults.length > 0 ? (
                         currentResults.map((employee, index) => (
                             <tr key={index} style={{height: '55px'}}>
-                                <td>
+                                <td><a className="hp_ml10">
                                     {employee.empTitle === '대표' || employee.empTitle === '책임자' ? (
                                         <span>{employee.parTitle}</span>
                                     ) : employee.empTitle === '부서장' ? (
                                         <span>{employee.subTitle}</span>
                                     ) : employee.empTitle === '팀장' || employee.empTitle === '팀원' ? (
                                         <span>{employee.deptTitle}</span>
-                                    ) : "-"}
+                                    ) : "-"}</a>
                                 </td>
                                 <td>{employee.empTitle}</td>
                                 <td>{employee.empName}</td>
                                 <td>{employee.attendanceStatus.atsName}</td>
                                 <td>{employee.startTime ? employee.startTime : "-"}</td>
                                 <td>{employee.endTime ? employee.endTime : "-"}</td>
-                                <td>{employee.owStartTime ? employee.owStartTime : "-"}</td>
-                                <td>-</td>
+                                <td><a className="hp_mr10">{employee.owStartTime ? "O" : "X"}</a></td>
                             </tr>
                         ))
                     ) : (

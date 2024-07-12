@@ -11,10 +11,11 @@ import {
     callAttendanceTodayAPI,
     callDayOffAllAPI,
     callMyAttendanceForWeekAPI,
-    callMyInfoAPI
+    callMyInfoAPI, callPromotionAPI
 } from "../../apis/AttendancelAPICalls";
 import DropdownComponent from "./component/DropdownComponent";
 import DayOffStatus from "./component/DayOffStatus";
+import DayOffModal from "./util/DayOffModal";
 
 function DayOffList() {
     const dispatch = useDispatch();
@@ -22,6 +23,7 @@ function DayOffList() {
     const attendancesAll = useSelector((state) => state.attendanceReducer.attendanceAll);
     const employee = useSelector((state) => state.attendanceReducer.employee);
     const dayOffsAll = useSelector((state) => state.attendanceReducer.dayOffs);
+    const promotion = useSelector((state) => state.attendanceReducer.promotion);
 
     useEffect(() => {
         dispatch(callMyInfoAPI());
@@ -29,6 +31,7 @@ function DayOffList() {
         dispatch(callAttendanceTodayAPI());
         dispatch(callAttendanceAllAPI());
         dispatch(callDayOffAllAPI());
+        dispatch(callPromotionAPI());
     }, [dispatch]);
 
     // 검색 및 필터링 상태 변수
@@ -195,7 +198,7 @@ function DayOffList() {
                 <div style={{ position: "sticky" }}>
                     <AttendanceSummary attendancesToday={attendancesToday} />
                     <DefaultSchedule employee={employee} />
-                    <DayOffStatus />
+                    <DayOffStatus promotion={promotion} />
                 </div>
             </div>
             <div className="">
