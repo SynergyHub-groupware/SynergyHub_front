@@ -139,11 +139,28 @@ function AttendanceList() {
     };
 
 
-    // 최초 로드 시 자신의 데이터만 표시
+    // 최초 로드 시 현재 월의 자신의 데이터만 표시
     useEffect(() => {
-        const filteredAttendances = attendancesAll.filter(attendances =>
-            attendances.empCode === employee.emp_code
-        );
+        // 현재 날짜 가져오기
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1
+
+        // 필터링된 결과 계산
+        const filteredAttendances = attendancesAll.filter(attendance => {
+            // 자신의 데이터인지 확인
+            if (attendance.empCode !== employee.emp_code) {
+                return false;
+            }
+
+            // 날짜 문자열을 Date 객체로 변환하여 월과 연도 비교
+            const reportDate = new Date(attendance.atdDate);
+            const reportYear = reportDate.getFullYear();
+            const reportMonth = reportDate.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1
+
+            return reportYear === currentYear && reportMonth === currentMonth;
+        });
+
         setSearchResults(filteredAttendances);
         setCurrentPage(1); // 데이터가 변경될 때 첫 페이지로 초기화
     }, [attendancesAll, employee]);

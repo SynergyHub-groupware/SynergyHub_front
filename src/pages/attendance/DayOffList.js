@@ -145,11 +145,34 @@ function DayOffList() {
         setCurrentPage(1); // 필터링 시 첫 페이지로 초기화
     };
 
-    // 최초 로드 시 자신의 데이터만 표시
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1
+
+    const reportDate = new Date(dayOffsAll.doReportDate);
+    const reportYear = reportDate.getFullYear();
+    const reportMonth = reportDate.getMonth() + 1;
+
+    // 최초 로드 시 현재 월의 자신의 데이터만 표시
     useEffect(() => {
-        const filteredDayOffs = dayOffsAll.filter(dayOff =>
-            dayOff.empCode === employee.emp_code
-        );
+        const filteredDayOffs = dayOffsAll.filter(dayOff => {
+            // 자신의 데이터인지 확인
+            if (dayOff.empCode !== employee.emp_code) {
+                return false;
+            }
+
+            // 현재 월의 데이터인지 확인
+            const currentDate = new Date();
+            const currentYear = currentDate.getFullYear();
+            const currentMonth = currentDate.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1
+
+            const reportDate = new Date(dayOff.doReportDate);
+            const reportYear = reportDate.getFullYear();
+            const reportMonth = reportDate.getMonth() + 1;
+
+            return reportYear === currentYear && reportMonth === currentMonth;
+        });
+
         setSearchResults(filteredDayOffs);
         setCurrentPage(1); // 데이터가 변경될 때 첫 페이지로 초기화
     }, [dayOffsAll, employee]);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {callEmployeeInfoAPI, callPromotionAPI} from '../../../apis/AttendancelAPICalls';
+import {callPromotionAPI} from '../../../apis/AttendancelAPICalls';
 
 function DayOffModal({ show, handleClose, handleSave }) {
   const dispatch = useDispatch();

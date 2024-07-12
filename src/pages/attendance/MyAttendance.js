@@ -140,9 +140,9 @@ function MyAttendance() {
                                             </div>
                                             <div>
                                                 <button type="button" className="el_btnblueBord el_btnF hp_mt20 hp_fs16"
-                                                        style={{width: '200px'}}>
-                                                    일정 확인하기
-                                                </button>
+                                                        style={{width: '200px'}} onClick={() => window.location.href = `/calendar/myCalendar`}>
+                                                        일정 확인하기
+                                                    </button>
                                             </div>
                                         </div>
                                     </div>
@@ -216,11 +216,13 @@ function MyAttendance() {
                             <p className="hp_fw700 section3_title">빠른 메뉴</p>
                         </div>
                         <div>
-                            <button type="button" className="el_btn0Back el_btnF hp_mt10 section3_btn">
-                                출장 신청
+                            <button type="button" className="el_btn0Back el_btnF hp_mt10 section3_btn"
+                                    onClick={() => window.location.href = `/approval/formList`}>
+                                결재 상신
                             </button>
-                            <button type="button" className="el_btn0Back el_btnF hp_mt10 section3_btn">
-                                초과 신청
+                            <button type="button" className="el_btn0Back el_btnF hp_mt10 section3_btn"
+                                    onClick={() => window.location.href = `/message/storage/deliver`}>
+                                쪽지 작성
                             </button>
                             <button type="button" className="el_btn0Back el_btnF hp_mt10 section3_btn">
                                 휴가 신청

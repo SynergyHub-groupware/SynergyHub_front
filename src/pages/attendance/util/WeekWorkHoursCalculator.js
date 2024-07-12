@@ -22,6 +22,11 @@ const WeekWorkHoursCalculator = ({ date, startTime, endTime, owStartTime, owEndT
             const owStart = new Date(`${date}T${owStartTime}`);
             const result = diffMs - (end.getTime() - owStart.getTime());
 
+            // endTime이 owStartTime보다 빠른 경우에는 계산하지 않음
+            if (end <= owStart) {
+                return "00:00:00";
+            }
+
             let totalSeconds = Math.floor(result / 1000);
             let hours = Math.floor(totalSeconds / 3600);
             totalSeconds %= 3600;
