@@ -6,12 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     callAbsenteeAPI,
     callAttendanceTodayAPI,
-    callBirthEmpAPI, callMsgAPI,
+    callBirthEmpAPI, callGetAttendanceProfileImgAPI, callMsgAPI,
     callMyInfoAPI,
     callNoticeAPI,
     callTaskAPI,
 } from "../apis/AttendancelAPICalls";
 import AttendanceSummary from "./attendance/component/AttendanceSummary";
+import {callGetProfileImgAPI} from "../apis/EmployeeAPICalls";
 
 function Main() {
     const dispatch = useDispatch();
@@ -22,6 +23,8 @@ function Main() {
     const task = useSelector((state) => state.attendanceReducer.task);
     const msg = useSelector((state) => state.attendanceReducer.msg);
     const notices = useSelector((state) => state.attendanceReducer.notice);
+    const profileImg = useSelector(state => state.employeeReducer.profileImg);
+    const profileImg2 = useSelector(state => state.attendanceReducer.profileImg);
 
     useEffect(() => {
         // 필요한 API 호출
@@ -34,14 +37,23 @@ function Main() {
         dispatch(callNoticeAPI());
     }, [dispatch]);
 
+    useEffect(() => {
+        if (employee) {
+            dispatch(callGetProfileImgAPI(employee.emp_code));
+        }
+    }, [dispatch, employee]);
+
+
+
     return (
         <>
             <Header />
             <div className="ly_body">
                 <div className="ly_cont ly_flex">
                     <div className="ly_flex ly_fdirecCol hp_w400px ly_fshirnk">
-                        <section className="bl_sect hp_padding30 el_shadowD4 hp_mb20  bl_mainProfile" style={{ width: '370px', height: '320px' }}>
-                            <a className="bl_mainProfile__img hp_mb15" href=""></a>
+                        <section className="bl_sect hp_padding30 el_shadowD4 hp_mb20  bl_mainProfile"
+                                 style={{width: '370px', height: '320px'}}>
+                            <img className="bl_mainProfile__img" src={profileImg}/>
                             <ul className="hp_alignC">
                                 <li className="hp_fs20 hp_fw700">{employee?.emp_name}</li>
                                 <li className="hp_mt20">
@@ -53,7 +65,7 @@ function Main() {
                                 </li>
                             </ul>
                         </section>
-                        <AttendanceSummary attendancesToday={attendancesToday} />
+                        <AttendanceSummary attendancesToday={attendancesToday}/>
                         <section className="bl_sect hp_padding30 el_shadowD4" style={{width: '370px'}}>
                             <div className="hp_fw700 hp_mb15 hp_fs18">최신 공지사항</div>
                             <div className="hp_bordTEB">
@@ -88,17 +100,16 @@ function Main() {
                         <PheedComponent/>
                     </div>
                     <div className="hp_ml30 ly_flex ly_fdirecCol hp_w300px ly_fshirnk" style={{height: '800px'}}>
-                        <section className="bl_sect el_shadowD4 hp_mb30 hp_h50" style={{padding: '20px'}}>
+                        <section className="bl_sect el_shadowD4 hp_mb30 hp_h50" style={{padding: '30px'}}>
                             <div className="ly_spaceBetween ly_fitemC">
                                 <h5 className="hp_fw700 hp_fs18 hp_mb15">부재자</h5>
                             </div>
                             <div style={{maxHeight: '270px', overflowY: 'auto'}}>
-                            <dl className="hp_bordTEB hp_pt10">
+                                <dl className="hp_bordTEB hp_pt10">
                                     {absentee && absentee.length > 0 ? (
                                         absentee.map((person, index) => (
                                             <dd key={index} className="ly_spaceBetween ly_fitemC hp_mt20">
                                                 <div className="ly_flex ly_fitemC">
-                                                    <div className="bl_miniProfile__img" style={{ width: '45px', height: '45px' }}></div>
                                                     <ul className="hp_ml10">
                                                         <li>{person.empName}</li>
                                                         <li className="hp_7Color hp_fs13">
@@ -106,7 +117,8 @@ function Main() {
                                                         </li>
                                                     </ul>
                                                 </div>
-                                                <div className={`bl_miniLabel ${getLabelClassName(person.attendanceStatus)}`}>
+                                                <div
+                                                    className={`bl_miniLabel ${getLabelClassName(person.attendanceStatus)}`}>
                                                     {person.attendanceStatus ? person.attendanceStatus.atsName : "-"}
                                                 </div>
                                             </dd>
@@ -117,17 +129,16 @@ function Main() {
                                 </dl>
                             </div>
                         </section>
-                        <section className="bl_sect el_shadowD4 hp_mb30 hp_h50" style={{ padding: '20px' }}>
+                        <section className="bl_sect el_shadowD4 hp_mb30 hp_h50" style={{padding: '30px'}}>
                             <div className="ly_spaceBetween ly_fitemC">
                                 <h5 className="hp_fw700 hp_fs18 hp_mb10">이달의 생일자</h5>
                             </div>
-                            <div style={{ maxHeight: '270px', overflowY: 'auto' }}>
+                            <div style={{maxHeight: '270px', overflowY: 'auto'}}>
                                 <dl className="hp_bordTEB hp_pt10">
                                     {birthEmp && birthEmp.length > 0 ? (
                                         birthEmp.map((person, index) => (
                                             <dd key={index} className="ly_spaceBetween ly_fitemC hp_mt20">
                                                 <div className="ly_flex ly_fitemC">
-                                                    <div className="bl_miniProfile__img" style={{ width: '45px', height: '45px' }}></div>
                                                     <ul className="hp_ml10">
                                                         <li>{person.emp_name}</li>
                                                         <li className="hp_7Color hp_fs13">

@@ -1,9 +1,27 @@
 .bl_mainProfile{}
-.bl_mainProfile__img{display:block;margin:0 auto;width:150px;height:150px;background:url("../../public/images/profileImg/profile.png")no-repeat center/cover #363636;border-radius:50%;}
+
+.bl_mainProfile__img {
+    display: block;
+    margin: 0 auto;
+    width: 150px;
+    height: 150px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #363636; /* 배경색 유지 */
+    border-radius: 50%;
+}
+
 .bl_mainProfile__alarm{display:inline-block;width:22px;height:22px;background:#000;color:#fff;border-radius:50%;text-align:center;margin-left:10px;vertical-align:1px;font-size:13px;line-height:20px;}
 
-.bl_miniProfile__img{width:50px;height:50px;background:url("../../public/images/profileImg/profile.png")no-repeat center/contain;border-radius:50%;}
-.bl_miniLabel{border:2px solid;border-radius:999px;padding:5px 0; width:80px;text-align:center;}
+.bl_miniProfile__img {
+    width: 50px;
+    height: 50px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    border-radius: 50%;
+}.bl_miniLabel{border:2px solid;border-radius:999px;padding:5px 0; width:80px;text-align:center;}
+
 .bl_miniLabel__1{border-color:#b64074;color:#b64074;}
 .bl_miniLabel__2{border-color:#3557b0;color:#3557b0;}
 .bl_miniLabel__3{border-color:#2a255d;color:#2a255d;}

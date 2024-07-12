@@ -20,6 +20,7 @@ const initialState = {
     notice: [],
     task: [],
     msg: [],
+    profileImg: {},
 };
 
 // 액션 타입 정의
@@ -42,10 +43,11 @@ const GET_ABSENTEE = 'main/GET_ABSENTEE';
 const GET_NOTICE = 'main/GET_NOTICE';
 const GET_TASK = 'main/GET_TASK';
 const GET_MSG = 'main/GET_MSG';
+const GET_PROFILE_IMG = 'employee/GET_PROFILE';
 
 // 액션 함수 생성
 export const {
-    employee: { getMyInfo, getEmployeeInfo, getBirthEmp },
+    employee: { getMyInfo, getEmployeeInfo, getBirthEmp, getAttendanceProfileImg },
     attendance: { getAttendanceForWeek, getAttendanceToday, getAttendanceAll, getDefaultSchedule, getAllAttendanceToday },
     dayOffs: { getDayOffAll, getDayOffBalance },
     documents: { getDocBt, getDocOw, getDocDo, getDocMonthDo },
@@ -70,6 +72,7 @@ export const {
     [GET_NOTICE]: (notice) => ({ notice }),
     [GET_TASK]: (task) => ({ task }),
     [GET_MSG]: (msg) => ({ msg }),
+    [GET_PROFILE_IMG]: (profileImg) => ({ profileImg }),
 });
 
 // 리듀서 정의
@@ -149,6 +152,10 @@ const attendanceReducer = handleActions({
     [GET_MSG]: (state, action) => ({
         ...state,
         msg: action.payload.msg
+    }),
+    [GET_PROFILE_IMG]: (state, action) => ({
+        ...state,
+        profileImg: action.payload.profileImg
     }),
 }, initialState);
 
