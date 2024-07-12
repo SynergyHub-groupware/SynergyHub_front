@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getPostrole, getRoll, getPostready, getPostedit, getPostsearch, getAlllow, getComment, getPostlist, getAlllowboard, getSortlist, getPostdatainboard, getPostdatainboardpin, getDetail, getFile } from '../module/PostReducer';
+import { getLowdatatocode,getPostrole, getRoll, getPostready, getPostedit, getPostsearch, getAlllow, getComment, getPostlist, getAlllowboard, getSortlist, getPostdatainboard, getPostdatainboardpin, getDetail, getFile } from '../module/PostReducer';
 import { getAllboard } from '../module/PostReducer';
 
 const DOMAIN = 'http://localhost:8080'
@@ -186,6 +186,19 @@ export function callGETInboardList(lowBoardCode) {
     }
   };
 }
+export function callGETLowBoardListToCode(lowBoardCode) {
+  return async (dispatch, getState) => {
+    console.log("callGETLowBoardListToCode call");
+    try {
+      const result = await request('GET', `/post/callGETLowBoardListToCode/${lowBoardCode}`);
+      dispatch(getLowdatatocode(result)); // 액션 생성자 호출 시 result.data를 전달
+      console.log(result);
+    } catch (error) {
+      console.error("Error fetching post list:", error);
+    }
+  };
+}
+
 export function callGETInboardPinList(lowBoardCode) {
   return async (dispatch, getState) => {
     console.log("callGETPostList call");
